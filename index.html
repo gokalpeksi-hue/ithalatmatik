@@ -290,6 +290,19 @@
         </div>
       </div>
       <div class="fr">
+        <label class="lbl">Ambalaj Durumu</label>
+        <div style="display:flex;gap:8px" id="pkggrp">
+          <label class="to sel" onclick="setPkg(this,'BOX')" style="flex:1;padding:9px 12px">
+            <input type="radio" name="pkg" value="BOX" checked>
+            <div class="tinfo"><div class="ttl" style="font-size:12.5px">📦 Kutulu</div><div class="tdesc">Orijinal ambalaj dahil</div></div>
+          </label>
+          <label class="to" onclick="setPkg(this,'NAKED')" style="flex:1;padding:9px 12px">
+            <input type="radio" name="pkg" value="NAKED">
+            <div class="tinfo"><div class="ttl" style="font-size:12.5px">🔩 Kutusu</div><div class="tdesc">Ambalajsız / bulk</div></div>
+          </label>
+        </div>
+      </div>
+      <div class="fr">
         <label class="lbl">Brüt Ağırlık (kg) — nakliye hesabı için <span id="gwtTag" style="display:none;font-size:9.5px;font-weight:600;padding:2px 7px;border-radius:20px;background:var(--acc-d);color:var(--acc2);">~Tahmini</span></label>
         <input type="number" id="gwt" placeholder="0" min="0" step="0.1" oninput="$('gwtTag').style.display='none'">
         <div class="hint" id="gwtHint" style="display:none"></div>
@@ -595,6 +608,7 @@ const DB = [
 // STATE
 // ══════════════════════════════════════════
 const S = {
+  packaging: 'BOX',
   step: 1,
   product: null,
   incoterm: 'EXW',
@@ -669,17 +683,17 @@ function getProductDims(p) {
   // Elektronik – hafif & küçük
   if (n.includes('laptop') || n.includes('notebook')) return [2.8, 0.004];
   if (n.includes('tablet')) return [0.65, 0.002];
-  if (n.includes('cep telefonu') || n.includes('akıllı telefon')) return [0.22, 0.001];
-  if (n.includes('akıllı saat') || n.includes('wearable')) return [0.12, 0.0005];
-  if (n.includes('kulaklık') || n.includes('hoparlör')) return [0.35, 0.002];
-  if (n.includes('klavye') || n.includes('mouse')) return [0.55, 0.003];
-  if (n.includes('bilgisayar parça') || n.includes('ram') || n.includes('ssd')) return [0.3, 0.001];
+  if (n.includes('cep telefonu') || n.includes('akıllı telefon')) return [0.19, 0.0008];
+  if (n.includes('akıllı saat') || n.includes('wearable')) return [0.08, 0.0004];
+  if (n.includes('kulaklık') || n.includes('hoparlör')) return [0.18, 0.001];
+  if (n.includes('klavye') || n.includes('mouse')) return [0.35, 0.002];
+  if (n.includes('bilgisayar parça') || n.includes('ram') || n.includes('ssd')) return [0.15, 0.0008];
   if (n.includes('televizyon') || n.includes('tv')) return [22, 0.14];
   if (n.includes('kamera') || n.includes('webcam')) return [0.45, 0.002];
   if (n.includes('oyun konsol')) return [3.2, 0.008];
-  if (n.includes('güç kaynağı') || n.includes('şarj') || n.includes('adaptör')) return [0.4, 0.002];
-  if (n.includes('kablo') || n.includes('hdmi') || n.includes('usb')) return [0.25, 0.002];
-  if (n.includes('priz') || n.includes('şalter')) return [0.3, 0.002];
+  if (n.includes('güç kaynağı') || n.includes('şarj') || n.includes('adaptör')) return [0.18, 0.001];
+  if (n.includes('kablo') || n.includes('hdmi') || n.includes('usb')) return [0.07, 0.0005];
+  if (n.includes('priz') || n.includes('şalter')) return [0.12, 0.001];
   if (s.includes('elektronik')) return [1.5, 0.005];
   // Beyaz eşya – ağır
   if (n.includes('çamaşır makin')) return [72, 0.45];
@@ -745,10 +759,23 @@ function getProductDims(p) {
   return [5, 0.02]; // genel varsayılan
 }
 
+function setPkg(el, v) {
+  document.querySelectorAll('#pkggrp .to').forEach(e=>e.classList.remove('sel'));
+  el.classList.add('sel');
+  el.querySelector('input').checked=true;
+  S.packaging = v;
+  autoFillDims();
+}
+
 function autoFillDims() {
   if (!S.product) return;
   const qty = parseFloat($('qty').value) || 1;
-  const [unitKg, unitM3] = getProductDims(S.product);
+  const [unitKgBase, unitM3Base] = getProductDims(S.product);
+  // Kutulu: +20% ağırlık, +35% hacim (ambalaj payı)
+  const pkgWFactor = S.packaging === 'BOX' ? 1.20 : 1.0;
+  const pkgVFactor = S.packaging === 'BOX' ? 1.35 : 1.0;
+  const unitKg = +(unitKgBase * pkgWFactor);
+  const unitM3 = +(unitM3Base * pkgVFactor);
   const totalKg = +(unitKg * qty).toFixed(1);
   const totalM3 = +(unitM3 * qty).toFixed(3);
   $('gwt').value = totalKg;
@@ -757,7 +784,8 @@ function autoFillDims() {
   $('gwtTag').style.display = 'inline-block';
   $('volTag').style.display = 'inline-block';
   $('airvolTag').style.display = 'inline-block';
-  const hint = `${unitKg} kg/birim × ${qty} = ${totalKg} kg — gerekirse düzenleyin`;
+  const pkgLabel = S.packaging === 'BOX' ? 'kutulu' : 'kutusu';
+  const hint = `${unitKg.toFixed(2)} kg/birim (${pkgLabel}) × ${qty} = ${totalKg} kg — gerekirse düzenleyin`;
   if ($('gwtHint')) { $('gwtHint').textContent = hint; $('gwtHint').style.display = 'block'; }
 }
 
@@ -1035,6 +1063,25 @@ function newCalc(){
 // INIT
 loadRates();
 // qty değişince ağırlık/hacim güncelle
+$('qty').addEventListener('input', autoFillDims);
+$('volRow').style.display='';
+$('airCard').classList.add('hidden');
+</script>
+</body>
+</html>
+()=>{});
+}
+function fTRY(n){return new Intl.NumberFormat('tr-TR',{minimumFractionDigits:2,maximumFractionDigits:2}).format(n)+' ₺';}
+function newCalc(){
+  S.product=null;S.result=null;
+  clearProd();
+  ['uprice','qty','gwt','frt','ins','mrate'].forEach(id=>{const el=$(id);if(el)el.value=id==='qty'?'1':''});
+  $('fcB').value=0;$('fcS').value=0;$('fcP').value=0;$('fcD').value=0;$('fcO').value=0;
+  $('fcAutoTag').style.display='none';$('fcAutoHint').style.display='none';
+  $('mgn').value=20;
+}
+// INIT
+loadRates();
 $('qty').addEventListener('input', autoFillDims);
 $('volRow').style.display='';
 $('airCard').classList.add('hidden');
