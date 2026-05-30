@@ -1,0 +1,40 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
+  <!-- Arka plan yuvarlak kare -->
+  <rect width="512" height="512" rx="96" fill="url(#bg)"/>
+  <defs>
+    <linearGradient id="bg" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#1e3a8a"/>
+      <stop offset="100%" style="stop-color:#1a56db"/>
+    </linearGradient>
+    <linearGradient id="ship" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" style="stop-color:#ffffff"/>
+      <stop offset="100%" style="stop-color:#bfdbfe"/>
+    </linearGradient>
+  </defs>
+
+  <!-- Gemi gövdesi -->
+  <path d="M90 310 L130 270 L380 270 L422 310 Z" fill="url(#ship)" opacity="0.95"/>
+  <!-- Gemi üst yapısı -->
+  <rect x="180" y="210" width="150" height="60" rx="8" fill="white" opacity="0.9"/>
+  <rect x="210" y="175" width="90" height="40" rx="6" fill="white" opacity="0.8"/>
+  <!-- Baca -->
+  <rect x="265" y="148" width="22" height="32" rx="4" fill="#60a5fa"/>
+  <ellipse cx="276" cy="148" rx="11" ry="5" fill="#93c5fd"/>
+  <!-- Pencereler -->
+  <rect x="195" y="222" width="20" height="16" rx="4" fill="#1e3a8a" opacity="0.6"/>
+  <rect x="225" y="222" width="20" height="16" rx="4" fill="#1e3a8a" opacity="0.6"/>
+  <rect x="255" y="222" width="20" height="16" rx="4" fill="#1e3a8a" opacity="0.6"/>
+  <rect x="285" y="222" width="20" height="16" rx="4" fill="#1e3a8a" opacity="0.6"/>
+  <rect x="315" y="222" width="20" height="16" rx="4" fill="#1e3a8a" opacity="0.6"/>
+  <!-- Dalga çizgileri -->
+  <path d="M70 320 Q130 305 190 320 Q250 335 310 320 Q370 305 440 320" stroke="#60a5fa" stroke-width="6" fill="none" opacity="0.7"/>
+  <path d="M70 345 Q130 330 190 345 Q250 360 310 345 Q370 330 440 345" stroke="#3b82f6" stroke-width="5" fill="none" opacity="0.5"/>
+  <path d="M70 368 Q130 353 190 368 Q250 383 310 368 Q370 353 440 368" stroke="#1d4ed8" stroke-width="4" fill="none" opacity="0.3"/>
+
+  <!-- TL sembolü (sağ alt köşe) -->
+  <circle cx="390" cy="385" r="55" fill="#059669" opacity="0.92"/>
+  <text x="390" y="402" text-anchor="middle" font-family="Arial Black, sans-serif" font-size="44" font-weight="900" fill="white">₺</text>
+
+  <!-- İthalatMatik yazısı -->
+  <text x="256" y="460" text-anchor="middle" font-family="Arial, sans-serif" font-size="38" font-weight="800" fill="white" letter-spacing="-1" opacity="0.95">İTHALATMATİK</text>
+</svg>
