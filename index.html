@@ -595,10 +595,10 @@ const DB = [
 const S = {
   step: 1,
   product: null,
-  incoterm: \'EXW\',
-  shipping: \'SEA\',
-  container: \'LCL\',
-  payment: \'PRE\',
+  incoterm: 'EXW',
+  shipping: 'SEA',
+  container: 'LCL',
+  payment: 'PRE',
   rates: { USD:32.5, EUR:35.3, GBP:41.2, CNY:4.5, TRY:1 },
   result: null
 };
@@ -607,7 +607,7 @@ const S = {
 // ══════════════════════════════════════════
 async function loadRates() {
   try {
-    const res = await fetch(\'https://api.frankfurter.app/latest?from=USD&to=TRY,EUR,GBP,CNY\');
+    const res = await fetch('https://api.frankfurter.app/latest?from=USD&to=TRY,EUR,GBP,CNY');
     const d = await res.json();
     const r = d.rates;
     S.rates.USD = r.TRY;
@@ -615,134 +615,134 @@ async function loadRates() {
     S.rates.GBP = r.TRY / r.GBP;
     S.rates.CNY = r.TRY / r.CNY;
     S.rates.TRY = 1;
-    $(\'rU\').textContent = r.TRY.toFixed(2);
-    $(\'rE\').textContent = (r.TRY/r.EUR).toFixed(2);
-    $(\'rG\').textContent = (r.TRY/r.GBP).toFixed(2);
-    $(\'rC\').textContent = (r.TRY/r.CNY).toFixed(2);
-    document.querySelectorAll(\'.rv\').forEach(e=>e.classList.remove(\'ld\'));
+    $('rU').textContent = r.TRY.toFixed(2);
+    $('rE').textContent = (r.TRY/r.EUR).toFixed(2);
+    $('rG').textContent = (r.TRY/r.GBP).toFixed(2);
+    $('rC').textContent = (r.TRY/r.CNY).toFixed(2);
+    document.querySelectorAll('.rv').forEach(e=>e.classList.remove('ld'));
     updRateHint();
   } catch(e) {
-    document.querySelectorAll(\'.rv\').forEach(e=>e.textContent=\'hata\');
+    document.querySelectorAll('.rv').forEach(e=>e.textContent='hata');
   }
 }
 function updRateHint() {
-  const cur = $(\'ucur\')?.value || \'USD\';
+  const cur = $('ucur')?.value || 'USD';
   const rate = S.rates[cur];
-  $(\'mrlbl\').textContent = `TRY/${cur}`;
-  $(\'rhint\').textContent = `Güncel kur: 1 ${cur} = ${rate?.toFixed(4)||\'—\'} TRY`;
+  $('mrlbl').textContent = `TRY/${cur}`;
+  $('rhint').textContent = `Güncel kur: 1 ${cur} = ${rate?.toFixed(4)||'—'} TRY`;
 }
 // ══════════════════════════════════════════
 // SEARCH
 // ══════════════════════════════════════════
 let stimer;
-$(\'psearch\').addEventListener(\'input\', function() {
+$('psearch').addEventListener('input', function() {
   clearTimeout(stimer);
   stimer = setTimeout(()=>doSearch(this.value.trim()), 180);
 });
 function doSearch(q) {
-  const el = $(\'sres\');
-  if (!q) { el.classList.add(\'hidden\'); return; }
+  const el = $('sres');
+  if (!q) { el.classList.add('hidden'); return; }
   const lq = q.toLowerCase();
   const hits = DB.filter(x => x.n.toLowerCase().includes(lq)||x.g.includes(q)||x.s.toLowerCase().includes(lq)).slice(0,12);
-  el.classList.remove(\'hidden\');
-  if (!hits.length) { el.innerHTML=\'<div class="no-r">🔎 Sonuç bulunamadı — farklı arama deneyin</div>\'; return; }
+  el.classList.remove('hidden');
+  if (!hits.length) { el.innerHTML='<div class="no-r">🔎 Sonuç bulunamadı — farklı arama deneyin</div>'; return; }
   el.innerHTML = hits.map(x=>`
-    <div class="sri" onclick=\'pickProd(${JSON.stringify(x).replace(/\'/g,"&#39;")})\'>
+    <div class="sri" onclick='pickProd(${JSON.stringify(x).replace(/'/g,"&#39;")})'>
       <div class="sn2">${hl(x.n,q)}</div>
       <div class="sm"><span class="sg">${x.g}</span><span class="ssc">${x.s}</span></div>
-    </div>`).join(\'\');
+    </div>`).join('');
 }
 function hl(txt, q) {
   if (!q) return txt;
-  const re = new RegExp(`(${q.replace(/[.*+?^${}()|[\\]\\\\]/g,\'\\\\$&\')})`, \'gi\');
-  return txt.replace(re,\'<mark>$1</mark>\');
+  const re = new RegExp(`(${q.replace(/[.*+?^${}()|[\\]\\\\]/g,'\\\\$&')})`, 'gi');
+  return txt.replace(re,'<mark>$1</mark>');
 }
 // Sabit masraf rayiç tahminleri (2025 Türkiye piyasası, TRY)
 function getDefaultFixed(p) {
-  const s = (p.s||\'\'). toLowerCase();
-  const n = (p.n||\'\'). toLowerCase();
-  if (s.includes(\'tıbbi\') || n.includes(\'medikal\') || n.includes(\'tıbbi\')) return [7000,2000,2000,2500];
-  if (s.includes(\'enerji\') || n.includes(\'solar\') || n.includes(\'trafo\')) return [6000,2500,3000,5000];
-  if (s.includes(\'makine\') || n.includes(\'makine\') || n.includes(\'cnc\') || n.includes(\'endüstriyel\')) return [5500,2500,2500,4500];
-  if (s.includes(\'kimya\') || n.includes(\'granül\') || n.includes(\'deterjan\')) return [4500,2500,2000,4000];
-  if (s.includes(\'beyaz eşya\') || n.includes(\'buzdolabı\') || n.includes(\'çamaşır\') || n.includes(\'klima\')) return [4000,2000,2500,3500];
-  if (s.includes(\'otomotiv\') || n.includes(\'lastik\') || n.includes(\'motor parça\')) return [4500,1500,2000,3000];
-  if (s.includes(\'mobilya\') || n.includes(\'mobilya\') || n.includes(\'sandalye\') || n.includes(\'masa\')) return [3500,2500,2000,4500];
-  if (s.includes(\'inşaat\') || s.includes(\'metal\') || n.includes(\'çelik\') || n.includes(\'alüminyum\') || n.includes(\'boru\')) return [4000,3000,3000,6000];
-  if (s.includes(\'tekstil\') || n.includes(\'kumaş\') || n.includes(\'iplik\') || n.includes(\'giysi\')) return [3500,1500,1500,2500];
-  if (s.includes(\'kozmetik\') || s.includes(\'parfüm\') || n.includes(\'kozmetik\')) return [5000,1000,1500,2000];
-  if (s.includes(\'gıda\') || n.includes(\'gıda\') || n.includes(\'kahve\') || n.includes(\'çay\')) return [5500,2500,2000,2500];
-  if (s.includes(\'oyuncak\') || s.includes(\'spor\') || n.includes(\'oyuncak\') || n.includes(\'bisiklet\')) return [3500,1000,1500,2500];
-  if (s.includes(\'elektronik\') || n.includes(\'laptop\') || n.includes(\'telefon\') || n.includes(\'tablet\')) return [3500,1000,1500,1500];
+  const s = (p.s||''). toLowerCase();
+  const n = (p.n||''). toLowerCase();
+  if (s.includes('tıbbi') || n.includes('medikal') || n.includes('tıbbi')) return [7000,2000,2000,2500];
+  if (s.includes('enerji') || n.includes('solar') || n.includes('trafo')) return [6000,2500,3000,5000];
+  if (s.includes('makine') || n.includes('makine') || n.includes('cnc') || n.includes('endüstriyel')) return [5500,2500,2500,4500];
+  if (s.includes('kimya') || n.includes('granül') || n.includes('deterjan')) return [4500,2500,2000,4000];
+  if (s.includes('beyaz eşya') || n.includes('buzdolabı') || n.includes('çamaşır') || n.includes('klima')) return [4000,2000,2500,3500];
+  if (s.includes('otomotiv') || n.includes('lastik') || n.includes('motor parça')) return [4500,1500,2000,3000];
+  if (s.includes('mobilya') || n.includes('mobilya') || n.includes('sandalye') || n.includes('masa')) return [3500,2500,2000,4500];
+  if (s.includes('inşaat') || s.includes('metal') || n.includes('çelik') || n.includes('alüminyum') || n.includes('boru')) return [4000,3000,3000,6000];
+  if (s.includes('tekstil') || n.includes('kumaş') || n.includes('iplik') || n.includes('giysi')) return [3500,1500,1500,2500];
+  if (s.includes('kozmetik') || s.includes('parfüm') || n.includes('kozmetik')) return [5000,1000,1500,2000];
+  if (s.includes('gıda') || n.includes('gıda') || n.includes('kahve') || n.includes('çay')) return [5500,2500,2000,2500];
+  if (s.includes('oyuncak') || s.includes('spor') || n.includes('oyuncak') || n.includes('bisiklet')) return [3500,1000,1500,2500];
+  if (s.includes('elektronik') || n.includes('laptop') || n.includes('telefon') || n.includes('tablet')) return [3500,1000,1500,1500];
   return [3500,1200,1500,2000];
 }
 
 function pickProd(x) {
   S.product = x;
-  $(\'psearch\').value=\'\';
-  $(\'sres\').classList.add(\'hidden\');
-  $(\'sh\').classList.add(\'hidden\');
-  const c = $(\'spcard\'); c.classList.remove(\'hidden\');
-  $(\'spn\').textContent = x.n;
-  $(\'spg\').textContent = `GTİP: ${x.g}  ·  ${x.s}`;
-  $(\'sprts\').innerHTML = `
+  $('psearch').value='';
+  $('sres').classList.add('hidden');
+  $('sh').classList.add('hidden');
+  const c = $('spcard'); c.classList.remove('hidden');
+  $('spn').textContent = x.n;
+  $('spg').textContent = `GTİP: ${x.g}  ·  ${x.s}`;
+  $('sprts').innerHTML = `
     <span class="chip cr">GV %${x.gv}</span>
     <span class="chip cb">KDV %${x.kdv}</span>
-    ${x.otv>0?`<span class="chip ca">ÖTV %${x.otv}</span>`:\'<span class="chip cn">ÖTV %0</span>\'}`;
+    ${x.otv>0?`<span class="chip ca">ÖTV %${x.otv}</span>`:'<span class="chip cn">ÖTV %0</span>'}`;
   // autofill taxes
-  $(\'tGV\').value=x.gv; $(\'tKDV\').value=x.kdv; $(\'tOTV\').value=x.otv;
-  const ab=$(\'autobanner\'); if(ab) ab.classList.remove(\'hidden\');
+  $('tGV').value=x.gv; $('tKDV').value=x.kdv; $('tOTV').value=x.otv;
+  const ab=$('autobanner'); if(ab) ab.classList.remove('hidden');
   // autofill sabit masraflar (rayiç tahmin)
   const [fcb,fcs,fcp,fcd] = getDefaultFixed(x);
-  $(\'fcB\').value=fcb; $(\'fcS\').value=fcs; $(\'fcP\').value=fcp; $(\'fcD\').value=fcd; $(\'fcO\').value=0;
-  $(\'fcAutoTag\').style.display=\'inline-block\';
-  $(\'fcAutoHint\').style.display=\'block\';
+  $('fcB').value=fcb; $('fcS').value=fcs; $('fcP').value=fcp; $('fcD').value=fcd; $('fcO').value=0;
+  $('fcAutoTag').style.display='inline-block';
+  $('fcAutoHint').style.display='block';
 }
 function clearProd() {
   S.product=null;
-  $(\'spcard\').classList.add(\'hidden\');
-  $(\'sh\').classList.remove(\'hidden\');
-  $(\'psearch\').value=\'\';
-  const ab=$(\'autobanner\'); if(ab) ab.classList.add(\'hidden\');
+  $('spcard').classList.add('hidden');
+  $('sh').classList.remove('hidden');
+  $('psearch').value='';
+  const ab=$('autobanner'); if(ab) ab.classList.add('hidden');
   // reset sabit masraflar
-  $(\'fcB\').value=0; $(\'fcS\').value=0; $(\'fcP\').value=0; $(\'fcD\').value=0; $(\'fcO\').value=0;
-  $(\'fcAutoTag\').style.display=\'none\';
-  $(\'fcAutoHint\').style.display=\'none\';
+  $('fcB').value=0; $('fcS').value=0; $('fcP').value=0; $('fcD').value=0; $('fcO').value=0;
+  $('fcAutoTag').style.display='none';
+  $('fcAutoHint').style.display='none';
 }
 // ══════════════════════════════════════════
 // TOGGLE HELPERS
 // ══════════════════════════════════════════
 function selGrp(grpId, el) {
-  document.querySelectorAll(`#${grpId} .to`).forEach(e=>e.classList.remove(\'sel\'));
-  el.classList.add(\'sel\');
-  el.querySelector(\'input\').checked=true;
+  document.querySelectorAll(`#${grpId} .to`).forEach(e=>e.classList.remove('sel'));
+  el.classList.add('sel');
+  el.querySelector('input').checked=true;
 }
-function setInc(el,v){selGrp(\'igrp\',el);S.incoterm=v;$(\'fhint\').textContent=v===\'CIF\'?\'CIF alımda navlun zaten dahildir — sıfır bırakın\':\'Navlun bedelini girin (USD, EUR veya TRY)\';}
-function setShip(el,v){selGrp(\'shgrp\',el);S.shipping=v;$(\'seaCard\').classList.toggle(\'hidden\',v!==\'SEA\');$(\'airCard\').classList.toggle(\'hidden\',v!==\'AIR\');}
-function setCont(el,v){selGrp(\'cgrp\',el);S.container=v;$(\'volRow\').style.display=v===\'LCL\'?\'\':\'none\';}
-function setPay(el,v){selGrp(\'paygrp\',el);S.payment=v;$(\'tKKDF\').value=v===\'CRD\'?15:0;}
+function setInc(el,v){selGrp('igrp',el);S.incoterm=v;$('fhint').textContent=v==='CIF'?'CIF alımda navlun zaten dahildir — sıfır bırakın':'Navlun bedelini girin (USD, EUR veya TRY)';}
+function setShip(el,v){selGrp('shgrp',el);S.shipping=v;$('seaCard').classList.toggle('hidden',v!=='SEA');$('airCard').classList.toggle('hidden',v!=='AIR');}
+function setCont(el,v){selGrp('cgrp',el);S.container=v;$('volRow').style.display=v==='LCL'?'':'none';}
+function setPay(el,v){selGrp('paygrp',el);S.payment=v;$('tKKDF').value=v==='CRD'?15:0;}
 // ══════════════════════════════════════════
 // NAVIGATION
 // ══════════════════════════════════════════
 function goStep(n) {
   if (n>=3) {
-    const up=parseFloat($(\'uprice\').value);
-    if (!up||up<=0){alert(\'Lütfen birim fiyat girin.\');return;}
+    const up=parseFloat($('uprice').value);
+    if (!up||up<=0){alert('Lütfen birim fiyat girin.');return;}
   }
   S.step=n;
   [1,2,3,4].forEach(i=>{
-    const p=$(`p${i}`); if(p) p.classList.toggle(\'hidden\',i!==n);
+    const p=$(`p${i}`); if(p) p.classList.toggle('hidden',i!==n);
     const si=document.querySelector(`.si[data-s="${i}"]`);
-    if(si){si.classList.remove(\'active\',\'done\');if(i===n)si.classList.add(\'active\');else if(i<n)si.classList.add(\'done\');}
+    if(si){si.classList.remove('active','done');if(i===n)si.classList.add('active');else if(i<n)si.classList.add('done');}
   });
-  window.scrollTo({top:0,behavior:\'smooth\'});
+  window.scrollTo({top:0,behavior:'smooth'});
 }
 // ══════════════════════════════════════════
 // CALCULATION ENGINE
 // ══════════════════════════════════════════
 function getRate(cur) {
-  const m=parseFloat($(\'mrate\')?.value);
-  const baseCur=$(\'ucur\')?.value||\'USD\';
+  const m=parseFloat($('mrate')?.value);
+  const baseCur=$('ucur')?.value||'USD';
   if(!isNaN(m)&&m>0) {
     if(cur===baseCur) return m;
     return m*(S.rates[cur]/S.rates[baseCur]);
@@ -751,33 +751,33 @@ function getRate(cur) {
 }
 function toTRY(amt,cur){return amt*getRate(cur);}
 function calc() {
-  const up   = parseFloat($(\'uprice\').value)||0;
-  const qty  = parseFloat($(\'qty\').value)||1;
-  const qu   = $(\'qunit\').value;
-  const pc   = $(\'ucur\').value;
-  const frt  = parseFloat($(\'frt\').value)||0;
-  const fc   = $(\'fcur\').value;
-  const ins  = parseFloat($(\'ins\').value)||0;
-  const mgn  = parseFloat($(\'mgn\').value)||0;
-  const gvR  = parseFloat($(\'tGV\').value)/100||0;
-  const kdvR = parseFloat($(\'tKDV\').value)/100||0.20;
-  const otvR = parseFloat($(\'tOTV\').value)/100||0;
-  const kkdfR= parseFloat($(\'tKKDF\').value)/100||0;
-  const dagR = parseFloat($(\'tDamga\').value)/100||0.00948;
-  const adR  = parseFloat($(\'tAD\').value)/100||0;
-  const fcB=parseFloat($(\'fcB\').value)||0;
-  const fcS=parseFloat($(\'fcS\').value)||0;
-  const fcP=parseFloat($(\'fcP\').value)||0;
-  const fcD=parseFloat($(\'fcD\').value)||0;
-  const fcO=parseFloat($(\'fcO\').value)||0;
+  const up   = parseFloat($('uprice').value)||0;
+  const qty  = parseFloat($('qty').value)||1;
+  const qu   = $('qunit').value;
+  const pc   = $('ucur').value;
+  const frt  = parseFloat($('frt').value)||0;
+  const fc   = $('fcur').value;
+  const ins  = parseFloat($('ins').value)||0;
+  const mgn  = parseFloat($('mgn').value)||0;
+  const gvR  = parseFloat($('tGV').value)/100||0;
+  const kdvR = parseFloat($('tKDV').value)/100||0.20;
+  const otvR = parseFloat($('tOTV').value)/100||0;
+  const kkdfR= parseFloat($('tKKDF').value)/100||0;
+  const dagR = parseFloat($('tDamga').value)/100||0.00948;
+  const adR  = parseFloat($('tAD').value)/100||0;
+  const fcB=parseFloat($('fcB').value)||0;
+  const fcS=parseFloat($('fcS').value)||0;
+  const fcP=parseFloat($('fcP').value)||0;
+  const fcD=parseFloat($('fcD').value)||0;
+  const fcO=parseFloat($('fcO').value)||0;
   const fixed=fcB+fcS+fcP+fcD+fcO;
   // Convert goods to TRY
   const upTRY  = toTRY(up,pc);
   const goodsTRY = upTRY*qty;
   // Freight (0 if CIF)
-  const frtTRY = S.incoterm===\'CIF\' ? 0 : toTRY(frt,fc);
+  const frtTRY = S.incoterm==='CIF' ? 0 : toTRY(frt,fc);
   // Insurance
-  const insTRY = ins>0 ? toTRY(ins,\'USD\') : (goodsTRY+frtTRY)*0.004;
+  const insTRY = ins>0 ? toTRY(ins,'USD') : (goodsTRY+frtTRY)*0.004;
   // CIF = Gümrük Matrahı
   const cifTRY = goodsTRY + frtTRY + insTRY;
   // Taxes
@@ -803,66 +803,66 @@ function calc() {
 // ══════════════════════════════════════════
 // RENDER RESULTS
 // ══════════════════════════════════════════
-function fmt(n){return n.toLocaleString(\'tr-TR\',{minimumFractionDigits:2,maximumFractionDigits:2});}
+function fmt(n){return n.toLocaleString('tr-TR',{minimumFractionDigits:2,maximumFractionDigits:2});}
 function fTRY(n){return `₺${fmt(n)}`;}
 function pct(r){const p=(r*100); return `%${p%1===0?p.toFixed(0):p.toFixed(1)}`;}
 function renderResult() {
   const r = S.result;
-  $(\'rv1\').textContent = fTRY(r.unitCost);
-  $(\'rv2\').textContent = `${fmt(r.qty)} ${r.qu} için`;
-  $(\'rv3\').textContent = `≈ $${fmt(r.unitCost/S.rates.USD)} USD`;
-  $(\'rmgn\').textContent = r.mgn;
-  $(\'rv4\').textContent = fTRY(r.salePrice);
+  $('rv1').textContent = fTRY(r.unitCost);
+  $('rv2').textContent = `${fmt(r.qty)} ${r.qu} için`;
+  $('rv3').textContent = `≈ $${fmt(r.unitCost/S.rates.USD)} USD`;
+  $('rmgn').textContent = r.mgn;
+  $('rv4').textContent = fTRY(r.salePrice);
   // Breakdown
   const rows = [
-    [\'Mal Bedeli\',r.goodsTRY,false],
-    [\'Navlun\',r.frtTRY,r.frtTRY===0],
-    [\'Sigorta (oto %0.4)\',r.insTRY,false],
-    [\'Gümrük Matrahı (CIF)\',r.cifTRY,false,true],
+    ['Mal Bedeli',r.goodsTRY,false],
+    ['Navlun',r.frtTRY,r.frtTRY===0],
+    ['Sigorta (oto %0.4)',r.insTRY,false],
+    ['Gümrük Matrahı (CIF)',r.cifTRY,false,true],
     [`Gümrük Vergisi (${pct(r.gvR)})`,r.gvTRY,r.gvTRY===0],
     [`Anti-Damping / İGV (${pct(r.adR)})`,r.adTRY,r.adTRY===0],
     [`KKDF (${pct(r.kkdfR)})`,r.kkdfTRY,r.kkdfTRY===0],
     [`ÖTV (${pct(r.otvR)})`,r.otvTRY,r.otvTRY===0],
     [`KDV (${pct(r.kdvR)})`,r.kdvTRY,false],
     [`Damga Vergisi (${pct(r.dagR)})`,r.dagTRY,false],
-    [\'Toplam Vergi\',r.totalTax,false,true],
-    [\'Sabit Masraflar\',r.fixed,r.fixed===0],
+    ['Toplam Vergi',r.totalTax,false,true],
+    ['Sabit Masraflar',r.fixed,r.fixed===0],
   ];
-  $(\'btbl\').innerHTML = rows.map(([l,v,z,sec])=>
-    `<tr class="${sec?\'tr\':\'\'} ${z?\'zero\':\'\'}">`+
+  $('btbl').innerHTML = rows.map(([l,v,z,sec])=>
+    `<tr class="${sec?'tr':''} ${z?'zero':''}">`+
     `<td>${l}</td><td>${fTRY(v)}</td></tr>`
-  ).join(\'\')+
+  ).join('')+
   `<tr class="tr"><td>🏁 Toplam (${fmt(r.qty)} ${r.qu})</td><td>${fTRY(r.totalCost)}</td></tr>`+
   `<tr class="tr"><td>📌 Birim Maliyet</td><td>${fTRY(r.unitCost)}</td></tr>`+
   `<tr class="tr"><td>🎯 Satış Fiyatı (%${r.mgn} kâr)</td><td style="color:var(--gold)">${fTRY(r.salePrice)}</td></tr>`;
   // Donut
   const segs = [
-    {l:\'Mal Bedeli\',v:r.goodsTRY,c:\'#2f80ed\'},
-    {l:\'Gümrük Vergisi\',v:r.gvTRY,c:\'#e05252\'},
-    {l:\'KDV\',v:r.kdvTRY,c:\'#e89a20\'},
-    {l:\'ÖTV\',v:r.otvTRY,c:\'#8b5cf6\'},
-    {l:\'Navlun & Sigorta\',v:r.frtTRY+r.insTRY,c:\'#0ea672\'},
-    {l:\'KKDF & Diğer\',v:r.kkdfTRY+r.adTRY+r.dagTRY,c:\'#f97316\'},
-    {l:\'Sabit Masraflar\',v:r.fixed,c:\'#6366f1\'},
+    {l:'Mal Bedeli',v:r.goodsTRY,c:'#2f80ed'},
+    {l:'Gümrük Vergisi',v:r.gvTRY,c:'#e05252'},
+    {l:'KDV',v:r.kdvTRY,c:'#e89a20'},
+    {l:'ÖTV',v:r.otvTRY,c:'#8b5cf6'},
+    {l:'Navlun & Sigorta',v:r.frtTRY+r.insTRY,c:'#0ea672'},
+    {l:'KKDF & Diğer',v:r.kkdfTRY+r.adTRY+r.dagTRY,c:'#f97316'},
+    {l:'Sabit Masraflar',v:r.fixed,c:'#6366f1'},
   ].filter(x=>x.v>0);
   drawDonut(segs, r.totalCost);
   // Summary text
-  const pname = S.product ? S.product.n : \'Belirtilmemiş\';
-  const pgtip = S.product ? S.product.g : \'—\';
-  $(\'sumbox\').textContent =
+  const pname = S.product ? S.product.n : 'Belirtilmemiş';
+  const pgtip = S.product ? S.product.g : '—';
+  $('sumbox').textContent =
 `İTHALATMATİK HESAPLAMA ÖZETI
-${\'═\'.repeat(34)}
+${'═'.repeat(34)}
 Ürün        : ${pname}
 GTİP        : ${pgtip}
 Miktar      : ${fmt(r.qty)} ${r.qu}
 Birim Fiyat : ${fmt(r.up)} ${r.pc}
 Teslim Şekli: ${S.incoterm}
-${\'-\'.repeat(34)}
+${'-'.repeat(34)}
 Mal Bedeli  : ${fTRY(r.goodsTRY)}
 Navlun      : ${fTRY(r.frtTRY)}
 Sigorta     : ${fTRY(r.insTRY)}
 CIF Matrah  : ${fTRY(r.cifTRY)}
-${\'-\'.repeat(34)}
+${'-'.repeat(34)}
 Gümrük Verg.: ${fTRY(r.gvTRY)}  (${pct(r.gvR)})
 Anti-Dumping: ${fTRY(r.adTRY)}
 KKDF        : ${fTRY(r.kkdfTRY)}
@@ -870,15 +870,15 @@ KKDF        : ${fTRY(r.kkdfTRY)}
 KDV         : ${fTRY(r.kdvTRY)}  (${pct(r.kdvR)})
 Damga       : ${fTRY(r.dagTRY)}
 Sabit Masraf: ${fTRY(r.fixed)}
-${\'─\'.repeat(34)}
+${'─'.repeat(34)}
 Toplam      : ${fTRY(r.totalCost)}
 Birim Maliyet: ${fTRY(r.unitCost)}
 Satış Fiyatı: ${fTRY(r.salePrice)} (%${r.mgn} kâr)
-${\'═\'.repeat(34)}
-${new Date().toLocaleDateString(\'tr-TR\')} – İthalatMatik`;
+${'═'.repeat(34)}
+${new Date().toLocaleDateString('tr-TR')} – İthalatMatik`;
 }
 function drawDonut(segs, total) {
-  const cv = $(\'donut\'), ctx = cv.getContext(\'2d\');
+  const cv = $('donut'), ctx = cv.getContext('2d');
   const cx=70,cy=70,or=62,ir=40;
   ctx.clearRect(0,0,140,140);
   let ang = -Math.PI/2;
@@ -891,36 +891,46 @@ function drawDonut(segs, total) {
   });
   // hole
   ctx.beginPath();ctx.arc(cx,cy,ir,0,2*Math.PI);
-  ctx.fillStyle=\'#0d1829\';ctx.fill();
+  ctx.fillStyle='#0d1829';ctx.fill();
   // labels
-  ctx.fillStyle=\'#dce8f5\';ctx.textAlign=\'center\';
-  ctx.font=\'bold 10px DM Mono,monospace\';ctx.fillText(\'TOPLAM\',cx,cy-3);
-  ctx.font=\'8.5px DM Mono,monospace\';ctx.fillStyle=\'#4d6e90\';
+  ctx.fillStyle='#dce8f5';ctx.textAlign='center';
+  ctx.font='bold 10px DM Mono,monospace';ctx.fillText('TOPLAM',cx,cy-3);
+  ctx.font='8.5px DM Mono,monospace';ctx.fillStyle='#4d6e90';
   ctx.fillText(fTRY(total),cx,cy+10);
-  $(\'cleg\').innerHTML = segs.map(s=>`
+  $('cleg').innerHTML = segs.map(s=>`
     <div class="cli">
       <div class="cld" style="background:${s.c}"></div>
       <div class="cll">${s.l}</div>
       <div class="clp">${((s.v/total)*100).toFixed(1)}%</div>
-    </div>`).join(\'\');
+    </div>`).join('');
 }
 // ══════════════════════════════════════════
 // UTILS
 // ══════════════════════════════════════════
 function $(id){return document.getElementById(id);}
 function copySum(){
-  navigator.clipboard.writeText($(\'sumbox\').textContent).then(()=>{
-    const b=$(\'copybtn\');b.textContent=\'✅ Kopyalandı\';
-    setTimeout(()=>b.textContent=\'📋 Kopyala\',2200);
+  navigator.clipboard.writeText($('sumbox').textContent).then(()=>{
+    const b=$('copybtn');b.textContent='✅ Kopyalandı';
+    setTimeout(()=>b.textContent='📋 Kopyala',2200);
   }).catch(()=>{
-    const ta=document.createElement(\'textarea\');
-    ta.value=$(\'sumbox\').textContent;
+    const ta=document.createElement('textarea');
+    ta.value=$('sumbox').textContent;
     document.body.appendChild(ta);ta.select();
-    document.execCommand(\'copy\');document.body.removeChild(ta);
+    document.execCommand('copy');document.body.removeChild(ta);
   });
 }
 function newCalc(){
   S.product=null;S.result=null;
   clearProd();
-  [\'uprice\',\'qty\',\'gwt\',\'frt\',\'ins\',\'mrate\'].forEach(id=>{const el=$(id);if(el)el.value=id===\'qty\'?\'1\':\'\'});
-  $(\'fcB\').value=
+  ['uprice','qty','gwt','frt','ins','mrate'].forEach(id=>{const el=$(id);if(el)el.value=id==='qty'?'1':''});
+  $('fcB').value=0;$('fcS').value=0;$('fcP').value=0;$('fcD').value=0;$('fcO').value=0;
+  $('fcAutoTag').style.display='none';$('fcAutoHint').style.display='none';
+  $('mgn').value=20;
+}
+// INIT
+loadRates();
+$('volRow').style.display='';
+$('airCard').classList.add('hidden');
+</script>
+</body>
+</html>
