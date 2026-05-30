@@ -5,205 +5,217 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-  <meta name="apple-mobile-web-app-title" content="İthalatMatik">
-  <meta name="description" content="Türkiye ithalat landed cost hesaplama: gümrük vergisi, KDV, nakliye dahil birim maliyet">
-  <meta name="mobile-web-app-capable" content="yes">
-  <meta property="og:title" content="İthalatMatik">
-  <meta property="og:description" content="Türkiye İthalat Landed Cost Hesaplama">
-  <meta property="og:image" content="icon-512.png">
+  <meta name="apple-mobile-web-app-title" content="İthalmatik">
+  <meta name="description" content="Türkiye ithalat landed cost hesaplama: gümrük vergisi, KDV, nakliye, test maliyeti dahil birim maliyet">
   <meta name="theme-color" content="#060d1a">
-  <title>İthalatMatik – Türkiye İthalat Maliyet Hesaplama</title>
+  <title>İthalmatik – Türkiye İthalat Landed Cost Hesaplama</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link href="https://fonts.googleapis.com/css2?family=Syne:wght@600;700;800&family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500;9..40,600&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
   <style>
-    :root {
-      --bg:       #060d1a;
-      --s1:       #0d1829;
-      --s2:       #122035;
-      --s3:       #1b2d47;
-      --bdr:      #253550;
-      --bdr2:     #365070;
-      --txt:      #dce8f5;
-      --txt2:     #8aaac8;
-      --txt3:     #4d6e90;
-      --acc:      #2f80ed;
-      --acc2:     #5ba3f5;
-      --acc-d:    rgba(47,128,237,.14);
-      --grn:      #0ea672;
-      --grn-d:    rgba(14,166,114,.14);
-      --amb:      #e89a20;
-      --amb-d:    rgba(232,154,32,.13);
-      --red:      #e05252;
-      --red-d:    rgba(224,82,82,.13);
-      --gold:     #f5c842;
-      --r:        12px;
-      --rs:       8px;
+    :root{
+      --bg:#060d1a;--s1:#0d1829;--s2:#122035;--s3:#1b2d47;
+      --bdr:#253550;--bdr2:#365070;
+      --txt:#dce8f5;--txt2:#8aaac8;--txt3:#4d6e90;
+      --acc:#2f80ed;--acc2:#5ba3f5;--acc-d:rgba(47,128,237,.14);
+      --grn:#0ea672;--grn-d:rgba(14,166,114,.14);
+      --amb:#e89a20;--amb-d:rgba(232,154,32,.13);
+      --red:#e05252;--red-d:rgba(224,82,82,.13);
+      --gold:#f5c842;--r:12px;--rs:8px;
     }
     *{box-sizing:border-box;margin:0;padding:0}
     html{height:100%;scroll-behavior:smooth}
-    body{font-family:\'DM Sans\',sans-serif;background:var(--bg);color:var(--txt);min-height:100%;-webkit-font-smoothing:antialiased;line-height:1.6}
-    /* ── HEADER ── */
+    body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--txt);min-height:100%;-webkit-font-smoothing:antialiased;line-height:1.6}
     .hdr{background:var(--s1);border-bottom:1px solid var(--bdr);position:sticky;top:0;z-index:99;padding:0 16px}
-    .hdr-in{max-width:780px;margin:0 auto;display:flex;align-items:center;justify-content:space-between;height:52px;gap:12px}
-    .logo{display:flex;align-items:center;gap:9px;font-family:\'Syne\',sans-serif;font-size:17px;font-weight:700;letter-spacing:-.02em;white-space:nowrap;color:var(--txt)}
+    .hdr-in{max-width:820px;margin:0 auto;display:flex;align-items:center;justify-content:space-between;height:52px;gap:12px}
+    .logo{display:flex;align-items:center;gap:9px;font-family:'Syne',sans-serif;font-size:17px;font-weight:700;letter-spacing:-.02em;white-space:nowrap;color:var(--txt)}
     .logo-box{width:30px;height:30px;background:linear-gradient(135deg,var(--acc),#1456c4);border-radius:7px;display:flex;align-items:center;justify-content:center;font-size:15px;flex-shrink:0}
     .rates{display:flex;gap:10px;overflow-x:auto;scrollbar-width:none}
     .rates::-webkit-scrollbar{display:none}
-    .ri{display:flex;align-items:center;gap:4px;font-family:\'DM Mono\',monospace;font-size:10.5px;white-space:nowrap;color:var(--txt3)}
-    .rv{color:var(--grn);font-weight:500}
-    .rv.ld{color:var(--txt3)}
-    /* ── MAIN ── */
-    .main{max-width:780px;margin:0 auto;padding:20px 14px 80px}
-    /* ── STEP NAV ── */
+    .ri{display:flex;align-items:center;gap:4px;font-family:'DM Mono',monospace;font-size:10.5px;white-space:nowrap;color:var(--txt3)}
+    .rv{color:var(--grn);font-weight:500}.rv.ld{color:var(--txt3)}
+    .main{max-width:820px;margin:0 auto;padding:20px 14px 80px}
+    /* step nav */
     .snav{display:flex;background:var(--s1);border:1px solid var(--bdr);border-radius:var(--r);overflow:hidden;margin-bottom:22px}
     .si{flex:1;display:flex;flex-direction:column;align-items:center;padding:11px 6px 9px;font-size:10px;font-weight:500;color:var(--txt3);border-right:1px solid var(--bdr);cursor:default;gap:4px;transition:.15s}
     .si:last-child{border-right:none}
-    .sn{width:20px;height:20px;border-radius:50%;background:var(--s3);border:1.5px solid var(--bdr2);display:flex;align-items:center;justify-content:center;font-size:9px;font-weight:700;font-family:\'DM Mono\',monospace;color:var(--txt3);transition:.15s}
-    .si.active{color:var(--acc2);background:var(--acc-d)}
-    .si.active .sn{background:var(--acc);border-color:var(--acc);color:#fff}
-    .si.done{color:var(--grn)}
-    .si.done .sn{background:var(--grn-d);border-color:var(--grn);color:var(--grn)}
+    .sn{width:20px;height:20px;border-radius:50%;background:var(--s3);border:1.5px solid var(--bdr2);display:flex;align-items:center;justify-content:center;font-size:9px;font-weight:700;font-family:'DM Mono',monospace;color:var(--txt3);transition:.15s}
+    .si.active{color:var(--acc2);background:var(--acc-d)}.si.active .sn{background:var(--acc);border-color:var(--acc);color:#fff}
+    .si.done{color:var(--grn)}.si.done .sn{background:var(--grn-d);border-color:var(--grn);color:var(--grn)}
     .slb{font-size:10px;text-align:center;line-height:1.2}
-    /* ── CARDS ── */
+    /* cards */
     .card{background:var(--s1);border:1px solid var(--bdr);border-radius:var(--r);padding:18px;margin-bottom:14px}
-    .ct{font-family:\'Syne\',sans-serif;font-size:12px;font-weight:700;color:var(--txt2);text-transform:uppercase;letter-spacing:.09em;margin-bottom:14px;display:flex;align-items:center;gap:7px}
-    /* ── FORM ── */
+    .ct{font-family:'Syne',sans-serif;font-size:12px;font-weight:700;color:var(--txt2);text-transform:uppercase;letter-spacing:.09em;margin-bottom:14px;display:flex;align-items:center;gap:7px}
+    /* form */
     label.lbl{display:block;font-size:11.5px;font-weight:500;color:var(--txt2);margin-bottom:5px}
-    input,select{width:100%;background:var(--s2);border:1px solid var(--bdr);border-radius:var(--rs);color:var(--txt);font-family:\'DM Sans\',sans-serif;font-size:13.5px;padding:9px 11px;transition:border-color .15s,box-shadow .15s;outline:none;-webkit-appearance:none}
+    input,select{width:100%;background:var(--s2);border:1px solid var(--bdr);border-radius:var(--rs);color:var(--txt);font-family:'DM Sans',sans-serif;font-size:13.5px;padding:9px 11px;transition:border-color .15s,box-shadow .15s;outline:none;-webkit-appearance:none}
     input:focus,select:focus{border-color:var(--acc);box-shadow:0 0 0 3px var(--acc-d)}
     select option{background:var(--s2)}
     .fr{margin-bottom:13px}
     .g2{display:grid;grid-template-columns:1fr 1fr;gap:10px}
-    .ia{display:flex}
-    .ia input{border-radius:var(--rs) 0 0 var(--rs);border-right:none}
+    .g3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px}
+    .ia{display:flex}.ia input{border-radius:var(--rs) 0 0 var(--rs);border-right:none}
     .ia select{width:auto;min-width:72px;border-radius:0 var(--rs) var(--rs) 0;flex-shrink:0;border-left:1px solid var(--bdr2)}
     .iat{background:var(--s3);border:1px solid var(--bdr);border-left:none;border-radius:0 var(--rs) var(--rs) 0;padding:9px 11px;font-size:13px;color:var(--txt3);white-space:nowrap;display:flex;align-items:center}
     .hint{font-size:11px;color:var(--txt3);margin-top:4px;line-height:1.4}
     .divider{height:1px;background:var(--bdr);margin:14px 0}
-    /* ── TOGGLE OPTIONS ── */
+    /* toggles */
     .tg{display:grid;gap:7px}
     .to{display:flex;align-items:center;gap:11px;padding:11px 13px;border:1px solid var(--bdr);border-radius:var(--rs);cursor:pointer;transition:.15s;background:var(--s2);user-select:none}
-    .to:hover{border-color:var(--bdr2)}
-    .to.sel{border-color:var(--acc);background:var(--acc-d)}
+    .to:hover{border-color:var(--bdr2)}.to.sel{border-color:var(--acc);background:var(--acc-d)}
     .to input[type=radio]{width:15px;height:15px;flex-shrink:0;accent-color:var(--acc)}
-    .ti{font-size:19px;width:26px;text-align:center}
-    .tinfo{flex:1}
-    .ttl{font-weight:600;font-size:13.5px;color:var(--txt)}
-    .tdesc{font-size:11px;color:var(--txt3)}
+    .ti{font-size:19px;width:26px;text-align:center}.tinfo{flex:1}
+    .ttl{font-weight:600;font-size:13.5px;color:var(--txt)}.tdesc{font-size:11px;color:var(--txt3)}
     .tbadge{font-size:9.5px;padding:3px 8px;border-radius:20px;font-weight:600;white-space:nowrap}
-    .bg{background:var(--grn-d);color:var(--grn)}
-    .ba{background:var(--amb-d);color:var(--amb)}
-    .bb{background:var(--acc-d);color:var(--acc2)}
-    /* ── SEARCH ── */
-    .sw{position:relative}
-    .sw .si2{position:absolute;left:11px;top:50%;transform:translateY(-50%);color:var(--txt3);font-size:15px;pointer-events:none}
+    .bg{background:var(--grn-d);color:var(--grn)}.ba{background:var(--amb-d);color:var(--amb)}.bb{background:var(--acc-d);color:var(--acc2)}
+    /* search */
+    .sw{position:relative}.sw .si2{position:absolute;left:11px;top:50%;transform:translateY(-50%);color:var(--txt3);font-size:15px;pointer-events:none}
     .sw input{padding-left:35px}
     .sr{margin-top:7px;border:1px solid var(--bdr);border-radius:var(--rs);background:var(--s2);max-height:300px;overflow-y:auto}
     .sri{padding:9px 13px;cursor:pointer;display:flex;justify-content:space-between;align-items:center;border-bottom:1px solid var(--bdr);transition:background .1s;gap:10px}
-    .sri:last-child{border-bottom:none}
-    .sri:hover{background:var(--s3)}
-    .sri.sei{background:var(--acc-d)}
+    .sri:last-child{border-bottom:none}.sri:hover{background:var(--s3)}
     .sn2{font-size:12.5px;color:var(--txt);line-height:1.3}
     .sm{display:flex;gap:7px;align-items:center;flex-shrink:0}
-    .sg{font-family:\'DM Mono\',monospace;font-size:9.5px;color:var(--txt3);background:var(--s3);padding:2px 6px;border-radius:4px}
+    .sg{font-family:'DM Mono',monospace;font-size:9.5px;color:var(--txt3);background:var(--s3);padding:2px 6px;border-radius:4px}
     .ssc{font-size:10px;color:var(--txt3)}
     .spc{display:flex;align-items:center;gap:13px;padding:13px;background:var(--grn-d);border:1px solid var(--grn);border-radius:var(--rs);margin-top:9px}
-    .spi{font-size:22px;width:32px;text-align:center}
-    .spinfo{flex:1}
-    .spn{font-weight:600;font-size:13.5px;color:var(--txt)}
-    .spg{font-family:\'DM Mono\',monospace;font-size:10.5px;color:var(--txt2);margin-top:2px}
+    .spi{font-size:22px;width:32px;text-align:center}.spinfo{flex:1}
+    .spn{font-weight:600;font-size:13.5px;color:var(--txt)}.spg{font-family:'DM Mono',monospace;font-size:10.5px;color:var(--txt2);margin-top:2px}
     .sprts{display:flex;gap:5px;flex-wrap:wrap;margin-top:5px}
     .chip{font-size:9.5px;padding:2px 7px;border-radius:20px;font-weight:600}
-    .cr{background:var(--red-d);color:var(--red)}
-    .cb{background:var(--acc-d);color:var(--acc2)}
-    .cg{background:var(--grn-d);color:var(--grn)}
-    .cn{background:var(--s3);color:var(--txt3)}
-    .ca{background:var(--amb-d);color:var(--amb)}
+    .cr{background:var(--red-d);color:var(--red)}.cb{background:var(--acc-d);color:var(--acc2)}.cg{background:var(--grn-d);color:var(--grn)}.cn{background:var(--s3);color:var(--txt3)}.ca{background:var(--amb-d);color:var(--amb)}
     .spchg{font-size:10.5px;color:var(--txt3);cursor:pointer;padding:4px 8px;border-radius:6px;background:var(--s3);border:1px solid var(--bdr);flex-shrink:0}
     .no-r{padding:22px;text-align:center;color:var(--txt3);font-size:13px}
     mark{background:var(--amb-d);color:var(--amb);border-radius:2px}
-    /* ── BANNER ── */
-    .banner{background:var(--grn-d);border:1px solid var(--grn);border-radius:var(--rs);padding:9px 13px;font-size:11.5px;color:var(--grn);display:flex;align-items:center;gap:7px;margin-bottom:13px}
-    /* ── TAX GRID ── */
+    /* banner */
+    .banner{border-radius:var(--rs);padding:9px 13px;font-size:11.5px;display:flex;align-items:flex-start;gap:7px;margin-bottom:13px}
+    .bn-g{background:var(--grn-d);border:1px solid var(--grn);color:var(--grn)}
+    .bn-b{background:var(--acc-d);border:1px solid var(--acc);color:var(--acc2)}
+    .bn-a{background:var(--amb-d);border:1px solid var(--amb);color:var(--amb)}
+    /* tax grid */
     .txg{display:grid;grid-template-columns:1fr 1fr;gap:9px}
     .txi{background:var(--s2);border:1px solid var(--bdr);border-radius:var(--rs);padding:9px 11px}
     .txlbl{font-size:10.5px;color:var(--txt3);margin-bottom:3px}
     .txiw{display:flex;align-items:center;gap:4px}
-    .txinput{width:68px;background:transparent;border:none;border-bottom:1.5px solid var(--bdr2);border-radius:0;padding:3px 0;font-size:15px;font-weight:700;font-family:\'DM Mono\',monospace;color:var(--acc2);outline:none}
-    .txinput:focus{border-bottom-color:var(--acc)}
-    .txpct{font-size:12px;color:var(--txt3)}
-    /* ── FIXED COSTS ── */
+    .txinput{width:68px;background:transparent;border:none;border-bottom:1.5px solid var(--bdr2);border-radius:0;padding:3px 0;font-size:15px;font-weight:700;font-family:'DM Mono',monospace;color:var(--acc2);outline:none}
+    .txinput:focus{border-bottom-color:var(--acc)}.txpct{font-size:12px;color:var(--txt3)}
+    /* fixed cost grid */
     .fcg{display:grid;grid-template-columns:1fr 1fr;gap:9px}
-    /* ── BUTTONS ── */
-    .btn{display:inline-flex;align-items:center;gap:7px;padding:11px 18px;border-radius:var(--rs);font-family:\'DM Sans\',sans-serif;font-size:13.5px;font-weight:600;border:none;cursor:pointer;transition:.15s;white-space:nowrap}
-    .btn-p{background:var(--acc);color:#fff}
-    .btn-p:hover{background:#1e6fd9}
-    .btn-g{background:transparent;color:var(--txt2);border:1px solid var(--bdr)}
-    .btn-g:hover{background:var(--s2)}
-    .btn-s{background:var(--grn);color:#fff}
-    .btn-s:hover{background:#0b8f61}
-    .bnav{display:flex;gap:8px;margin-top:18px}
-    .bnav .btn{flex:1;justify-content:center}
-    /* ── RESULTS ── */
+    /* auto btn */
+    .btn-auto{width:100%;justify-content:center;margin-bottom:12px;background:var(--s3);color:var(--acc2);border:1px dashed var(--acc);font-size:12.5px;padding:9px}
+    .btn-auto:hover{background:var(--acc-d)}
+    /* buttons */
+    .btn{display:inline-flex;align-items:center;gap:7px;padding:11px 18px;border-radius:var(--rs);font-family:'DM Sans',sans-serif;font-size:13.5px;font-weight:600;border:none;cursor:pointer;transition:.15s;white-space:nowrap}
+    .btn-p{background:var(--acc);color:#fff}.btn-p:hover{background:#1e6fd9}
+    .btn-g{background:transparent;color:var(--txt2);border:1px solid var(--bdr)}.btn-g:hover{background:var(--s2)}
+    .btn-s{background:var(--grn);color:#fff}.btn-s:hover{background:#0b8f61}
+    .bnav{display:flex;gap:8px;margin-top:18px}.bnav .btn{flex:1;justify-content:center}
+    /* results */
     .rh{background:linear-gradient(135deg,#162a4a 0%,#0b1a33 100%);border:1px solid var(--acc);border-radius:var(--r);padding:22px 18px;text-align:center;margin-bottom:14px}
     .rlbl{font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:.1em;color:var(--txt3);margin-bottom:7px}
-    .rval{font-family:\'Syne\',sans-serif;font-size:34px;font-weight:800;color:var(--txt);letter-spacing:-.02em}
+    .rval{font-family:'Syne',sans-serif;font-size:34px;font-weight:800;color:var(--txt);letter-spacing:-.02em}
     .rsub{font-size:12.5px;color:var(--txt3);margin-top:3px}
-    .rusd{font-family:\'DM Mono\',monospace;font-size:13px;color:var(--txt3);margin-top:3px}
+    .rusd{font-family:'DM Mono',monospace;font-size:13px;color:var(--txt3);margin-top:3px}
     .rsale{margin-top:14px;padding-top:14px;border-top:1px solid rgba(255,255,255,.08)}
-    .rsalev{font-family:\'Syne\',sans-serif;font-size:22px;font-weight:700;color:var(--gold)}
-    /* ── BREAKDOWN TABLE ── */
+    .rsalev{font-family:'Syne',sans-serif;font-size:22px;font-weight:700;color:var(--gold)}
+    /* breakdown table */
     .bt{width:100%;border-collapse:collapse}
-    .bt tr{border-bottom:1px solid var(--bdr)}
-    .bt tr:last-child{border-bottom:none}
-    .bt td{padding:9px 3px;font-size:12.5px}
-    .bt td:last-child{text-align:right;font-family:\'DM Mono\',monospace;font-size:11.5px;color:var(--txt2);white-space:nowrap}
+    .bt tr{border-bottom:1px solid var(--bdr)}.bt tr:last-child{border-bottom:none}
+    .bt td{padding:8px 3px;font-size:12.5px}
+    .bt td:last-child{text-align:right;font-family:'DM Mono',monospace;font-size:11.5px;color:var(--txt2);white-space:nowrap}
     .bt td:first-child{color:var(--txt2)}
-    .bt tr.tr{border-top:2px solid var(--bdr2)}
-    .bt tr.tr td{font-weight:700;color:var(--txt);font-size:13.5px;padding-top:11px}
-    .bt tr.tr td:last-child{color:var(--acc2);font-size:13.5px}
+    .bt tr.sec-hdr td{background:var(--s2);font-size:10.5px;font-weight:700;font-family:'Syne',sans-serif;text-transform:uppercase;letter-spacing:.07em;color:var(--txt3);padding:7px 6px;border-radius:4px}
+    .bt tr.subtot td{font-weight:700;color:var(--txt);font-size:13px;padding-top:9px;border-top:2px solid var(--bdr2)}
+    .bt tr.subtot td:last-child{color:var(--acc2)}
+    .bt tr.grandtot td{font-size:14px;font-weight:800;font-family:'Syne',sans-serif;color:var(--txt);padding-top:11px;border-top:2px solid var(--acc)}
+    .bt tr.grandtot td:last-child{color:var(--gold);font-size:14px}
     .bt tr.zero td{opacity:.4}
-    /* ── DONUT ── */
+    /* donut */
     .cw{display:flex;align-items:center;gap:18px;padding:14px 0}
     #donut{flex-shrink:0}
     .cl{flex:1;display:flex;flex-direction:column;gap:7px}
     .cli{display:flex;align-items:center;gap:7px;font-size:11.5px}
     .cld{width:9px;height:9px;border-radius:50%;flex-shrink:0}
-    .cll{flex:1;color:var(--txt2)}
-    .clp{font-family:\'DM Mono\',monospace;font-size:10.5px;color:var(--txt3)}
-    /* ── SUMMARY ── */
-    .sumbox{background:var(--s2);border:1px solid var(--bdr);border-radius:var(--rs);padding:13px;font-family:\'DM Mono\',monospace;font-size:10.5px;color:var(--txt2);line-height:1.9;white-space:pre-wrap;word-break:break-word}
-    /* ── UTILS ── */
+    .cll{flex:1;color:var(--txt2)}.clp{font-family:'DM Mono',monospace;font-size:10.5px;color:var(--txt3)}
+    /* summary */
+    .sumbox{background:var(--s2);border:1px solid var(--bdr);border-radius:var(--rs);padding:13px;font-family:'DM Mono',monospace;font-size:10.5px;color:var(--txt2);line-height:1.9;white-space:pre-wrap;word-break:break-word}
+    /* inline msg */
+    .inline-msg{font-size:11px;padding:6px 10px;border-radius:6px;margin-top:6px;display:none}
     .hidden{display:none!important}
     .panel{animation:fi .2s ease}
     @keyframes fi{from{opacity:0;transform:translateY(7px)}to{opacity:1;transform:translateY(0)}}
-    ::-webkit-scrollbar{width:4px;height:4px}
-    ::-webkit-scrollbar-track{background:var(--s1)}
-    ::-webkit-scrollbar-thumb{background:var(--bdr2);border-radius:3px}
-    /* ── PRINT ── */
-    @media print{
-      .hdr,.snav,.bnav,.btn{display:none!important}
-      body{background:#fff;color:#000}
-      .card{border:1px solid #ccc;break-inside:avoid}
-      .rh{background:#eef3ff!important;-webkit-print-color-adjust:exact}
-    }
-    /* ── RESPONSIVE ── */
-    @media(max-width:480px){
-      .g2{grid-template-columns:1fr}
-      .txg{grid-template-columns:1fr}
-      .fcg{grid-template-columns:1fr}
-      .cw{flex-direction:column}
+    ::-webkit-scrollbar{width:4px;height:4px}::-webkit-scrollbar-track{background:var(--s1)}::-webkit-scrollbar-thumb{background:var(--bdr2);border-radius:3px}
+    @media print{.hdr,.snav,.bnav,.btn-auto{display:none!important}body{background:#fff;color:#000}.card{border:1px solid #ccc;break-inside:avoid}.rh{background:#eef3ff!important;-webkit-print-color-adjust:exact}}
+    /* ── Logo SVG ── */
+    .logo-svg{width:36px;height:36px;flex-shrink:0}
+    .logo-text{display:flex;flex-direction:column;line-height:1}
+    .logo-name{font-family:'Syne',sans-serif;font-size:16px;font-weight:800;letter-spacing:-.03em;color:var(--txt)}
+    .logo-tag{font-size:9px;font-weight:500;color:var(--txt3);letter-spacing:.06em;text-transform:uppercase;margin-top:1px}
+    /* ── Hero (Step 1) ── */
+    .hero{display:flex;flex-direction:column;align-items:center;text-align:center;padding:28px 20px 22px;background:linear-gradient(180deg,rgba(47,128,237,.08) 0%,transparent 100%);border:1px solid var(--bdr);border-radius:var(--r);margin-bottom:14px}
+    .hero-logo{width:72px;height:72px;margin-bottom:14px;filter:drop-shadow(0 8px 24px rgba(47,128,237,.4))}
+    .hero-title{font-family:'Syne',sans-serif;font-size:28px;font-weight:800;letter-spacing:-.04em;color:var(--txt);margin-bottom:6px}
+    .hero-title span{color:var(--acc2)}
+    .hero-sub{font-size:13px;color:var(--txt3);max-width:340px;line-height:1.6}
+    /* ── Mobile improvements ── */
+    @media(max-width:600px){
+      .hdr-in{height:48px}
+      .logo-tag{display:none}
+      .g2,.g3,.txg,.fcg{grid-template-columns:1fr}
+      .cw{flex-direction:column;align-items:center}
       .rval{font-size:26px}
       .bnav{flex-wrap:wrap}
+      .card{padding:14px}
+      input,select{font-size:14px;padding:10px 11px}
+      .btn{padding:12px 14px;font-size:13px}
+      .to{padding:10px 11px}
+      .ttl{font-size:13px}
+      .ri span:first-child{display:none}
+      .ri{gap:2px}
+      .hero-title{font-size:22px}
+    }
+    @media(max-width:380px){
+      .rates{gap:6px}
+      .ri{font-size:10px}
+      .logo-name{font-size:14px}
+      .logo-svg{width:30px;height:30px}
+      .hero-title{font-size:20px}
+    }
+    /* safe area for iPhone */
+    @supports(padding-bottom:env(safe-area-inset-bottom)){
+      .main{padding-bottom:calc(60px + env(safe-area-inset-bottom))}
     }
   </style>
 </head>
 <body>
+
 <header class="hdr">
   <div class="hdr-in">
     <div class="logo">
-      <div class="logo-box">🛳️</div>
-      İthalatMatik
+      <svg class="logo-svg" viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <rect width="40" height="40" rx="10" fill="url(#hg)"/>
+        <!-- Ship hull -->
+        <path d="M7 25 L9.5 19 H30.5 L33 25 Q20 30.5 7 25Z" fill="white" opacity="0.95"/>
+        <!-- Bridge/cabin -->
+        <rect x="11" y="13" width="8" height="6" rx="1.5" fill="white" opacity="0.8"/>
+        <!-- Containers on deck -->
+        <rect x="20.5" y="15" width="4" height="4" rx="1" fill="#60a5fa" opacity="0.9"/>
+        <rect x="25.5" y="15" width="3.5" height="4" rx="1" fill="#34d399" opacity="0.9"/>
+        <!-- Funnel -->
+        <rect x="13" y="10" width="3.5" height="3" rx="1" fill="white" opacity="0.6"/>
+        <!-- Water line -->
+        <path d="M5 27 Q12.5 25.5 20 27 Q27.5 28.5 35 27" stroke="white" stroke-width="1.5" stroke-linecap="round" opacity="0.35"/>
+        <!-- Anchor small -->
+        <defs>
+          <linearGradient id="hg" x1="0" y1="0" x2="40" y2="40" gradientUnits="userSpaceOnUse">
+            <stop offset="0%" stop-color="#4a9bf8"/>
+            <stop offset="100%" stop-color="#1246c8"/>
+          </linearGradient>
+        </defs>
+      </svg>
+      <div class="logo-text">
+        <div class="logo-name">İthalmatik</div>
+        <div class="logo-tag">Landed Cost Hesaplama</div>
+      </div>
     </div>
     <div class="rates">
       <div class="ri"><span>USD/TRY</span>&nbsp;<span class="rv ld" id="rU">—</span></div>
@@ -213,20 +225,52 @@
     </div>
   </div>
 </header>
+
 <main class="main">
-  <!-- Step nav -->
   <nav class="snav" id="snav">
     <div class="si active" data-s="1"><div class="sn">1</div><div class="slb">Ürün</div></div>
     <div class="si" data-s="2"><div class="sn">2</div><div class="slb">Fiyat</div></div>
-    <div class="si" data-s="3"><div class="sn">3</div><div class="slb">Nakliye</div></div>
+    <div class="si" data-s="3"><div class="sn">3</div><div class="slb">Lojistik</div></div>
     <div class="si" data-s="4"><div class="sn">4</div><div class="slb">Sonuç</div></div>
   </nav>
-  <!-- ═══════════════ STEP 1 ═══════════════ -->
+
+  <!-- ══════════════ STEP 1 ══════════════ -->
   <div id="p1" class="panel">
+    <div class="hero">
+      <svg class="hero-logo" viewBox="0 0 80 80" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <rect width="80" height="80" rx="20" fill="url(#hg2)"/>
+        <!-- Ship hull -->
+        <path d="M10 50 L16 37 H64 L70 50 Q40 62 10 50Z" fill="white" opacity="0.95"/>
+        <!-- Bridge -->
+        <rect x="18" y="24" width="18" height="13" rx="3" fill="white" opacity="0.82"/>
+        <!-- Containers -->
+        <rect x="38" y="28" width="9" height="9" rx="2" fill="#60a5fa" opacity="0.92"/>
+        <rect x="49" y="28" width="8" height="9" rx="2" fill="#34d399" opacity="0.92"/>
+        <rect x="59" y="28" width="7" height="9" rx="2" fill="#f59e0b" opacity="0.88"/>
+        <!-- Funnel -->
+        <rect x="22" y="17" width="7" height="7" rx="2" fill="white" opacity="0.6"/>
+        <!-- Smoke puffs -->
+        <circle cx="25.5" cy="14" r="3" fill="white" opacity="0.22"/>
+        <circle cx="29" cy="12" r="2" fill="white" opacity="0.14"/>
+        <!-- Water -->
+        <path d="M6 54 Q20 51.5 40 54 Q60 56.5 74 54" stroke="white" stroke-width="2" stroke-linecap="round" opacity="0.3"/>
+        <!-- TRY symbol -->
+        <circle cx="68" cy="16" r="9" fill="white" opacity="0.15"/>
+        <text x="68" y="21" text-anchor="middle" font-family="sans-serif" font-weight="800" font-size="12" fill="white" opacity="0.9">₺</text>
+        <defs>
+          <linearGradient id="hg2" x1="0" y1="0" x2="80" y2="80" gradientUnits="userSpaceOnUse">
+            <stop offset="0%" stop-color="#4a9bf8"/>
+            <stop offset="50%" stop-color="#2f6fd9"/>
+            <stop offset="100%" stop-color="#0e3aa0"/>
+          </linearGradient>
+        </defs>
+      </svg>
+      <div class="hero-title">İthal<span>matik</span></div>
+      <div class="hero-sub">Türkiye ithalat landed cost hesaplama — gümrük, KDV, nakliye ve test maliyetleri dahil birim maliyet</div>
+    </div>
     <div class="card">
       <div class="ct">🔍 Ürün Ara &amp; GTİP Seç</div>
-      <div class="fr sw">
-        <span class="si2">🔎</span>
+      <div class="fr sw"><span class="si2">🔎</span>
         <input type="text" id="psearch" placeholder="Ürün adı, GTİP kodu veya sektör..." autocomplete="off" autocorrect="off" spellcheck="false">
       </div>
       <div id="sres" class="sr hidden"></div>
@@ -239,67 +283,75 @@
         </div>
         <div class="spchg" onclick="clearProd()">Değiştir</div>
       </div>
-      <div class="hint" id="sh" style="margin-top:9px">Ürün seçimi GTİP koduna göre gümrük vergisi, KDV ve ÖTV oranlarını <strong>otomatik doldurur</strong>. Seçim yapmadan da devam edebilirsiniz.</div>
+      <div class="hint" id="sh" style="margin-top:9px">Ürün seçimi; GTİP vergi oranları, ağırlık/hacim tahmini ve test maliyetini <strong>otomatik doldurur</strong>.</div>
     </div>
-    <div class="bnav">
-      <button class="btn btn-p" onclick="goStep(2)">Devam Et → Fiyat &amp; Miktar</button>
-    </div>
+    <div class="bnav"><button class="btn btn-p" onclick="goStep(2)">Devam → Fiyat &amp; Miktar</button></div>
   </div>
-  <!-- ═══════════════ STEP 2 ═══════════════ -->
+
+  <!-- ══════════════ STEP 2 ══════════════ -->
   <div id="p2" class="panel hidden">
     <div class="card">
       <div class="ct">💰 Teslim Şekli</div>
       <div class="tg" id="igrp">
-        <label class="to sel" onclick="setInc(this,\'EXW\')">
-          <input type="radio" name="inc" value="EXW" checked>
-          <div class="ti">🏭</div>
-          <div class="tinfo"><div class="ttl">EXW — Fabrika Çıkışı</div><div class="tdesc">Tüm nakliye ve gümrük alıcıya ait</div></div>
+        <label class="to sel" onclick="setInc(this,'EXW')"><input type="radio" name="inc" value="EXW" checked>
+          <div class="ti">🏭</div><div class="tinfo"><div class="ttl">EXW — Fabrika Çıkışı</div><div class="tdesc">Tüm nakliye ve gümrük alıcıya ait</div></div>
         </label>
-        <label class="to" onclick="setInc(this,\'FOB\')">
-          <input type="radio" name="inc" value="FOB">
-          <div class="ti">⚓</div>
-          <div class="tinfo"><div class="ttl">FOB — Yükleme Limanı</div><div class="tdesc">Navlun ve sigorta alıcıya ait</div></div>
+        <label class="to" onclick="setInc(this,'FOB')"><input type="radio" name="inc" value="FOB">
+          <div class="ti">⚓</div><div class="tinfo"><div class="ttl">FOB — Yükleme Limanı</div><div class="tdesc">Navlun ve sigorta alıcıya ait</div></div>
         </label>
-        <label class="to" onclick="setInc(this,\'CIF\')">
-          <input type="radio" name="inc" value="CIF">
-          <div class="ti">🚢</div>
-          <div class="tinfo"><div class="ttl">CIF — Türkiye Limanı</div><div class="tdesc">Navlun ve sigorta fiyata dahil</div></div>
+        <label class="to" onclick="setInc(this,'CIF')"><input type="radio" name="inc" value="CIF">
+          <div class="ti">🚢</div><div class="tinfo"><div class="ttl">CIF — Türkiye Limanı</div><div class="tdesc">Navlun ve sigorta fiyata dahil</div></div>
           <span class="tbadge bg">Dahil</span>
         </label>
       </div>
     </div>
+
     <div class="card">
-      <div class="ct">📊 Fiyat &amp; Miktar</div>
-      <div class="fr"><label class="lbl">Birim Fiyat</label>
-        <div class="ia">
-          <input type="number" id="uprice" placeholder="0.00" min="0" step="0.01">
-          <select id="ucur" onchange="updRateHint()">
-            <option value="USD">USD</option><option value="EUR">EUR</option>
-            <option value="GBP">GBP</option><option value="CNY">CNY</option>
-            <option value="TRY">TRY</option>
-          </select>
+      <div class="ct">📊 Fiyat, Miktar &amp; Ambalaj</div>
+      <div class="g2">
+        <div class="fr"><label class="lbl">Birim Fiyat</label>
+          <div class="ia"><input type="number" id="uprice" placeholder="0.00" min="0" step="0.01">
+            <select id="ucur" onchange="updRateHint()"><option value="USD">USD</option><option value="EUR">EUR</option><option value="GBP">GBP</option><option value="CNY">CNY</option><option value="TRY">TRY</option></select>
+          </div>
+        </div>
+        <div class="fr"><label class="lbl">Sipariş Miktarı</label>
+          <div class="ia"><input type="number" id="qty" placeholder="1" min="1" step="1" value="1" onchange="onQtyChange()">
+            <select id="qunit"><option>adet</option><option>kg</option><option>ton</option><option>m²</option><option>m³</option><option>litre</option></select>
+          </div>
         </div>
       </div>
-      <div class="fr"><label class="lbl">Sipariş Miktarı</label>
-        <div class="ia">
-          <input type="number" id="qty" placeholder="1" min="1" step="1" value="1">
-          <select id="qunit">
-            <option>adet</option><option>kg</option><option>ton</option>
-            <option>m²</option><option>m³</option><option>litre</option>
-          </select>
+
+      <!-- KUTULU / KUTUSUZ -->
+      <div class="fr"><label class="lbl">Ambalaj Durumu</label>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px" id="boxgrp">
+          <label class="to sel" onclick="setBox(this,'NO')"><input type="radio" name="box" value="NO" checked>
+            <div class="ti">📦</div><div class="tinfo"><div class="ttl">Kutusuz</div><div class="tdesc">Sadece ürün ağırlığı/hacmi</div></div>
+          </label>
+          <label class="to" onclick="setBox(this,'YES')"><input type="radio" name="box" value="YES">
+            <div class="ti">🎁</div><div class="tinfo"><div class="ttl">Kutulu / Orijinal Ambalaj</div><div class="tdesc">Koli, aksesuarlar dahil</div></div>
+          </label>
         </div>
+        <div class="hint">Kutulu seçeneği, taşıma ağırlığını ve hacmini otomatik olarak artırır.</div>
       </div>
-      <div class="fr">
-        <label class="lbl">Brüt Ağırlık (kg) — nakliye hesabı için <span id="gwtTag" style="display:none;font-size:9.5px;font-weight:600;padding:2px 7px;border-radius:20px;background:var(--acc-d);color:var(--acc2);">~Tahmini</span></label>
-        <input type="number" id="gwt" placeholder="0" min="0" step="0.1" oninput="$('gwtTag').style.display='none'">
-        <div class="hint" id="gwtHint" style="display:none"></div>
+
+      <!-- AUTO WEIGHT/VOLUME -->
+      <button class="btn btn-auto" onclick="autoWeightVol()" id="awvBtn">⚡ Ağırlık &amp; Hacmi Otomatik Hesapla</button>
+      <div class="bn-b banner hidden" id="awvBanner"></div>
+      <div class="g2">
+        <div class="fr"><label class="lbl">Brüt Ağırlık (kg)</label>
+          <input type="number" id="gwt" placeholder="Elle girin veya otomatik" min="0" step="0.1">
+        </div>
+        <div class="fr"><label class="lbl">Hacim (m³)</label>
+          <input type="number" id="gvol" placeholder="Elle girin veya otomatik" min="0" step="0.001">
+        </div>
       </div>
     </div>
+
     <div class="card">
       <div class="ct">🌍 Menşei &amp; Varış</div>
       <div class="g2">
         <div class="fr"><label class="lbl">Menşei Ülke</label>
-          <select id="orig">
+          <select id="orig" onchange="onOrigChange()">
             <option value="CN">🇨🇳 Çin</option><option value="DE">🇩🇪 Almanya</option>
             <option value="US">🇺🇸 ABD</option><option value="IT">🇮🇹 İtalya</option>
             <option value="JP">🇯🇵 Japonya</option><option value="KR">🇰🇷 G. Kore</option>
@@ -316,125 +368,136 @@
             <option value="ESB">✈️ Ankara Esenboğa</option><option value="IZM">✈️ İzmir A.Menderes</option>
             <option value="AMB">🚢 Ambarlı</option><option value="HAY">🚢 Haydarpaşa</option>
             <option value="ALS">🚢 İzmir Alsancak</option><option value="MER">🚢 Mersin</option>
-            <option value="GBZ">🚢 Gebze/Körfez</option>
+            <option value="GBZ">🚢 Gebze/Körfez</option><option value="KAP">🚛 Kapıkule/Kara</option>
           </select>
         </div>
       </div>
       <div class="fr"><label class="lbl">Çıkış Şehri / Limanı</label>
-        <input type="text" id="oport" placeholder="Ör: Shanghai, Hamburg, Rotterdam...">
+        <select id="oport" onchange="onPortChange()">
+          <option value="">— Ülke seçince otomatik gelir —</option>
+        </select>
+        <input type="text" id="oportCustom" placeholder="Şehir / liman / havalimanı adı..." style="margin-top:6px;display:none">
+        <div class="hint" id="oportHint"></div>
       </div>
       <div class="fr"><label class="lbl">Manuel Kur (boş = otomatik)</label>
-        <div class="ia">
-          <input type="number" id="mrate" placeholder="Otomatik" min="0" step="0.01">
-          <div class="iat" id="mrlbl">TRY/USD</div>
-        </div>
+        <div class="ia"><input type="number" id="mrate" placeholder="Otomatik" min="0" step="0.01">
+          <div class="iat" id="mrlbl">TRY/USD</div></div>
         <div class="hint" id="rhint">Güncel kur yükleniyor...</div>
       </div>
     </div>
+
     <div class="bnav">
       <button class="btn btn-g" onclick="goStep(1)">← Geri</button>
-      <button class="btn btn-p" onclick="goStep(3)">Devam → Nakliye</button>
+      <button class="btn btn-p" onclick="goStep(3)">Devam → Lojistik</button>
     </div>
   </div>
-  <!-- ═══════════════ STEP 3 ═══════════════ -->
+
+  <!-- ══════════════ STEP 3 ══════════════ -->
   <div id="p3" class="panel hidden">
+    <!-- Nakliye Yöntemi -->
     <div class="card">
       <div class="ct">🚀 Nakliye Yöntemi</div>
       <div class="tg" id="shgrp">
-        <label class="to sel" onclick="setShip(this,\'SEA\')">
-          <input type="radio" name="ship" value="SEA" checked>
-          <div class="ti">🚢</div>
-          <div class="tinfo"><div class="ttl">Deniz Yolu</div><div class="tdesc">FCL / LCL · 25–45 gün</div></div>
+        <label class="to sel" onclick="setShip(this,'SEA')"><input type="radio" name="ship" value="SEA" checked>
+          <div class="ti">🚢</div><div class="tinfo"><div class="ttl">Deniz Yolu</div><div class="tdesc">FCL / LCL · 25–45 gün</div></div>
           <span class="tbadge bg">En Ekonomik</span>
         </label>
-        <label class="to" onclick="setShip(this,\'AIR\')">
-          <input type="radio" name="ship" value="AIR">
-          <div class="ti">✈️</div>
-          <div class="tinfo"><div class="ttl">Hava Yolu</div><div class="tdesc">Express / Genel · 3–7 gün</div></div>
+        <label class="to" onclick="setShip(this,'AIR')"><input type="radio" name="ship" value="AIR">
+          <div class="ti">✈️</div><div class="tinfo"><div class="ttl">Hava Yolu</div><div class="tdesc">Express / Genel · 3–7 gün</div></div>
           <span class="tbadge ba">En Hızlı</span>
+        </label>
+        <label class="to hidden" onclick="setShip(this,'ROAD')" id="roadOpt"><input type="radio" name="ship" value="ROAD">
+          <div class="ti">🚛</div><div class="tinfo"><div class="ttl">Kara Yolu</div><div class="tdesc">TIR / Ro-Ro · 7–14 gün</div></div>
+          <span class="tbadge bb">Avrupa</span>
         </label>
       </div>
     </div>
+
+    <!-- Sea options -->
     <div class="card" id="seaCard">
       <div class="ct">🔷 Konteyner Seçeneği</div>
       <div class="tg" id="cgrp">
-        <label class="to" onclick="setCont(this,\'FCL20\')">
-          <input type="radio" name="cont" value="FCL20">
-          <div class="ti">📦</div>
-          <div class="tinfo"><div class="ttl">FCL 20′</div><div class="tdesc">~28 ton / 25 m³</div></div>
+        <label class="to" onclick="setCont(this,'FCL20')"><input type="radio" name="cont" value="FCL20">
+          <div class="ti">📦</div><div class="tinfo"><div class="ttl">FCL 20′</div><div class="tdesc">~28 ton / 25 m³ kapasite</div></div>
         </label>
-        <label class="to" onclick="setCont(this,\'FCL40\')">
-          <input type="radio" name="cont" value="FCL40">
-          <div class="ti">🗃️</div>
-          <div class="tinfo"><div class="ttl">FCL 40′</div><div class="tdesc">~26 ton / 60 m³</div></div>
+        <label class="to" onclick="setCont(this,'FCL40')"><input type="radio" name="cont" value="FCL40">
+          <div class="ti">🗃️</div><div class="tinfo"><div class="ttl">FCL 40′</div><div class="tdesc">~26 ton / 60 m³ kapasite</div></div>
         </label>
-        <label class="to sel" onclick="setCont(this,\'LCL\')">
-          <input type="radio" name="cont" value="LCL" checked>
-          <div class="ti">📫</div>
-          <div class="tinfo"><div class="ttl">LCL — Parsiyel</div><div class="tdesc">m³ başına ödeme · Küçük yükler</div></div>
+        <label class="to sel" onclick="setCont(this,'LCL')"><input type="radio" name="cont" value="LCL" checked>
+          <div class="ti">📫</div><div class="tinfo"><div class="ttl">LCL — Parsiyel</div><div class="tdesc">m³ başına ödeme</div></div>
           <span class="tbadge bb">Küçük Yük</span>
         </label>
       </div>
-      <div class="fr" id="volRow" style="margin-top:13px">
-        <label class="lbl">Hacim (m³) — LCL için <span id="volTag" style="display:none;font-size:9.5px;font-weight:600;padding:2px 7px;border-radius:20px;background:var(--acc-d);color:var(--acc2);">~Tahmini</span></label>
-        <input type="number" id="vol" placeholder="0.0" min="0" step="0.01" oninput="$('volTag').style.display='none'">
-        <div class="hint">Chargeable = max(brüt kg, hacim × 1000)</div>
-      </div>
     </div>
+
+    <!-- Air options -->
     <div class="card hidden" id="airCard">
-      <div class="ct">✈️ Hava Yolu Detayı</div>
-      <div class="fr"><label class="lbl">Hacim (m³) — volumetrik ağırlık için <span id="airvolTag" style="display:none;font-size:9.5px;font-weight:600;padding:2px 7px;border-radius:20px;background:var(--acc-d);color:var(--acc2);">~Tahmini</span></label>
-        <input type="number" id="airvol" placeholder="0.000" min="0" step="0.001" oninput="$('airvolTag').style.display='none'">
-        <div class="hint">Volumetrik kg = Hacim(m³) × 167 &nbsp;·&nbsp; Chargeable = max(brüt, volumetrik)</div>
-      </div>
+      <div class="ct">✈️ Hava Yolu Bilgisi</div>
+      <div class="hint">Chargeable weight = max(brüt kg, hacim m³ × 167) &nbsp;·&nbsp; Ağırlık &amp; hacim Step 2'de hesaplandı.</div>
     </div>
+
+    <!-- Road options -->
+    <div class="card hidden" id="roadCard">
+      <div class="ct">🚛 Kara Yolu Bilgisi</div>
+      <div class="hint">TIR / Ro-Ro navlunu kg başına hesaplanır. Sadece Avrupa menşeli yükler için geçerlidir.</div>
+    </div>
+
+    <!-- Navlun & Sigorta -->
     <div class="card">
       <div class="ct">💵 Navlun &amp; Sigorta</div>
-      <div class="fr" id="freightRow">
+      <button class="btn btn-auto" onclick="autoFreight()">⚡ Güncel Rayiçle Navlunu Otomatik Hesapla</button>
+      <div class="bn-b banner hidden" id="frtBanner"></div>
+      <div class="fr">
         <label class="lbl">Navlun Bedeli</label>
-        <div class="ia">
-          <input type="number" id="frt" placeholder="0" min="0" step="1">
+        <div class="ia"><input type="number" id="frt" placeholder="0" min="0" step="1">
           <select id="fcur"><option value="USD">USD</option><option value="EUR">EUR</option><option value="TRY">TRY</option></select>
         </div>
         <div class="hint" id="fhint">CIF alımda navlun zaten dahildir — sıfır bırakın</div>
       </div>
       <div class="fr"><label class="lbl">Sigorta Bedeli (USD)</label>
         <input type="number" id="ins" placeholder="Otomatik %0.4" min="0" step="1">
-        <div class="hint">Boş bırakılırsa CIF değerinin %0.4\'ü otomatik hesaplanır</div>
+        <div class="hint">Boş bırakılırsa CIF değerinin %0.4'ü otomatik hesaplanır</div>
       </div>
       <div class="fr"><label class="lbl">Ödeme Şekli (KKDF)</label>
         <div style="display:flex;gap:8px" id="paygrp">
-          <label class="to sel" onclick="setPay(this,\'PRE\')" style="flex:1;padding:10px">
-            <input type="radio" name="pay" value="PRE" checked>
+          <label class="to sel" onclick="setPay(this,'PRE')" style="flex:1;padding:10px"><input type="radio" name="pay" value="PRE" checked>
             <div class="tinfo"><div class="ttl" style="font-size:12.5px">Peşin / Akreditif</div><div class="tdesc">KKDF: %0</div></div>
           </label>
-          <label class="to" onclick="setPay(this,\'CRD\')" style="flex:1;padding:10px">
-            <input type="radio" name="pay" value="CRD">
+          <label class="to" onclick="setPay(this,'CRD')" style="flex:1;padding:10px"><input type="radio" name="pay" value="CRD">
             <div class="tinfo"><div class="ttl" style="font-size:12.5px">Vadeli Ödeme</div><div class="tdesc">KKDF: %15</div></div>
           </label>
         </div>
       </div>
     </div>
+
+    <!-- Vergi Oranları -->
     <div class="card">
       <div class="ct">🏛️ Vergi Oranları</div>
-      <div class="banner hidden" id="autobanner">✅ GTİP veritabanından otomatik dolduruldu — düzenleyebilirsiniz.</div>
+      <div class="banner bn-g hidden" id="autobanner">✅ GTİP veritabanından otomatik dolduruldu — düzenleyebilirsiniz.</div>
       <div class="txg">
         <div class="txi"><div class="txlbl">Gümrük Vergisi</div><div class="txiw"><input type="number" class="txinput" id="tGV" value="0" min="0" max="300" step="0.1"><span class="txpct">%</span></div></div>
         <div class="txi"><div class="txlbl">KDV</div><div class="txiw"><input type="number" class="txinput" id="tKDV" value="20" min="0" max="100" step="1"><span class="txpct">%</span></div></div>
         <div class="txi"><div class="txlbl">ÖTV</div><div class="txiw"><input type="number" class="txinput" id="tOTV" value="0" min="0" max="300" step="0.1"><span class="txpct">%</span></div></div>
         <div class="txi"><div class="txlbl">KKDF</div><div class="txiw"><input type="number" class="txinput" id="tKKDF" value="0" min="0" max="100" step="1"><span class="txpct">%</span></div></div>
         <div class="txi"><div class="txlbl">Damga Vergisi</div><div class="txiw"><input type="number" class="txinput" id="tDamga" value="0.948" min="0" max="10" step="0.001"><span class="txpct">%</span></div></div>
-        <div class="txi"><div class="txlbl">Anti-Damping / İGV</div><div class="txiw"><input type="number" class="txinput" id="tAD" value="0" min="0" max="200" step="0.1"><span class="txpct">%</span></div></div>
+        <div class="txi"><div class="txlbl">Anti-Dumping / İGV</div><div class="txiw"><input type="number" class="txinput" id="tAD" value="0" min="0" max="200" step="0.1"><span class="txpct">%</span></div></div>
       </div>
     </div>
+
+    <!-- Sabit Masraflar -->
     <div class="card">
-      <div class="ct">💼 Sabit Masraflar (TRY) <span id="fcAutoTag" style="display:none;font-size:9.5px;font-weight:600;padding:3px 8px;border-radius:20px;background:var(--grn-d);color:var(--grn);margin-left:4px;">✦ Ürüne göre tahmin</span></div>
-      <div id="fcAutoHint" style="display:none;background:var(--s3);border:1px solid var(--bdr2);border-radius:var(--rs);padding:9px 12px;margin-bottom:12px;font-size:11.5px;color:var(--txt2);line-height:1.5;">📊 Seçilen ürün kategorisi için 2025 yılı piyasa rayiç bedelleri otomatik dolduruldu. Kendi fiyat tekliflerinize göre düzenleyebilirsiniz.</div>
+      <div class="ct">💼 Sabit Masraflar (TRY)</div>
+      <button class="btn btn-auto" onclick="autoFixed()">⚡ Güncel Rayiçle Sabit Masrafları Doldur</button>
+      <div class="bn-b banner hidden" id="fixedBanner"></div>
       <div class="fcg">
-        <div class="fr"><label class="lbl">Gümrük Müşaviri</label><input type="number" id="fcB" placeholder="0" min="0" value="0"></div>
-        <div class="fr"><label class="lbl">Antrepo / Depolama</label><input type="number" id="fcS" placeholder="0" min="0" value="0"></div>
-        <div class="fr"><label class="lbl">Liman / Havalimanı</label><input type="number" id="fcP" placeholder="0" min="0" value="0"></div>
-        <div class="fr"><label class="lbl">Yurt İçi Nakliye</label><input type="number" id="fcD" placeholder="0" min="0" value="0"></div>
+        <div class="fr"><label class="lbl">Gümrük Müşaviri Kom.</label><input type="number" id="fcB" placeholder="0" min="0" value="5500"></div>
+        <div class="fr"><label class="lbl">Dosya / Beyanname Masrafı</label><input type="number" id="fcDosya" placeholder="0" min="0" value="900"></div>
+        <div class="fr"><label class="lbl">Antrepo / Depolama</label><input type="number" id="fcS" placeholder="0" min="0" value="1200"></div>
+        <div class="fr"><label class="lbl">Liman / Havalimanı THC</label><input type="number" id="fcP" placeholder="0" min="0" value="3500"></div>
+        <div class="fr"><label class="lbl">Yurt İçi Nakliye</label><input type="number" id="fcD" placeholder="0" min="0" value="2500"></div>
+        <div class="fr"><label class="lbl">Test &amp; Belgelendirme</label><input type="number" id="fcTest" placeholder="0" min="0" value="0">
+          <div class="hint" id="testHint">CE, EMC, EN71, TSE, Helal vb.</div>
+        </div>
       </div>
       <div class="fr"><label class="lbl">Diğer Masraf (TRY)</label><input type="number" id="fcO" placeholder="0" min="0" value="0"></div>
       <div class="divider"></div>
@@ -442,15 +505,18 @@
         <div class="ia"><input type="number" id="mgn" placeholder="0" min="0" max="500" step="1" value="20"><div class="iat">%</div></div>
       </div>
     </div>
+
     <div class="bnav">
       <button class="btn btn-g" onclick="goStep(2)">← Geri</button>
-      <button class="btn btn-s" onclick="calc()">⚡ Hesapla &amp; Sonucu Gör</button>
+      <button class="btn btn-s" onclick="calc()">⚡ Hesapla &amp; Landed Cost Gör</button>
     </div>
   </div>
-  <!-- ═══════════════ STEP 4 ═══════════════ -->
+
+  <!-- ══════════════ STEP 4 ══════════════ -->
   <div id="p4" class="panel hidden">
+    <!-- Hero -->
     <div class="rh">
-      <div class="rlbl">Birim Maliyet (KDV Dahil)</div>
+      <div class="rlbl">Birim Landed Cost (KDV Dahil)</div>
       <div class="rval" id="rv1">—</div>
       <div class="rsub" id="rv2">—</div>
       <div class="rusd" id="rv3">—</div>
@@ -459,21 +525,25 @@
         <div class="rsalev" id="rv4">—</div>
       </div>
     </div>
+
+    <!-- Donut chart -->
     <div class="card">
       <div class="ct">📊 Maliyet Dağılımı</div>
-      <div class="cw">
-        <canvas id="donut" width="140" height="140"></canvas>
-        <div class="cl" id="cleg"></div>
-      </div>
+      <div class="cw"><canvas id="donut" width="140" height="140"></canvas><div class="cl" id="cleg"></div></div>
     </div>
+
+    <!-- Özet Maliyet Tablosu -->
     <div class="card">
-      <div class="ct">🏛️ Vergi &amp; Masraf Detayı</div>
-      <table class="bt" id="btbl"></table>
+      <div class="ct">📋 Özet Landed Cost Tablosu</div>
+      <table class="bt" id="sumtbl"></table>
     </div>
+
+    <!-- Metin özeti -->
     <div class="card">
-      <div class="ct">📋 Metin Özeti</div>
+      <div class="ct">📄 Metin Özeti</div>
       <pre class="sumbox" id="sumbox"></pre>
     </div>
+
     <div class="bnav" style="flex-wrap:wrap">
       <button class="btn btn-g" onclick="goStep(3)">← Düzenle</button>
       <button class="btn btn-g" onclick="window.print()">🖨️ Yazdır</button>
@@ -482,562 +552,635 @@
     </div>
   </div>
 </main>
+
 <script>
-// ══════════════════════════════════════════
-// GTİP VERİTABANI — Türkiye Gümrük Tarife
-// Kaynak: TGTC 2024 / Türkiye Gümrük Tarifeleri
-// ══════════════════════════════════════════
-const DB = [
-  // Elektronik
-  {g:"8471.30",n:"Taşınabilir Bilgisayar (Laptop / Notebook)",s:"Elektronik",gv:0,kdv:20,otv:0},
-  {g:"8471.41",n:"Masaüstü Bilgisayar (PC / Desktop)",s:"Elektronik",gv:0,kdv:20,otv:0},
-  {g:"8471.80",n:"Tablet Bilgisayar (iPad, Android Tablet)",s:"Elektronik",gv:0,kdv:20,otv:0},
-  {g:"8517.12",n:"Cep Telefonu / Akıllı Telefon",s:"Elektronik",gv:0,kdv:20,otv:0},
-  {g:"8528.72",n:"Televizyon (LCD / OLED / QLED)",s:"Elektronik",gv:3.7,kdv:20,otv:0},
-  {g:"8518.30",n:"Kulaklık / Kulak İçi (Bluetooth dahil)",s:"Elektronik",gv:3.7,kdv:20,otv:0},
-  {g:"8519.81",n:"Taşınabilir Hoparlör / Ses Sistemi",s:"Elektronik",gv:3.7,kdv:20,otv:0},
-  {g:"8543.70",n:"Akıllı Saat / Wearable Cihaz",s:"Elektronik",gv:0,kdv:20,otv:0},
-  {g:"8471.60",n:"Klavye / Mouse / Giriş Birimi",s:"Elektronik",gv:0,kdv:20,otv:0},
-  {g:"8473.30",n:"Bilgisayar Parçaları (RAM, SSD, GPU, Anakart)",s:"Elektronik",gv:0,kdv:20,otv:0},
-  {g:"8504.40",n:"Güç Kaynağı / Şarj Cihazı / Adaptör",s:"Elektronik",gv:3.7,kdv:20,otv:0},
-  {g:"8544.42",n:"Elektrik Kablosu / USB Kablo / HDMI",s:"Elektronik",gv:3.7,kdv:20,otv:0},
-  {g:"8536.50",n:"Elektrik Şalteri / Priz / Sigorta Elemanı",s:"Elektronik",gv:3.7,kdv:20,otv:0},
-  {g:"8525.80",n:"Kamera / Webcam / Güvenlik Kamerası",s:"Elektronik",gv:3.7,kdv:20,otv:0},
-  {g:"9504.50",n:"Video Oyun Konsolu (PlayStation, Xbox, Switch)",s:"Elektronik",gv:0,kdv:20,otv:0},
-  // Beyaz Eşya
-  {g:"8450.11",n:"Çamaşır Makinesi",s:"Beyaz Eşya",gv:3.7,kdv:20,otv:0},
-  {g:"8422.11",n:"Bulaşık Makinesi",s:"Beyaz Eşya",gv:3.7,kdv:20,otv:0},
-  {g:"8418.21",n:"Buzdolabı (Kombine Soğutucu)",s:"Beyaz Eşya",gv:3.7,kdv:20,otv:0},
-  {g:"8516.60",n:"Fırın / Mikrodalga / Ocak (Ev tipi)",s:"Beyaz Eşya",gv:3.7,kdv:20,otv:0},
-  {g:"8509.40",n:"Elektrikli Süpürge / Robot Süpürge",s:"Beyaz Eşya",gv:3.7,kdv:20,otv:0},
-  {g:"8415.10",n:"Klima (Split Sistem / Enerji Tasarruflu)",s:"Beyaz Eşya",gv:3.7,kdv:20,otv:0},
-  {g:"8414.51",n:"Fan / Vantilatör (Ev tipi)",s:"Beyaz Eşya",gv:3.7,kdv:20,otv:0},
-  // Tekstil & Giyim
-  {g:"6109.10",n:"T-Shirt / Pamuklu Üst Giysi",s:"Tekstil/Giyim",gv:12,kdv:20,otv:0},
-  {g:"6203.42",n:"Erkek Pantolon (Pamuk)",s:"Tekstil/Giyim",gv:12,kdv:20,otv:0},
-  {g:"6204.62",n:"Kadın Pantolon (Pamuk)",s:"Tekstil/Giyim",gv:12,kdv:20,otv:0},
-  {g:"6110.20",n:"Kazak / Sweatshirt / Hoodie",s:"Tekstil/Giyim",gv:12,kdv:20,otv:0},
-  {g:"6201.92",n:"Mont / Ceket (Erkek, Pamuk / Sentetik)",s:"Tekstil/Giyim",gv:12,kdv:20,otv:0},
-  {g:"6301.40",n:"Battaniye / Polar Örtü",s:"Tekstil/Ev",gv:12,kdv:20,otv:0},
-  {g:"6302.21",n:"Yatak Çarşafı / Nevresim Takımı",s:"Tekstil/Ev",gv:12,kdv:20,otv:0},
-  {g:"6403.91",n:"Ayakkabı (Deri Tabanlı)",s:"Tekstil/Giyim",gv:3.7,kdv:20,otv:0},
-  {g:"6404.11",n:"Spor Ayakkabı (Tekstil Üst)",s:"Tekstil/Giyim",gv:3.7,kdv:20,otv:0},
-  {g:"5208.21",n:"Pamuklu Dokuma Kumaş",s:"Tekstil/Ham Madde",gv:8,kdv:20,otv:0},
-  {g:"5402.20",n:"Polyester / Sentetik İplik",s:"Tekstil/Ham Madde",gv:4,kdv:20,otv:0},
-  {g:"6217.10",n:"Giysi Aksesuarı (Düğme, Fermuar, Dantel)",s:"Tekstil/Aksesuar",gv:6.5,kdv:20,otv:0},
-  // Makine & Endüstriyel
-  {g:"8479.89",n:"Endüstriyel Makine (Genel Amaçlı)",s:"Makine",gv:0,kdv:20,otv:0},
-  {g:"8482.10",n:"Rulman (Bilyalı / Makaralı)",s:"Makine",gv:3.7,kdv:20,otv:0},
-  {g:"8413.11",n:"Pompa (Sıvı Transferi / Hidrolik)",s:"Makine",gv:1.7,kdv:20,otv:0},
-  {g:"8481.80",n:"Vana / Musluk (Endüstriyel)",s:"Makine",gv:1.7,kdv:20,otv:0},
-  {g:"8501.10",n:"Elektrik Motoru (DC / AC / Servo)",s:"Makine",gv:1.7,kdv:20,otv:0},
-  {g:"8467.11",n:"Elektrikli El Aleti (Matkap, Taşlama, Tornavida)",s:"Makine",gv:1.7,kdv:20,otv:0},
-  {g:"8428.90",n:"Taşıma / Kaldırma Ekipmanı (Konveyör, Forklift aksesuarı)",s:"Makine",gv:0,kdv:20,otv:0},
-  {g:"8483.10",n:"Şaft / Mili / Transmisyon Parçası",s:"Makine",gv:3.7,kdv:20,otv:0},
-  // Otomotiv
-  {g:"8708.29",n:"Otomobil Karoseri / Tampon / Kapı Parçaları",s:"Otomotiv",gv:4.5,kdv:20,otv:0},
-  {g:"8708.99",n:"Otomobil Yedek Parça (Diğer)",s:"Otomotiv",gv:4.5,kdv:20,otv:0},
-  {g:"8409.91",n:"Motor Parçaları (Piston, Supap, Silindir)",s:"Otomotiv",gv:4.5,kdv:20,otv:0},
-  {g:"8544.30",n:"Araç Kablo Demeti",s:"Otomotiv",gv:4.5,kdv:20,otv:0},
-  {g:"4011.10",n:"Binek Araç Lastiği",s:"Otomotiv",gv:4.5,kdv:20,otv:0},
-  {g:"8708.10",n:"Araç Tampon / Ön Panel",s:"Otomotiv",gv:4.5,kdv:20,otv:0},
-  // Kimya & Plastik
-  {g:"3901.10",n:"Polietilen (HDPE / LDPE) Granül",s:"Kimya/Plastik",gv:3.7,kdv:20,otv:0},
-  {g:"3902.10",n:"Polipropilen (PP) Granül",s:"Kimya/Plastik",gv:3.7,kdv:20,otv:0},
-  {g:"3904.10",n:"PVC Ham Madde / Granül",s:"Kimya/Plastik",gv:3.7,kdv:20,otv:0},
-  {g:"3926.90",n:"Plastik Mamul (Çeşitli Ürün)",s:"Kimya/Plastik",gv:6.5,kdv:20,otv:0},
-  {g:"3402.20",n:"Deterjan / Yüzey Aktif Madde",s:"Kimya",gv:6.5,kdv:20,otv:0},
-  {g:"3812.31",n:"Plastik Katkı Maddesi / Stabilizatör",s:"Kimya",gv:3.7,kdv:20,otv:0},
-  // Kozmetik
-  {g:"3304.10",n:"Dudak Makyaj Ürünü (Ruj, Lip Gloss)",s:"Kozmetik",gv:6.5,kdv:20,otv:0},
-  {g:"3305.10",n:"Şampuan / Saç Bakım Ürünü",s:"Kozmetik",gv:6.5,kdv:20,otv:0},
-  {g:"3303.00",n:"Parfüm / Kolonya / Eau de Parfum",s:"Kozmetik",gv:6.5,kdv:20,otv:0},
-  {g:"3304.99",n:"Cilt Bakım Ürünü / Krem / Losyon / Serum",s:"Kozmetik",gv:6.5,kdv:20,otv:0},
-  {g:"3401.11",n:"Kişisel Bakım Sabunu",s:"Kozmetik",gv:6.5,kdv:20,otv:0},
-  // Tıbbi Cihaz
-  {g:"9018.11",n:"Tansiyon Aleti (Elektronik / Dijital)",s:"Tıbbi Cihaz",gv:0,kdv:10,otv:0},
-  {g:"9018.90",n:"Tıbbi Alet ve Cihaz (Cerrahi / Genel)",s:"Tıbbi Cihaz",gv:0,kdv:10,otv:0},
-  {g:"9019.20",n:"Oksijen Konsantratörü / Solunum Cihazı",s:"Tıbbi Cihaz",gv:0,kdv:10,otv:0},
-  {g:"3004.50",n:"İlaç / Vitamin / Bitkisel Takviye",s:"Tıbbi/Eczacılık",gv:0,kdv:10,otv:0},
-  // Mobilya & Ev
-  {g:"9401.61",n:"Koltuk / Kanepe (Kumaş Döşemeli)",s:"Mobilya",gv:0,kdv:20,otv:0},
-  {g:"9403.20",n:"Metal Mobilya (Ofis / Endüstriyel)",s:"Mobilya",gv:0,kdv:20,otv:0},
-  {g:"9403.60",n:"Ahşap Mobilya (Masa, Dolap, Raf, Sandalye)",s:"Mobilya",gv:0,kdv:20,otv:0},
-  {g:"9405.10",n:"Avize / Aydınlatma Armatürü",s:"Mobilya/Aydınlatma",gv:6.5,kdv:20,otv:0},
-  // İnşaat & Metal
-  {g:"7210.49",n:"Galvanizli Çelik Sac / Levha",s:"İnşaat/Metal",gv:0,kdv:20,otv:0},
-  {g:"7208.51",n:"Sıcak Haddelenmiş Çelik Sac",s:"İnşaat/Metal",gv:0,kdv:20,otv:0},
-  {g:"7604.10",n:"Alüminyum Profil / Boru / Köşebent",s:"İnşaat/Metal",gv:3.7,kdv:20,otv:0},
-  {g:"6907.21",n:"Seramik Yer / Duvar Karosu",s:"İnşaat/Yapı",gv:6.5,kdv:20,otv:0},
-  {g:"3918.10",n:"PVC Zemin Kaplama / Plastik Parke",s:"İnşaat/Yapı",gv:6.5,kdv:20,otv:0},
-  {g:"7308.90",n:"Metal Yapı Elemanı / Çelik Konstrüksiyon",s:"İnşaat/Metal",gv:0,kdv:20,otv:0},
-  // Enerji
-  {g:"8541.40",n:"Güneş Paneli (Fotovoltaik, Mono / Poli)",s:"Enerji/Solar",gv:0,kdv:20,otv:0},
-  {g:"8507.60",n:"Lityum-İyon / LiFePO4 Batarya",s:"Enerji/Batarya",gv:1.7,kdv:20,otv:0},
-  {g:"8504.31",n:"İnvertör / Şarj Kontrol Cihazı (Solar)",s:"Enerji/Solar",gv:3.7,kdv:20,otv:0},
-  // Gıda
-  {g:"0901.11",n:"Kahve (Kavrulmamış Ham)",s:"Gıda",gv:7.5,kdv:1,otv:0},
-  {g:"2101.11",n:"Kahve Özü / Instant Kahve",s:"Gıda",gv:20,kdv:10,otv:0},
-  {g:"1806.32",n:"Çikolata / Kakao Ürünü",s:"Gıda",gv:56.3,kdv:10,otv:0},
-  {g:"2106.90",n:"Gıda Takviyesi / Protein Tozu / Supplement",s:"Gıda/Sağlık",gv:20,kdv:10,otv:0},
-  // Oyuncak & Spor
-  {g:"9503.00",n:"Oyuncak (Çocuk, Genel)",s:"Oyuncak",gv:0,kdv:20,otv:0},
-  {g:"9506.91",n:"Spor Ekipmanı (Fitness, Genel)",s:"Spor",gv:3.7,kdv:20,otv:0},
-  {g:"9506.40",n:"Tenis / Badminton / Masa Tenisi Ekipmanı",s:"Spor",gv:3.7,kdv:20,otv:0},
-  // Kağıt & Ambalaj
-  {g:"4802.56",n:"Ofis Kağıdı / Baskı Kağıdı (A4 vb.)",s:"Kağıt/Ambalaj",gv:0,kdv:20,otv:0},
-  {g:"4819.10",n:"Oluklu Mukavva Kutu / Karton Ambalaj",s:"Kağıt/Ambalaj",gv:0,kdv:20,otv:0},
-  // Tarım
-  {g:"8432.21",n:"Diskaro / Pulluk / Tarım Makinesi",s:"Tarım Makinesi",gv:0,kdv:20,otv:0},
-  {g:"3101.00",n:"Organik Gübre / Kompost",s:"Tarım",gv:0,kdv:1,otv:0},
+// ══════════════════════════════════════════════════════
+// GTİP VERİTABANI — TGTC 2024
+// g=GTİP, n=Ad, s=Sektör, gv/kdv/otv=Vergi%,
+// wpu=kg/adet(net), vpu=m³/adet(net),
+// bwf=kutu ağırlık faktörü, bvf=kutu hacim faktörü,
+// t=test maliyeti USD/sevkiyat, tn=test türü
+// ══════════════════════════════════════════════════════
+const DB=[
+  // ── Elektronik ──
+  {g:"8471.30",n:"Taşınabilir Bilgisayar (Laptop/Notebook)",s:"Elektronik",gv:0,kdv:20,otv:0,wpu:2.2,vpu:0.003,bwf:1.3,bvf:1.9,t:600,tn:"CE/EMC Testi"},
+  {g:"8471.41",n:"Masaüstü Bilgisayar (PC/Desktop)",s:"Elektronik",gv:0,kdv:20,otv:0,wpu:8,vpu:0.015,bwf:1.2,bvf:1.5,t:600,tn:"CE/EMC Testi"},
+  {g:"8471.80",n:"Tablet Bilgisayar (iPad, Android Tablet)",s:"Elektronik",gv:0,kdv:20,otv:0,wpu:0.5,vpu:0.0008,bwf:1.4,bvf:2.2,t:500,tn:"CE/EMC Testi"},
+  {g:"8517.12",n:"Cep Telefonu / Akıllı Telefon",s:"Elektronik",gv:0,kdv:20,otv:0,wpu:0.18,vpu:0.0004,bwf:1.5,bvf:2.8,t:500,tn:"CE/EMC Testi"},
+  {g:"8528.72",n:"Televizyon (LCD/OLED/QLED)",s:"Elektronik",gv:3.7,kdv:20,otv:0,wpu:22,vpu:0.15,bwf:1.3,bvf:1.5,t:800,tn:"CE/EMC/LVD Testi"},
+  {g:"8518.30",n:"Kulaklık / Kulak İçi (Bluetooth dahil)",s:"Elektronik",gv:3.7,kdv:20,otv:0,wpu:0.1,vpu:0.0003,bwf:1.6,bvf:2.5,t:400,tn:"CE/Radyo Testi"},
+  {g:"8519.81",n:"Taşınabilir Hoparlör / Ses Sistemi",s:"Elektronik",gv:3.7,kdv:20,otv:0,wpu:1.5,vpu:0.004,bwf:1.3,bvf:1.7,t:400,tn:"CE/EMC Testi"},
+  {g:"8543.70",n:"Akıllı Saat / Wearable Cihaz",s:"Elektronik",gv:0,kdv:20,otv:0,wpu:0.08,vpu:0.0002,bwf:1.6,bvf:2.5,t:400,tn:"CE Testi"},
+  {g:"8471.60",n:"Klavye / Mouse / Giriş Birimi",s:"Elektronik",gv:0,kdv:20,otv:0,wpu:0.5,vpu:0.002,bwf:1.3,bvf:1.6,t:200,tn:"CE/EMC Testi"},
+  {g:"8473.30",n:"Bilgisayar Parçaları (RAM, SSD, GPU, Anakart)",s:"Elektronik",gv:0,kdv:20,otv:0,wpu:0.2,vpu:0.0005,bwf:1.3,bvf:1.8,t:300,tn:"CE Testi"},
+  {g:"8504.40",n:"Güç Kaynağı / Şarj Cihazı / Adaptör",s:"Elektronik",gv:3.7,kdv:20,otv:0,wpu:0.3,vpu:0.0008,bwf:1.4,bvf:1.8,t:300,tn:"CE/LVD Testi"},
+  {g:"8544.42",n:"Elektrik Kablosu / USB / HDMI Kablo",s:"Elektronik",gv:3.7,kdv:20,otv:0,wpu:0.1,vpu:0.0002,bwf:1.2,bvf:1.4,t:150,tn:"CE Testi"},
+  {g:"8525.80",n:"Kamera / Webcam / Güvenlik Kamerası",s:"Elektronik",gv:3.7,kdv:20,otv:0,wpu:0.5,vpu:0.001,bwf:1.4,bvf:1.9,t:600,tn:"CE/EMC Testi"},
+  {g:"9504.50",n:"Video Oyun Konsolu (PlayStation, Xbox, Switch)",s:"Elektronik",gv:0,kdv:20,otv:0,wpu:4,vpu:0.008,bwf:1.3,bvf:1.7,t:500,tn:"CE Testi"},
+  // ── Beyaz Eşya ──
+  {g:"8450.11",n:"Çamaşır Makinesi",s:"Beyaz Eşya",gv:3.7,kdv:20,otv:0,wpu:75,vpu:0.5,bwf:1.1,bvf:1.3,t:1200,tn:"CE/EMC/Enerji Etiketi"},
+  {g:"8422.11",n:"Bulaşık Makinesi",s:"Beyaz Eşya",gv:3.7,kdv:20,otv:0,wpu:55,vpu:0.5,bwf:1.1,bvf:1.3,t:1200,tn:"CE/EMC/Enerji Etiketi"},
+  {g:"8418.21",n:"Buzdolabı (Kombine Soğutucu)",s:"Beyaz Eşya",gv:3.7,kdv:20,otv:0,wpu:65,vpu:0.55,bwf:1.1,bvf:1.35,t:1000,tn:"CE/Enerji Etiketi"},
+  {g:"8516.60",n:"Fırın / Mikrodalga / Ocak (Ev tipi)",s:"Beyaz Eşya",gv:3.7,kdv:20,otv:0,wpu:45,vpu:0.07,bwf:1.15,bvf:1.35,t:800,tn:"CE/EMC Testi"},
+  {g:"8509.40",n:"Elektrikli Süpürge / Robot Süpürge",s:"Beyaz Eşya",gv:3.7,kdv:20,otv:0,wpu:5,vpu:0.015,bwf:1.3,bvf:1.6,t:600,tn:"CE/EMC Testi"},
+  {g:"8415.10",n:"Klima (Split Sistem)",s:"Beyaz Eşya",gv:3.7,kdv:20,otv:0,wpu:30,vpu:0.1,bwf:1.2,bvf:1.45,t:1000,tn:"CE/F-Gas/Enerji Etiketi"},
+  {g:"8414.51",n:"Fan / Vantilatör (Ev tipi)",s:"Beyaz Eşya",gv:3.7,kdv:20,otv:0,wpu:3,vpu:0.008,bwf:1.3,bvf:1.6,t:400,tn:"CE Testi"},
+  // ── Tekstil & Giyim ──
+  {g:"6109.10",n:"T-Shirt / Pamuklu Üst Giysi",s:"Tekstil/Giyim",gv:12,kdv:20,otv:0,wpu:0.2,vpu:0.0003,bwf:1.05,bvf:1.05,t:200,tn:"Oeko-Tex/TSE"},
+  {g:"6203.42",n:"Erkek Pantolon (Pamuk)",s:"Tekstil/Giyim",gv:12,kdv:20,otv:0,wpu:0.4,vpu:0.0006,bwf:1.05,bvf:1.05,t:200,tn:"Oeko-Tex/TSE"},
+  {g:"6204.62",n:"Kadın Pantolon (Pamuk)",s:"Tekstil/Giyim",gv:12,kdv:20,otv:0,wpu:0.35,vpu:0.0005,bwf:1.05,bvf:1.05,t:200,tn:"Oeko-Tex/TSE"},
+  {g:"6110.20",n:"Kazak / Sweatshirt / Hoodie",s:"Tekstil/Giyim",gv:12,kdv:20,otv:0,wpu:0.5,vpu:0.0008,bwf:1.05,bvf:1.08,t:200,tn:"Oeko-Tex/TSE"},
+  {g:"6201.92",n:"Mont / Ceket (Erkek)",s:"Tekstil/Giyim",gv:12,kdv:20,otv:0,wpu:0.8,vpu:0.0015,bwf:1.07,bvf:1.1,t:200,tn:"Oeko-Tex/TSE"},
+  {g:"6403.91",n:"Ayakkabı (Deri Tabanlı)",s:"Tekstil/Giyim",gv:3.7,kdv:20,otv:0,wpu:0.6,vpu:0.002,bwf:1.2,bvf:1.35,t:250,tn:"CE/EN345"},
+  {g:"6404.11",n:"Spor Ayakkabı (Tekstil Üst)",s:"Tekstil/Giyim",gv:3.7,kdv:20,otv:0,wpu:0.5,vpu:0.0015,bwf:1.2,bvf:1.3,t:200,tn:"Oeko-Tex"},
+  {g:"5208.21",n:"Pamuklu Dokuma Kumaş",s:"Tekstil/Ham Madde",gv:8,kdv:20,otv:0,wpu:0.3,vpu:0.001,bwf:1.0,bvf:1.0,t:200,tn:"Oeko-Tex"},
+  {g:"5402.20",n:"Polyester / Sentetik İplik",s:"Tekstil/Ham Madde",gv:4,kdv:20,otv:0,wpu:1.0,vpu:0.003,bwf:1.0,bvf:1.0,t:100,tn:""},
+  // ── Makine & Endüstriyel ──
+  {g:"8479.89",n:"Endüstriyel Makine (Genel Amaçlı)",s:"Makine",gv:0,kdv:20,otv:0,wpu:200,vpu:1.0,bwf:1.05,bvf:1.1,t:0,tn:""},
+  {g:"8482.10",n:"Rulman (Bilyalı/Makaralı)",s:"Makine",gv:3.7,kdv:20,otv:0,wpu:0.5,vpu:0.0005,bwf:1.1,bvf:1.2,t:0,tn:""},
+  {g:"8413.11",n:"Pompa (Sıvı Transferi)",s:"Makine",gv:1.7,kdv:20,otv:0,wpu:15,vpu:0.05,bwf:1.1,bvf:1.2,t:0,tn:""},
+  {g:"8481.80",n:"Vana / Musluk (Endüstriyel)",s:"Makine",gv:1.7,kdv:20,otv:0,wpu:2,vpu:0.003,bwf:1.1,bvf:1.2,t:0,tn:""},
+  {g:"8501.10",n:"Elektrik Motoru (DC/AC/Servo)",s:"Makine",gv:1.7,kdv:20,otv:0,wpu:10,vpu:0.02,bwf:1.1,bvf:1.2,t:0,tn:""},
+  {g:"8467.11",n:"Elektrikli El Aleti (Matkap, Taşlama)",s:"Makine",gv:1.7,kdv:20,otv:0,wpu:3,vpu:0.006,bwf:1.3,bvf:1.6,t:400,tn:"CE Testi"},
+  // ── Otomotiv ──
+  {g:"8708.29",n:"Otomobil Karoseri / Tampon Parçaları",s:"Otomotiv",gv:4.5,kdv:20,otv:0,wpu:10,vpu:0.05,bwf:1.1,bvf:1.15,t:0,tn:""},
+  {g:"8708.99",n:"Otomobil Yedek Parça (Diğer)",s:"Otomotiv",gv:4.5,kdv:20,otv:0,wpu:5,vpu:0.02,bwf:1.1,bvf:1.2,t:0,tn:""},
+  {g:"4011.10",n:"Binek Araç Lastiği",s:"Otomotiv",gv:4.5,kdv:20,otv:0,wpu:8,vpu:0.025,bwf:1.0,bvf:1.0,t:0,tn:""},
+  {g:"8544.30",n:"Araç Kablo Demeti",s:"Otomotiv",gv:4.5,kdv:20,otv:0,wpu:2,vpu:0.003,bwf:1.1,bvf:1.15,t:0,tn:""},
+  // ── Kimya & Plastik ──
+  {g:"3901.10",n:"Polietilen (HDPE/LDPE) Granül",s:"Kimya/Plastik",gv:3.7,kdv:20,otv:0,wpu:25,vpu:0.025,bwf:1.0,bvf:1.0,t:0,tn:""},
+  {g:"3902.10",n:"Polipropilen (PP) Granül",s:"Kimya/Plastik",gv:3.7,kdv:20,otv:0,wpu:25,vpu:0.025,bwf:1.0,bvf:1.0,t:0,tn:""},
+  {g:"3926.90",n:"Plastik Mamul (Çeşitli)",s:"Kimya/Plastik",gv:6.5,kdv:20,otv:0,wpu:0.2,vpu:0.001,bwf:1.15,bvf:1.25,t:0,tn:""},
+  {g:"3402.20",n:"Deterjan / Yüzey Aktif Madde",s:"Kimya",gv:6.5,kdv:20,otv:0,wpu:1,vpu:0.0015,bwf:1.1,bvf:1.15,t:300,tn:"Ürün Güvenlik Belgesi"},
+  // ── Kozmetik ──
+  {g:"3304.10",n:"Dudak Makyaj Ürünü (Ruj, Lip Gloss)",s:"Kozmetik",gv:6.5,kdv:20,otv:0,wpu:0.05,vpu:0.0001,bwf:1.2,bvf:1.5,t:400,tn:"Kozmetik Lab Analizi"},
+  {g:"3305.10",n:"Şampuan / Saç Bakım Ürünü",s:"Kozmetik",gv:6.5,kdv:20,otv:0,wpu:0.3,vpu:0.0004,bwf:1.1,bvf:1.2,t:400,tn:"Kozmetik Lab Analizi"},
+  {g:"3303.00",n:"Parfüm / Kolonya / Eau de Parfum",s:"Kozmetik",gv:6.5,kdv:20,otv:0,wpu:0.15,vpu:0.0003,bwf:1.2,bvf:1.5,t:500,tn:"IFRA/Lab Analizi"},
+  {g:"3304.99",n:"Cilt Bakım Ürünü / Krem / Losyon",s:"Kozmetik",gv:6.5,kdv:20,otv:0,wpu:0.1,vpu:0.0002,bwf:1.15,bvf:1.3,t:400,tn:"Kozmetik Lab Analizi"},
+  // ── Tıbbi Cihaz ──
+  {g:"9018.11",n:"Tansiyon Aleti (Elektronik/Dijital)",s:"Tıbbi Cihaz",gv:0,kdv:10,otv:0,wpu:0.5,vpu:0.001,bwf:1.3,bvf:1.6,t:1500,tn:"CE MDR Belgesi"},
+  {g:"9018.90",n:"Tıbbi Alet ve Cihaz (Genel)",s:"Tıbbi Cihaz",gv:0,kdv:10,otv:0,wpu:2,vpu:0.005,bwf:1.2,bvf:1.4,t:2000,tn:"CE MDR Belgesi"},
+  {g:"9019.20",n:"Oksijen Konsantratörü / Solunum Cihazı",s:"Tıbbi Cihaz",gv:0,kdv:10,otv:0,wpu:10,vpu:0.04,bwf:1.15,bvf:1.3,t:2500,tn:"CE MDR Belgesi"},
+  // ── Mobilya ──
+  {g:"9401.61",n:"Koltuk / Kanepe (Kumaş Döşemeli)",s:"Mobilya",gv:0,kdv:20,otv:0,wpu:80,vpu:0.8,bwf:1.15,bvf:1.25,t:0,tn:""},
+  {g:"9403.60",n:"Ahşap Mobilya (Masa, Dolap, Sandalye)",s:"Mobilya",gv:0,kdv:20,otv:0,wpu:30,vpu:0.25,bwf:1.15,bvf:1.25,t:0,tn:""},
+  {g:"9405.10",n:"Avize / Aydınlatma Armatürü",s:"Mobilya/Aydınlatma",gv:6.5,kdv:20,otv:0,wpu:2,vpu:0.01,bwf:1.3,bvf:1.7,t:300,tn:"CE/LVD Testi"},
+  // ── İnşaat & Metal ──
+  {g:"7210.49",n:"Galvanizli Çelik Sac / Levha",s:"İnşaat/Metal",gv:0,kdv:20,otv:0,wpu:1000,vpu:0.15,bwf:1.0,bvf:1.0,t:0,tn:""},
+  {g:"7604.10",n:"Alüminyum Profil / Boru",s:"İnşaat/Metal",gv:3.7,kdv:20,otv:0,wpu:1.5,vpu:0.003,bwf:1.0,bvf:1.0,t:0,tn:""},
+  {g:"6907.21",n:"Seramik Yer / Duvar Karosu",s:"İnşaat/Yapı",gv:6.5,kdv:20,otv:0,wpu:18,vpu:0.012,bwf:1.0,bvf:1.0,t:0,tn:""},
+  {g:"3918.10",n:"PVC Zemin Kaplama / Plastik Parke",s:"İnşaat/Yapı",gv:6.5,kdv:20,otv:0,wpu:4,vpu:0.005,bwf:1.0,bvf:1.0,t:0,tn:""},
+  // ── Enerji & Solar ──
+  {g:"8541.40",n:"Güneş Paneli (Fotovoltaik, Mono/Poli)",s:"Enerji/Solar",gv:0,kdv:20,otv:0,wpu:22,vpu:0.07,bwf:1.1,bvf:1.2,t:500,tn:"IEC 61215 Testi"},
+  {g:"8507.60",n:"Lityum-İyon / LiFePO4 Batarya",s:"Enerji/Batarya",gv:1.7,kdv:20,otv:0,wpu:15,vpu:0.015,bwf:1.15,bvf:1.25,t:600,tn:"UN38.3/CE Testi"},
+  {g:"8504.31",n:"İnvertör / Solar Şarj Kontrol Cihazı",s:"Enerji/Solar",gv:3.7,kdv:20,otv:0,wpu:8,vpu:0.015,bwf:1.2,bvf:1.45,t:600,tn:"CE/EMC Testi"},
+  // ── Gıda ──
+  {g:"0901.11",n:"Kahve (Kavrulmamış Ham)",s:"Gıda",gv:7.5,kdv:1,otv:0,wpu:1,vpu:0.002,bwf:1.0,bvf:1.0,t:500,tn:"Gıda Güvenlik Analizi"},
+  {g:"1806.32",n:"Çikolata / Kakao Ürünü",s:"Gıda",gv:56.3,kdv:10,otv:0,wpu:0.1,vpu:0.0002,bwf:1.1,bvf:1.15,t:500,tn:"Gıda Analizi"},
+  {g:"2106.90",n:"Gıda Takviyesi / Protein Tozu / Supplement",s:"Gıda/Sağlık",gv:20,kdv:10,otv:0,wpu:0.5,vpu:0.001,bwf:1.15,bvf:1.25,t:1000,tn:"Gıda+Tarım Lab Analizi"},
+  // ── Oyuncak & Spor ──
+  {g:"9503.00",n:"Oyuncak (Çocuk, Genel)",s:"Oyuncak",gv:0,kdv:20,otv:0,wpu:0.3,vpu:0.001,bwf:1.2,bvf:1.5,t:600,tn:"EN71 Oyuncak Güvenlik Testi"},
+  {g:"9506.91",n:"Spor Ekipmanı (Fitness, Genel)",s:"Spor",gv:3.7,kdv:20,otv:0,wpu:2,vpu:0.01,bwf:1.2,bvf:1.35,t:300,tn:"CE Testi"},
+  // ── Kağıt & Ambalaj ──
+  {g:"4802.56",n:"Ofis Kağıdı / Baskı Kağıdı (A4 vb.)",s:"Kağıt/Ambalaj",gv:0,kdv:20,otv:0,wpu:2.5,vpu:0.004,bwf:1.0,bvf:1.0,t:0,tn:""},
+  {g:"4819.10",n:"Oluklu Mukavva Kutu / Karton Ambalaj",s:"Kağıt/Ambalaj",gv:0,kdv:20,otv:0,wpu:0.5,vpu:0.005,bwf:1.0,bvf:1.0,t:0,tn:""},
+  // ── Tarım ──
+  {g:"8432.21",n:"Diskaro / Pulluk / Tarım Makinesi",s:"Tarım Makinesi",gv:0,kdv:20,otv:0,wpu:300,vpu:2.0,bwf:1.0,bvf:1.0,t:0,tn:""},
+  {g:"3101.00",n:"Organik Gübre / Kompost",s:"Tarım",gv:0,kdv:1,otv:0,wpu:1000,vpu:1.0,bwf:1.0,bvf:1.0,t:0,tn:""},
 ];
-// ══════════════════════════════════════════
-// STATE
-// ══════════════════════════════════════════
-const S = {
-  step: 1,
-  product: null,
-  incoterm: 'EXW',
-  shipping: 'SEA',
-  container: 'LCL',
-  payment: 'PRE',
-  rates: { USD:32.5, EUR:35.3, GBP:41.2, CNY:4.5, TRY:1 },
-  result: null
+
+// ══════════════════════════════════════════════════════
+// NAVLUN RAYIÇ TABLOLARI (USD, Mayıs 2025)
+// ══════════════════════════════════════════════════════
+const FR={
+  SEA_LCL:{CN:115,DE:85,US:165,IT:80,JP:130,KR:110,IN:100,FR:85,GB:92,NL:85,BE:80,TW:115,VN:105,BD:95,PK:100,OT:120},
+  SEA_FCL20:{CN:2800,DE:1800,US:4200,IT:1700,JP:3200,KR:2600,IN:2300,FR:1800,GB:2000,NL:1850,BE:1800,TW:2700,VN:2500,BD:2100,PK:2200,OT:2600},
+  SEA_FCL40:{CN:4500,DE:2900,US:6800,IT:2700,JP:5200,KR:4000,IN:3700,FR:2900,GB:3200,NL:2950,BE:2900,TW:4300,VN:4000,BD:3400,PK:3600,OT:4200},
+  AIR:{CN:7,DE:4.8,US:8.5,IT:4.8,JP:7.5,KR:6.5,IN:5.8,FR:4.8,GB:5.2,NL:4.8,BE:4.8,TW:6.5,VN:6,BD:5.5,PK:5.5,OT:7},
+  ROAD:{DE:2.3,IT:2.1,FR:2.3,GB:2.6,NL:2.3,BE:2.1,OT:2.8}
 };
-// ══════════════════════════════════════════
-// EXCHANGE RATES
-// ══════════════════════════════════════════
-async function loadRates() {
-  try {
-    const res = await fetch('https://api.frankfurter.app/latest?from=USD&to=TRY,EUR,GBP,CNY');
-    const d = await res.json();
-    const r = d.rates;
-    S.rates.USD = r.TRY;
-    S.rates.EUR = r.TRY / r.EUR;
-    S.rates.GBP = r.TRY / r.GBP;
-    S.rates.CNY = r.TRY / r.CNY;
-    S.rates.TRY = 1;
-    $('rU').textContent = r.TRY.toFixed(2);
-    $('rE').textContent = (r.TRY/r.EUR).toFixed(2);
-    $('rG').textContent = (r.TRY/r.GBP).toFixed(2);
-    $('rC').textContent = (r.TRY/r.CNY).toFixed(2);
+const EU_ORIGS=['DE','IT','FR','GB','NL','BE','OT'];
+
+// SABİT MALİYET RAYIÇLER (TRY, 2025)
+const FC_RATES={
+  SEA:{broker:5500,dosya:900,antrepo:1200,liman:3500,domestic:2500},
+  AIR:{broker:4500,dosya:800,antrepo:0,liman:2000,domestic:2000},
+  ROAD:{broker:4000,dosya:700,antrepo:600,liman:1500,domestic:2000}
+};
+
+// ══════════════════════════════════════════════════════
+// STATE
+// ══════════════════════════════════════════════════════
+const S={step:1,product:null,incoterm:'EXW',shipping:'SEA',container:'LCL',payment:'PRE',boxed:false,
+  rates:{USD:32.5,EUR:35.3,GBP:41.2,CNY:4.5,TRY:1},result:null};
+
+// ── Exchange Rates ──
+async function loadRates(){
+  try{
+    const d=await(await fetch('https://api.frankfurter.app/latest?from=USD&to=TRY,EUR,GBP,CNY')).json();
+    const r=d.rates;
+    S.rates.USD=r.TRY;S.rates.EUR=r.TRY/r.EUR;S.rates.GBP=r.TRY/r.GBP;S.rates.CNY=r.TRY/r.CNY;
+    $('rU').textContent=r.TRY.toFixed(2);$('rE').textContent=(r.TRY/r.EUR).toFixed(2);
+    $('rG').textContent=(r.TRY/r.GBP).toFixed(2);$('rC').textContent=(r.TRY/r.CNY).toFixed(2);
     document.querySelectorAll('.rv').forEach(e=>e.classList.remove('ld'));
     updRateHint();
-  } catch(e) {
-    document.querySelectorAll('.rv').forEach(e=>e.textContent='hata');
-  }
+  }catch(e){document.querySelectorAll('.rv').forEach(e=>e.textContent='—');}
 }
-function updRateHint() {
-  const cur = $('ucur')?.value || 'USD';
-  const rate = S.rates[cur];
-  $('mrlbl').textContent = `TRY/${cur}`;
-  $('rhint').textContent = `Güncel kur: 1 ${cur} = ${rate?.toFixed(4)||'—'} TRY`;
+function updRateHint(){
+  const cur=$('ucur')?.value||'USD';
+  $('mrlbl').textContent=`TRY/${cur}`;
+  $('rhint').textContent=`Güncel kur: 1 ${cur} = ${(S.rates[cur]||0).toFixed(4)} TRY`;
 }
-// ══════════════════════════════════════════
-// SEARCH
-// ══════════════════════════════════════════
+
+// ── Product Search ──
 let stimer;
-$('psearch').addEventListener('input', function() {
-  clearTimeout(stimer);
-  stimer = setTimeout(()=>doSearch(this.value.trim()), 180);
-});
-function doSearch(q) {
-  const el = $('sres');
-  if (!q) { el.classList.add('hidden'); return; }
-  const lq = q.toLowerCase();
-  const hits = DB.filter(x => x.n.toLowerCase().includes(lq)||x.g.includes(q)||x.s.toLowerCase().includes(lq)).slice(0,12);
+$('psearch').addEventListener('input',function(){clearTimeout(stimer);stimer=setTimeout(()=>doSearch(this.value.trim()),180);});
+function doSearch(q){
+  const el=$('sres');
+  if(!q){el.classList.add('hidden');return;}
+  const lq=q.toLowerCase();
+  const hits=DB.filter(x=>x.n.toLowerCase().includes(lq)||x.g.includes(q)||x.s.toLowerCase().includes(lq)).slice(0,12);
   el.classList.remove('hidden');
-  if (!hits.length) { el.innerHTML='<div class="no-r">🔎 Sonuç bulunamadı — farklı arama deneyin</div>'; return; }
-  el.innerHTML = hits.map(x=>`
-    <div class="sri" onclick='pickProd(${JSON.stringify(x).replace(/'/g,"&#39;")})'>
-      <div class="sn2">${hl(x.n,q)}</div>
-      <div class="sm"><span class="sg">${x.g}</span><span class="ssc">${x.s}</span></div>
-    </div>`).join('');
+  if(!hits.length){el.innerHTML='<div class="no-r">🔎 Sonuç bulunamadı</div>';return;}
+  el.innerHTML=hits.map(x=>`<div class="sri" onclick='pickProd(${JSON.stringify(x).replace(/'/g,"&#39;")})'>
+    <div class="sn2">${hl(x.n,q)}</div>
+    <div class="sm"><span class="sg">${x.g}</span><span class="ssc">${x.s}</span></div></div>`).join('');
 }
-function hl(txt, q) {
-  if (!q) return txt;
-  const re = new RegExp(`(${q.replace(/[.*+?^${}()|[\\]\\\\]/g,'\\\\$&')})`, 'gi');
-  return txt.replace(re,'<mark>$1</mark>');
-}
-// ══════════════════════════════════════════
-// AĞIRLIK / HACİM TAHMİN VERİTABANI
-// ══════════════════════════════════════════
-// [birim_ağırlık_kg, birim_hacim_m3]
-function getProductDims(p) {
-  const s = (p.s||'').toLowerCase();
-  const n = (p.n||'').toLowerCase();
-  // Elektronik – hafif & küçük
-  if (n.includes('laptop') || n.includes('notebook')) return [2.8, 0.004];
-  if (n.includes('tablet')) return [0.65, 0.002];
-  if (n.includes('cep telefonu') || n.includes('akıllı telefon')) return [0.22, 0.001];
-  if (n.includes('akıllı saat') || n.includes('wearable')) return [0.12, 0.0005];
-  if (n.includes('kulaklık') || n.includes('hoparlör')) return [0.35, 0.002];
-  if (n.includes('klavye') || n.includes('mouse')) return [0.55, 0.003];
-  if (n.includes('bilgisayar parça') || n.includes('ram') || n.includes('ssd')) return [0.3, 0.001];
-  if (n.includes('televizyon') || n.includes('tv')) return [22, 0.14];
-  if (n.includes('kamera') || n.includes('webcam')) return [0.45, 0.002];
-  if (n.includes('oyun konsol')) return [3.2, 0.008];
-  if (n.includes('güç kaynağı') || n.includes('şarj') || n.includes('adaptör')) return [0.4, 0.002];
-  if (n.includes('kablo') || n.includes('hdmi') || n.includes('usb')) return [0.25, 0.002];
-  if (n.includes('priz') || n.includes('şalter')) return [0.3, 0.002];
-  if (s.includes('elektronik')) return [1.5, 0.005];
-  // Beyaz eşya – ağır
-  if (n.includes('çamaşır makin')) return [72, 0.45];
-  if (n.includes('bulaşık makin')) return [58, 0.4];
-  if (n.includes('buzdolabı')) return [85, 0.65];
-  if (n.includes('fırın') || n.includes('mikrodalga') || n.includes('ocak')) return [35, 0.2];
-  if (n.includes('süpürge')) return [6, 0.04];
-  if (n.includes('klima')) return [42, 0.22];
-  if (n.includes('fan') || n.includes('vantilatör')) return [5, 0.03];
-  if (s.includes('beyaz eşya')) return [50, 0.35];
-  // Tekstil
-  if (n.includes('t-shirt') || n.includes('üst giysi')) return [0.25, 0.002];
-  if (n.includes('pantolon')) return [0.45, 0.003];
-  if (n.includes('kazak') || n.includes('sweatshirt') || n.includes('hoodie')) return [0.55, 0.004];
-  if (n.includes('mont') || n.includes('ceket')) return [0.85, 0.006];
-  if (n.includes('battaniye') || n.includes('nevresim')) return [1.2, 0.008];
-  if (n.includes('ayakkabı')) return [0.85, 0.006];
-  if (n.includes('kumaş')) return [1.0, 0.004]; // per metre/kg
-  if (n.includes('iplik')) return [1.0, 0.002];
-  if (s.includes('tekstil')) return [0.5, 0.003];
-  // Makine & endüstriyel
-  if (n.includes('rulman')) return [0.8, 0.001];
-  if (n.includes('pompa')) return [25, 0.08];
-  if (n.includes('vana') || n.includes('musluk')) return [3, 0.005];
-  if (n.includes('elektrik motoru')) return [18, 0.05];
-  if (n.includes('el aleti') || n.includes('matkap') || n.includes('taşlama')) return [3.5, 0.008];
-  if (n.includes('kaldırma') || n.includes('konveyör')) return [350, 1.5];
-  if (n.includes('şaft') || n.includes('transmisyon')) return [12, 0.03];
-  if (s.includes('makine')) return [80, 0.4];
-  // Otomotiv
-  if (n.includes('lastik')) return [10, 0.06];
-  if (n.includes('akü') || n.includes('batarya')) return [18, 0.02];
-  if (n.includes('kablo demeti')) return [5, 0.01];
-  if (n.includes('tampon') || n.includes('ön panel')) return [8, 0.08];
-  if (n.includes('motor parça') || n.includes('piston')) return [4, 0.01];
-  if (s.includes('otomotiv')) return [6, 0.02];
-  // Kimya & plastik – genellikle ton
-  if (n.includes('granül') || n.includes('polietilen') || n.includes('polipropilen') || n.includes('pvc')) return [1000, 1.3]; // per ton
-  if (n.includes('deterjan')) return [1, 0.002];
-  if (n.includes('plastik mamul')) return [0.5, 0.003];
-  if (s.includes('kimya')) return [1, 0.002];
-  // Kozmetik
-  if (s.includes('kozmetik') || s.includes('parfüm')) return [0.3, 0.001];
-  // Tıbbi cihaz
-  if (s.includes('tıbbi')) return [15, 0.06];
-  // Mobilya
-  if (n.includes('sandalye') || n.includes('koltuk')) return [12, 0.15];
-  if (n.includes('masa') || n.includes('sehpa')) return [25, 0.3];
-  if (s.includes('mobilya')) return [20, 0.2];
-  // İnşaat/Metal
-  if (n.includes('çelik boru') || n.includes('alüminyum profil') || n.includes('sac')) return [1000, 0.5]; // per ton
-  if (n.includes('seramik') || n.includes('granit')) return [20, 0.01]; // per m²
-  if (s.includes('metal') || s.includes('inşaat')) return [50, 0.1];
-  // Enerji
-  if (n.includes('solar') || n.includes('güneş panel')) return [22, 0.08];
-  if (n.includes('akü') || n.includes('batarya sistemi')) return [200, 0.3];
-  if (s.includes('enerji')) return [100, 0.5];
-  // Gıda
-  if (s.includes('gıda')) return [1, 0.001]; // per kg/unit
-  // Oyuncak/spor
-  if (n.includes('bisiklet')) return [14, 0.15];
-  if (s.includes('oyuncak') || s.includes('spor')) return [1.2, 0.008];
-  return [5, 0.02]; // genel varsayılan
-}
+function hl(t,q){if(!q)return t;return t.replace(new RegExp(`(${q.replace(/[.*+?^${}()|[\]\\]/g,'\\$&')})`, 'gi'),'<mark>$1</mark>');}
 
-function autoFillDims() {
-  if (!S.product) return;
-  const qty = parseFloat($('qty').value) || 1;
-  const [unitKg, unitM3] = getProductDims(S.product);
-  const totalKg = +(unitKg * qty).toFixed(1);
-  const totalM3 = +(unitM3 * qty).toFixed(3);
-  $('gwt').value = totalKg;
-  $('vol').value = totalM3;
-  $('airvol').value = totalM3;
-  $('gwtTag').style.display = 'inline-block';
-  $('volTag').style.display = 'inline-block';
-  $('airvolTag').style.display = 'inline-block';
-  const hint = `${unitKg} kg/birim × ${qty} = ${totalKg} kg — gerekirse düzenleyin`;
-  if ($('gwtHint')) { $('gwtHint').textContent = hint; $('gwtHint').style.display = 'block'; }
-}
-
-// Sabit masraf rayiç tahminleri (2025 Türkiye piyasası, TRY)
-function getDefaultFixed(p) {
-  const s = (p.s||''). toLowerCase();
-  const n = (p.n||''). toLowerCase();
-  if (s.includes('tıbbi') || n.includes('medikal') || n.includes('tıbbi')) return [7000,2000,2000,2500];
-  if (s.includes('enerji') || n.includes('solar') || n.includes('trafo')) return [6000,2500,3000,5000];
-  if (s.includes('makine') || n.includes('makine') || n.includes('cnc') || n.includes('endüstriyel')) return [5500,2500,2500,4500];
-  if (s.includes('kimya') || n.includes('granül') || n.includes('deterjan')) return [4500,2500,2000,4000];
-  if (s.includes('beyaz eşya') || n.includes('buzdolabı') || n.includes('çamaşır') || n.includes('klima')) return [4000,2000,2500,3500];
-  if (s.includes('otomotiv') || n.includes('lastik') || n.includes('motor parça')) return [4500,1500,2000,3000];
-  if (s.includes('mobilya') || n.includes('mobilya') || n.includes('sandalye') || n.includes('masa')) return [3500,2500,2000,4500];
-  if (s.includes('inşaat') || s.includes('metal') || n.includes('çelik') || n.includes('alüminyum') || n.includes('boru')) return [4000,3000,3000,6000];
-  if (s.includes('tekstil') || n.includes('kumaş') || n.includes('iplik') || n.includes('giysi')) return [3500,1500,1500,2500];
-  if (s.includes('kozmetik') || s.includes('parfüm') || n.includes('kozmetik')) return [5000,1000,1500,2000];
-  if (s.includes('gıda') || n.includes('gıda') || n.includes('kahve') || n.includes('çay')) return [5500,2500,2000,2500];
-  if (s.includes('oyuncak') || s.includes('spor') || n.includes('oyuncak') || n.includes('bisiklet')) return [3500,1000,1500,2500];
-  if (s.includes('elektronik') || n.includes('laptop') || n.includes('telefon') || n.includes('tablet')) return [3500,1000,1500,1500];
-  return [3500,1200,1500,2000];
-}
-
-function pickProd(x) {
-  S.product = x;
-  $('psearch').value='';
-  $('sres').classList.add('hidden');
-  $('sh').classList.add('hidden');
-  const c = $('spcard'); c.classList.remove('hidden');
-  $('spn').textContent = x.n;
-  $('spg').textContent = `GTİP: ${x.g}  ·  ${x.s}`;
-  $('sprts').innerHTML = `
-    <span class="chip cr">GV %${x.gv}</span>
-    <span class="chip cb">KDV %${x.kdv}</span>
-    ${x.otv>0?`<span class="chip ca">ÖTV %${x.otv}</span>`:'<span class="chip cn">ÖTV %0</span>'}`;
-  // autofill taxes
-  $('tGV').value=x.gv; $('tKDV').value=x.kdv; $('tOTV').value=x.otv;
-  const ab=$('autobanner'); if(ab) ab.classList.remove('hidden');
-  // autofill sabit masraflar (rayiç tahmin)
-  const [fcb,fcs,fcp,fcd] = getDefaultFixed(x);
-  $('fcB').value=fcb; $('fcS').value=fcs; $('fcP').value=fcp; $('fcD').value=fcd; $('fcO').value=0;
-  $('fcAutoTag').style.display='inline-block';
-  $('fcAutoHint').style.display='block';
-  autoFillDims();
-}
-function clearProd() {
-  S.product=null;
-  $('spcard').classList.add('hidden');
-  $('sh').classList.remove('hidden');
-  $('psearch').value='';
-  const ab=$('autobanner'); if(ab) ab.classList.add('hidden');
-  // reset sabit masraflar
-  $('fcB').value=0; $('fcS').value=0; $('fcP').value=0; $('fcD').value=0; $('fcO').value=0;
-  $('fcAutoTag').style.display='none';
-  $('fcAutoHint').style.display='none';
-}
-// ══════════════════════════════════════════
-// TOGGLE HELPERS
-// ══════════════════════════════════════════
-function selGrp(grpId, el) {
-  document.querySelectorAll(`#${grpId} .to`).forEach(e=>e.classList.remove('sel'));
-  el.classList.add('sel');
-  el.querySelector('input').checked=true;
-}
-function setInc(el,v){selGrp('igrp',el);S.incoterm=v;$('fhint').textContent=v==='CIF'?'CIF alımda navlun zaten dahildir — sıfır bırakın':'Navlun bedelini girin (USD, EUR veya TRY)';}
-function setShip(el,v){selGrp('shgrp',el);S.shipping=v;$('seaCard').classList.toggle('hidden',v!=='SEA');$('airCard').classList.toggle('hidden',v!=='AIR');}
-function setCont(el,v){selGrp('cgrp',el);S.container=v;$('volRow').style.display=v==='LCL'?'':'none';}
-function setPay(el,v){selGrp('paygrp',el);S.payment=v;$('tKKDF').value=v==='CRD'?15:0;}
-// ══════════════════════════════════════════
-// NAVIGATION
-// ══════════════════════════════════════════
-function goStep(n) {
-  if (n>=3) {
-    const up=parseFloat($('uprice').value);
-    if (!up||up<=0){alert('Lütfen birim fiyat girin.');return;}
+function pickProd(x){
+  S.product=x;
+  $('psearch').value='';$('sres').classList.add('hidden');$('sh').classList.add('hidden');
+  $('spcard').classList.remove('hidden');
+  $('spn').textContent=x.n;
+  $('spg').textContent=`GTİP: ${x.g}  ·  ${x.s}`;
+  $('sprts').innerHTML=`<span class="chip cr">GV %${x.gv}</span><span class="chip cb">KDV %${x.kdv}</span>${x.otv>0?`<span class="chip ca">ÖTV %${x.otv}</span>`:'<span class="chip cn">ÖTV %0</span>'}${x.t>0?`<span class="chip cg">Test $${x.t}</span>`:''}`;
+  $('tGV').value=x.gv;$('tKDV').value=x.kdv;$('tOTV').value=x.otv;
+  // Test cost
+  if(x.t>0){
+    $('fcTest').value=Math.round(x.t*S.rates.USD);
+    $('testHint').textContent=`${x.tn} — $${x.t} ≈ ₺${Math.round(x.t*S.rates.USD).toLocaleString('tr-TR')} (düzenleyebilirsiniz)`;
+    $('autobanner').classList.remove('hidden');
   }
+  $('autobanner').classList.remove('hidden');
+}
+function clearProd(){
+  S.product=null;$('spcard').classList.add('hidden');$('sh').classList.remove('hidden');
+  $('psearch').value='';$('autobanner').classList.add('hidden');
+}
+
+// ── Toggles ──
+function selGrp(id,el){document.querySelectorAll(`#${id} .to`).forEach(e=>e.classList.remove('sel'));el.classList.add('sel');el.querySelector('input').checked=true;}
+function setInc(el,v){selGrp('igrp',el);S.incoterm=v;$('fhint').textContent=v==='CIF'?'CIF alımda navlun dahil — sıfır bırakın':'Navlun bedelini girin';}
+function setBox(el,v){selGrp('boxgrp',el);S.boxed=(v==='YES');}
+function setShip(el,v){
+  selGrp('shgrp',el);S.shipping=v;
+  $('seaCard').classList.toggle('hidden',v!=='SEA');
+  $('airCard').classList.toggle('hidden',v!=='AIR');
+  $('roadCard').classList.toggle('hidden',v!=='ROAD');
+}
+function setCont(el,v){selGrp('cgrp',el);S.container=v;}
+function setPay(el,v){selGrp('paygrp',el);S.payment=v;$('tKKDF').value=v==='CRD'?15:0;}
+const CITY_DB={
+  CN:[
+    {v:"SHA",n:"🚢 Shanghai (CNSHA) — En büyük konteyner limanı"},
+    {v:"SZX",n:"🚢 Shenzhen / Yantian (CNSZX)"},
+    {v:"GZH",n:"🚢 Guangzhou / Nansha (CNGUA)"},
+    {v:"NBO",n:"🚢 Ningbo (CNNBO)"},
+    {v:"TJN",n:"🚢 Tianjin (CNTXG)"},
+    {v:"QDO",n:"🚢 Qingdao (CNTAO)"},
+    {v:"XMN",n:"🚢 Xiamen (CNXMN)"},
+    {v:"FOC",n:"🚢 Fuzhou (CNFOC)"},
+    {v:"DLC",n:"🚢 Dalian (CNDLC)"},
+    {v:"BJS_AIR",n:"✈️ Pekin (PEK) — Hava yolu"},
+    {v:"SHA_AIR",n:"✈️ Shanghai Pudong (PVG) — Hava yolu"},
+    {v:"CAN_AIR",n:"✈️ Guangzhou Baiyun (CAN) — Hava yolu"},
+    {v:"SZX_AIR",n:"✈️ Shenzhen (SZX) — Hava yolu"},
+    {v:"OTHER_CN",n:"📍 Diğer Çin şehri (manuel gir)"},
+  ],
+  DE:[
+    {v:"HAM",n:"🚢 Hamburg (DEHAM) — Ana liman"},
+    {v:"BRE",n:"🚢 Bremen / Bremerhaven (DEBRV)"},
+    {v:"DUS",n:"🚢 Duisburg — Ren nehri iç limanı"},
+    {v:"FRA",n:"✈️ Frankfurt am Main (FRA) — Hava yolu"},
+    {v:"MUC",n:"✈️ Münih (MUC) — Hava yolu"},
+    {v:"BER",n:"✈️ Berlin Brandenburg (BER) — Hava yolu"},
+    {v:"OTHER_DE",n:"📍 Diğer Almanya şehri"},
+  ],
+  US:[
+    {v:"LAX",n:"🚢 Los Angeles / Long Beach (USLAX)"},
+    {v:"NYC",n:"🚢 New York / Newark (USNWK)"},
+    {v:"SAV",n:"🚢 Savannah (USSAV)"},
+    {v:"HOU",n:"🚢 Houston (USHOU)"},
+    {v:"SEA_US",n:"🚢 Seattle / Tacoma (USSEA)"},
+    {v:"JFK_AIR",n:"✈️ New York JFK — Hava yolu"},
+    {v:"ORD_AIR",n:"✈️ Chicago O'Hare (ORD) — Hava yolu"},
+    {v:"LAX_AIR",n:"✈️ Los Angeles (LAX) — Hava yolu"},
+    {v:"OTHER_US",n:"📍 Diğer ABD şehri"},
+  ],
+  IT:[
+    {v:"GEN",n:"🚢 Cenova / Genova (ITGOA)"},
+    {v:"TRS",n:"🚢 Trieste (ITTRS)"},
+    {v:"VCE",n:"🚢 Venedik (ITVCE)"},
+    {v:"FCO",n:"✈️ Roma Fiumicino (FCO) — Hava yolu"},
+    {v:"MXP",n:"✈️ Milano Malpensa (MXP) — Hava yolu"},
+    {v:"OTHER_IT",n:"📍 Diğer İtalya şehri"},
+  ],
+  JP:[
+    {v:"YOK",n:"🚢 Yokohama (JPYOK)"},
+    {v:"OSA",n:"🚢 Osaka / Kobe (JPOSA)"},
+    {v:"NGO",n:"🚢 Nagoya (JPNGO)"},
+    {v:"NRT",n:"✈️ Tokyo Narita (NRT) — Hava yolu"},
+    {v:"KIX",n:"✈️ Osaka Kansai (KIX) — Hava yolu"},
+    {v:"OTHER_JP",n:"📍 Diğer Japonya şehri"},
+  ],
+  KR:[
+    {v:"PUS",n:"🚢 Busan (KRPUS) — Ana liman"},
+    {v:"ICN_SEA",n:"🚢 Incheon (KRICN)"},
+    {v:"ICN_AIR",n:"✈️ Incheon (ICN) — Hava yolu"},
+    {v:"OTHER_KR",n:"📍 Diğer G. Kore şehri"},
+  ],
+  IN:[
+    {v:"NHV",n:"🚢 Nhava Sheva / Mumbai (INNHV)"},
+    {v:"MAA",n:"🚢 Chennai (INMAA)"},
+    {v:"KLA",n:"🚢 Kandla (INKLA)"},
+    {v:"COK",n:"🚢 Kochi (INCOK)"},
+    {v:"BOM_AIR",n:"✈️ Mumbai (BOM) — Hava yolu"},
+    {v:"BLR_AIR",n:"✈️ Bangalore (BLR) — Hava yolu"},
+    {v:"OTHER_IN",n:"📍 Diğer Hindistan şehri"},
+  ],
+  FR:[
+    {v:"MRS",n:"🚢 Marsilya (FRMRS)"},
+    {v:"LHV",n:"🚢 Le Havre (FRLEH)"},
+    {v:"CDG",n:"✈️ Paris Charles de Gaulle (CDG) — Hava yolu"},
+    {v:"LYS",n:"✈️ Lyon Saint-Exupery (LYS) — Hava / Kara"},
+    {v:"OTHER_FR",n:"📍 Diğer Fransa şehri"},
+  ],
+  GB:[
+    {v:"FXT",n:"🚢 Felixstowe (GBFXT) — En büyük UK limanı"},
+    {v:"SOT",n:"🚢 Southampton (GBSOU)"},
+    {v:"LHR",n:"✈️ Londra Heathrow (LHR) — Hava yolu"},
+    {v:"LGW",n:"✈️ Londra Gatwick (LGW) — Hava yolu"},
+    {v:"OTHER_GB",n:"📍 Diğer Ingiltere sehri"},
+  ],
+  NL:[
+    {v:"RTM",n:"🚢 Rotterdam (NLRTM) — Avrupa'nin en buyuk limani"},
+    {v:"AMS",n:"✈️ Amsterdam Schiphol (AMS) — Hava yolu"},
+    {v:"OTHER_NL",n:"📍 Diger Hollanda sehri"},
+  ],
+  BE:[
+    {v:"ANR",n:"🚢 Antwerp (BEANR) — Buyuk transit liman"},
+    {v:"ZBR",n:"🚢 Zeebr_gge (BEZEE)"},
+    {v:"BRU",n:"✈️ Bruksel (BRU) — Hava yolu"},
+    {v:"OTHER_BE",n:"📍 Diger Belcika sehri"},
+  ],
+  TW:[
+    {v:"KEL",n:"🚢 Keelung (TWKEL)"},
+    {v:"KHH",n:"🚢 Kaohsiung (TWKHH)"},
+    {v:"TPE",n:"✈️ Taipei Taoyuan (TPE) — Hava yolu"},
+    {v:"OTHER_TW",n:"📍 Diger Tayvan sehri"},
+  ],
+  VN:[
+    {v:"HCM",n:"🚢 Ho Chi Minh / Cat Lai (VNSGN)"},
+    {v:"HPH",n:"🚢 Hai Phong (VNHPH)"},
+    {v:"SGN",n:"✈️ Ho Chi Minh (SGN) — Hava yolu"},
+    {v:"OTHER_VN",n:"📍 Diger Vietnam sehri"},
+  ],
+  BD:[
+    {v:"CGP",n:"🚢 Chittagong (BDCGP) — Ana liman"},
+    {v:"DAC",n:"✈️ Dakka (DAC) — Hava yolu"},
+    {v:"OTHER_BD",n:"📍 Diger Banglades sehri"},
+  ],
+  PK:[
+    {v:"KHI",n:"🚢 Karachi (PKKHI) — Ana liman"},
+    {v:"KHI_AIR",n:"✈️ Karachi Jinnah (KHI) — Hava yolu"},
+    {v:"LHE_AIR",n:"✈️ Lahore (LHE) — Hava yolu"},
+    {v:"OTHER_PK",n:"📍 Diger Pakistan sehri"},
+  ],
+  OT:[
+    {v:"OTHER",n:"📍 Sehir / liman adini girin"},
+  ],
+};
+
+function populateCities(orig){
+  const sel=$('oport');
+  if(!sel)return;
+  const cities=CITY_DB[orig]||CITY_DB.OT;
+  sel.innerHTML=cities.map(c=>`<option value="${c.v}">${c.n}</option>`).join('');
+  onPortChange();
+}
+
+function onPortChange(){
+  const sel=$('oport');
+  if(!sel)return;
+  const val=sel.value||'';
+  const customInput=$('oportCustom');
+  const hint=$('oportHint');
+  const isOther=val.startsWith('OTHER')||val==='';
+  if(customInput)customInput.style.display=isOther?'block':'none';
+  if(hint){
+    if(!isOther&&val){
+      const txt=sel.options[sel.selectedIndex]?.text||'';
+      const clean=txt.split('—')[0].replace(/^[^A-Za-z0-9\u00C0-\u024F]+/,'').trim();
+      hint.textContent='Secili: '+clean;
+    }else if(isOther){
+      hint.textContent='Sehir veya liman adini asagiya yazin.';
+    }else{hint.textContent='';}
+  }
+}
+
+function getPortName(){
+  const sel=$('oport');
+  if(!sel)return'—';
+  const val=sel.value||'';
+  const isOther=val.startsWith('OTHER')||val==='';
+  if(isOther){const c=$('oportCustom');return(c&&c.value.trim())||'Belirtilmemis';}
+  const txt=sel.options[sel.selectedIndex]?.text||'';
+  return txt.split('—')[0].replace(/^[^A-Za-z0-9\u00C0-\u024F]+/,'').trim();
+}
+
+function onOrigChange(){
+  const orig=$('orig').value;
+  const isEU=EU_ORIGS.includes(orig);
+  $('roadOpt').classList.toggle('hidden',!isEU);
+  if(S.shipping==='ROAD'&&!isEU){
+    const seaEl=document.querySelector('#shgrp .to');
+    if(seaEl){selGrp('shgrp',seaEl);S.shipping='SEA';$('seaCard').classList.remove('hidden');$('roadCard').classList.add('hidden');}
+  }
+  populateCities(orig);
+}
+function onQtyChange(){
+  // If weight already populated, warn
+}
+
+// ── Auto Weight & Volume ──
+function autoWeightVol(){
+  const prod=S.product;
+  const qty=parseFloat($('qty').value)||1;
+  if(!prod){showBanner('awvBanner','⚠️ Önce ürün seçin.','bn-a');return;}
+  const wf=S.boxed?prod.bwf:1.0;
+  const vf=S.boxed?prod.bvf:1.0;
+  const totalKg=prod.wpu*qty*wf;
+  const totalM3=prod.vpu*qty*vf;
+  $('gwt').value=round2(totalKg);
+  $('gvol').value=round4(totalM3);
+  const boxStr=S.boxed?'kutulu':'kutusuz';
+  showBanner('awvBanner',`✅ Tahmin: ${fmt(totalKg)} kg · ${totalM3.toFixed(3)} m³ (${qty} adet, ${boxStr}) — düzenleyebilirsiniz.`,'bn-g');
+}
+
+// ── Auto Freight ──
+function autoFreight(){
+  const orig=$('orig').value;
+  const ship=S.shipping;
+  const cont=S.container;
+  const totalKg=parseFloat($('gwt').value)||0;
+  const totalM3=parseFloat($('gvol').value)||0;
+  if(!totalKg&&!totalM3){showBanner('frtBanner','⚠️ Önce Step 2\'de ağırlık & hacim hesaplayın.','bn-a');return;}
+  let fUSD=0,note='';
+  if(ship==='SEA'){
+    if(cont==='LCL'){
+      const cbm=Math.max(totalM3,totalKg/1000,0.1);
+      const rate=FR.SEA_LCL[orig]||FR.SEA_LCL.OT;
+      fUSD=cbm*rate;
+      note=`LCL ${cbm.toFixed(2)} CBM × $${rate}/CBM`;
+    }else if(cont==='FCL20'){fUSD=FR.SEA_FCL20[orig]||FR.SEA_FCL20.OT;note='FCL 20\' sabit navlun';}
+    else{fUSD=FR.SEA_FCL40[orig]||FR.SEA_FCL40.OT;note='FCL 40\' sabit navlun';}
+  }else if(ship==='AIR'){
+    const volKg=totalM3*167;
+    const chg=Math.max(totalKg,volKg);
+    const rate=FR.AIR[orig]||FR.AIR.OT;
+    fUSD=chg*rate;
+    note=`Hava ${chg.toFixed(1)} kg × $${rate}/kg`;
+  }else if(ship==='ROAD'){
+    const rate=FR.ROAD[orig]||FR.ROAD.OT;
+    fUSD=totalKg*rate;
+    note=`Kara ${totalKg.toFixed(0)} kg × $${rate}/kg`;
+  }
+  $('frt').value=Math.round(fUSD);$('fcur').value='USD';
+  showBanner('frtBanner',`✅ Tahmini navlun: $${Math.round(fUSD)} USD (${note}) — düzenleyebilirsiniz.`,'bn-g');
+}
+
+// ── Auto Fixed Costs ──
+function autoFixed(){
+  const ship=S.shipping;
+  const r=FC_RATES[ship]||FC_RATES.SEA;
+  $('fcB').value=r.broker;$('fcDosya').value=r.dosya;$('fcS').value=r.antrepo;
+  $('fcP').value=r.liman;$('fcD').value=r.domestic;
+  const routeMap={SEA:'Deniz Yolu',AIR:'Hava Yolu',ROAD:'Kara Yolu'};
+  showBanner('fixedBanner',`✅ ${routeMap[ship]} için 2025 rayiçleri dolduruldu — düzenleyebilirsiniz.`,'bn-g');
+}
+
+// ── Navigation ──
+function goStep(n){
+  if(n>=3){const up=parseFloat($('uprice').value);if(!up||up<=0){alert('Lütfen birim fiyat girin.');return;}}
   S.step=n;
   [1,2,3,4].forEach(i=>{
-    const p=$(`p${i}`); if(p) p.classList.toggle('hidden',i!==n);
+    const p=$(`p${i}`);if(p)p.classList.toggle('hidden',i!==n);
     const si=document.querySelector(`.si[data-s="${i}"]`);
     if(si){si.classList.remove('active','done');if(i===n)si.classList.add('active');else if(i<n)si.classList.add('done');}
   });
   window.scrollTo({top:0,behavior:'smooth'});
 }
-// ══════════════════════════════════════════
-// CALCULATION ENGINE
-// ══════════════════════════════════════════
-function getRate(cur) {
-  const m=parseFloat($('mrate')?.value);
-  const baseCur=$('ucur')?.value||'USD';
-  if(!isNaN(m)&&m>0) {
-    if(cur===baseCur) return m;
-    return m*(S.rates[cur]/S.rates[baseCur]);
-  }
+
+// ── Calculation ──
+function getRate(cur){
+  const m=parseFloat($('mrate')?.value);const bc=$('ucur')?.value||'USD';
+  if(!isNaN(m)&&m>0){if(cur===bc)return m;return m*(S.rates[cur]/S.rates[bc]);}
   return S.rates[cur]||1;
 }
-function toTRY(amt,cur){return amt*getRate(cur);}
-function calc() {
-  const up   = parseFloat($('uprice').value)||0;
-  const qty  = parseFloat($('qty').value)||1;
-  const qu   = $('qunit').value;
-  const pc   = $('ucur').value;
-  const frt  = parseFloat($('frt').value)||0;
-  const fc   = $('fcur').value;
-  const ins  = parseFloat($('ins').value)||0;
-  const mgn  = parseFloat($('mgn').value)||0;
-  const gvR  = parseFloat($('tGV').value)/100||0;
-  const kdvR = parseFloat($('tKDV').value)/100||0.20;
-  const otvR = parseFloat($('tOTV').value)/100||0;
-  const kkdfR= parseFloat($('tKKDF').value)/100||0;
-  const dagR = parseFloat($('tDamga').value)/100||0.00948;
-  const adR  = parseFloat($('tAD').value)/100||0;
+function toTRY(a,cur){return a*getRate(cur);}
+
+function calc(){
+  const up=parseFloat($('uprice').value)||0;
+  const qty=parseFloat($('qty').value)||1;
+  const qu=$('qunit').value;
+  const pc=$('ucur').value;
+  const frt=parseFloat($('frt').value)||0;
+  const fc=$('fcur').value;
+  const ins=parseFloat($('ins').value)||0;
+  const mgn=parseFloat($('mgn').value)||0;
+
+  const gvR=parseFloat($('tGV').value)/100||0;
+  const kdvR=parseFloat($('tKDV').value)/100||0.20;
+  const otvR=parseFloat($('tOTV').value)/100||0;
+  const kkdfR=parseFloat($('tKKDF').value)/100||0;
+  const dagR=parseFloat($('tDamga').value)/100||0.00948;
+  const adR=parseFloat($('tAD').value)/100||0;
+
   const fcB=parseFloat($('fcB').value)||0;
+  const fcDosya=parseFloat($('fcDosya').value)||0;
   const fcS=parseFloat($('fcS').value)||0;
   const fcP=parseFloat($('fcP').value)||0;
   const fcD=parseFloat($('fcD').value)||0;
+  const fcTest=parseFloat($('fcTest').value)||0;
   const fcO=parseFloat($('fcO').value)||0;
-  const fixed=fcB+fcS+fcP+fcD+fcO;
-  // Convert goods to TRY
-  const upTRY  = toTRY(up,pc);
-  const goodsTRY = upTRY*qty;
-  // Freight (0 if CIF)
-  const frtTRY = S.incoterm==='CIF' ? 0 : toTRY(frt,fc);
-  // Insurance
-  const insTRY = ins>0 ? toTRY(ins,'USD') : (goodsTRY+frtTRY)*0.004;
-  // CIF = Gümrük Matrahı
-  const cifTRY = goodsTRY + frtTRY + insTRY;
-  // Taxes
-  const gvTRY   = cifTRY * gvR;
-  const adTRY   = cifTRY * adR;
-  const kkdfTRY = cifTRY * kkdfR;
-  const otvBase = cifTRY + gvTRY + adTRY;
-  const otvTRY  = otvBase * otvR;
-  const kdvBase = otvBase + otvTRY + kkdfTRY;
-  const kdvTRY  = kdvBase * kdvR;
-  const dagTRY  = cifTRY * dagR;
-  const totalTax = gvTRY+adTRY+kkdfTRY+otvTRY+kdvTRY+dagTRY;
-  const totalCost = cifTRY + totalTax + fixed;
-  const unitCost = totalCost / qty;
-  const salePrice = unitCost * (1+mgn/100);
-  S.result = {up,qty,qu,pc,goodsTRY,frtTRY,insTRY,cifTRY,
-    gvTRY,adTRY,kkdfTRY,otvTRY,kdvTRY,dagTRY,
-    totalTax,fixed,totalCost,unitCost,salePrice,mgn,
+
+  const upTRY=toTRY(up,pc);
+  const goodsTRY=upTRY*qty;
+  const frtTRY=S.incoterm==='CIF'?0:toTRY(frt,fc);
+  const insTRY=ins>0?toTRY(ins,'USD'):(goodsTRY+frtTRY)*0.004;
+  const cifTRY=goodsTRY+frtTRY+insTRY;
+
+  const gvTRY=cifTRY*gvR;
+  const adTRY=cifTRY*adR;
+  const kkdfTRY=cifTRY*kkdfR;
+  const otvTRY=(cifTRY+gvTRY+adTRY)*otvR;
+  const kdvTRY=(cifTRY+gvTRY+adTRY+otvTRY+kkdfTRY)*kdvR;
+  const dagTRY=cifTRY*dagR;
+
+  const totalTax=gvTRY+adTRY+kkdfTRY+otvTRY+kdvTRY+dagTRY;
+  const varCost=cifTRY+totalTax;
+  const fixed=fcB+fcDosya+fcS+fcP+fcD+fcTest+fcO;
+  const totalCost=varCost+fixed;
+  const unitCost=totalCost/qty;
+  const salePrice=unitCost*(1+mgn/100);
+
+  S.result={up,qty,qu,pc,goodsTRY,frtTRY,insTRY,cifTRY,
+    gvTRY,adTRY,kkdfTRY,otvTRY,kdvTRY,dagTRY,totalTax,
+    varCost,fixed,fcB,fcDosya,fcS,fcP,fcD,fcTest,fcO,
+    totalCost,unitCost,salePrice,mgn,
     gvR,kdvR,otvR,kkdfR,dagR,adR};
-  renderResult();
-  goStep(4);
+  renderResult();goStep(4);
 }
-// ══════════════════════════════════════════
-// RENDER RESULTS
-// ══════════════════════════════════════════
+
+// ── Render Results ──
 function fmt(n){return n.toLocaleString('tr-TR',{minimumFractionDigits:2,maximumFractionDigits:2});}
-function fTRY(n){return `₺${fmt(n)}`;}
-function pct(r){const p=(r*100); return `%${p%1===0?p.toFixed(0):p.toFixed(1)}`;}
-function renderResult() {
-  const r = S.result;
-  $('rv1').textContent = fTRY(r.unitCost);
-  $('rv2').textContent = `${fmt(r.qty)} ${r.qu} için`;
-  $('rv3').textContent = `≈ $${fmt(r.unitCost/S.rates.USD)} USD`;
-  $('rmgn').textContent = r.mgn;
-  $('rv4').textContent = fTRY(r.salePrice);
-  // Breakdown
-  const rows = [
-    ['Mal Bedeli',r.goodsTRY,false],
-    ['Navlun',r.frtTRY,r.frtTRY===0],
-    ['Sigorta (oto %0.4)',r.insTRY,false],
-    ['Gümrük Matrahı (CIF)',r.cifTRY,false,true],
-    [`Gümrük Vergisi (${pct(r.gvR)})`,r.gvTRY,r.gvTRY===0],
-    [`Anti-Damping / İGV (${pct(r.adR)})`,r.adTRY,r.adTRY===0],
-    [`KKDF (${pct(r.kkdfR)})`,r.kkdfTRY,r.kkdfTRY===0],
-    [`ÖTV (${pct(r.otvR)})`,r.otvTRY,r.otvTRY===0],
-    [`KDV (${pct(r.kdvR)})`,r.kdvTRY,false],
-    [`Damga Vergisi (${pct(r.dagR)})`,r.dagTRY,false],
-    ['Toplam Vergi',r.totalTax,false,true],
-    ['Sabit Masraflar',r.fixed,r.fixed===0],
+function fTRY(n){return`₺${fmt(n)}`;}
+function fU(n){return`₺${fmt(n/S.result.qty)}`;}
+function pct(r){const p=r*100;return`%${p%1===0?p.toFixed(0):p.toFixed(1)}`;}
+
+function renderResult(){
+  const r=S.result;
+  $('rv1').textContent=fTRY(r.unitCost);
+  $('rv2').textContent=`${fmt(r.qty)} ${r.qu} için hesaplandı`;
+  $('rv3').textContent=`≈ $${fmt(r.unitCost/S.rates.USD)} USD`;
+  $('rmgn').textContent=r.mgn;
+  $('rv4').textContent=fTRY(r.salePrice);
+
+  // ── Özet Maliyet Tablosu ──
+  const segs3=[
+    ['th','DEĞİŞKEN MALİYETLER','TOPLAM','BİRİM'],
+    ['r','Mal Bedeli',r.goodsTRY],
+    ['r','Navlun',r.frtTRY,r.frtTRY===0],
+    ['r','Sigorta (%0.4 oto)',r.insTRY],
+    ['r','Gümrük Matrahı (CIF)',r.cifTRY,false,true],
+    ['r',`Gümrük Vergisi (${pct(r.gvR)})`,r.gvTRY,r.gvTRY===0],
+    ['r',`Anti-Dumping (${pct(r.adR)})`,r.adTRY,r.adTRY===0],
+    ['r',`KKDF (${pct(r.kkdfR)})`,r.kkdfTRY,r.kkdfTRY===0],
+    ['r',`ÖTV (${pct(r.otvR)})`,r.otvTRY,r.otvTRY===0],
+    ['r',`KDV (${pct(r.kdvR)})`,r.kdvTRY],
+    ['r',`Damga (${pct(r.dagR)})`,r.dagTRY],
+    ['sub','Değişken Alt Toplam',r.varCost],
+    ['th','SABİT & LOJİSTİK MALİYETLER','',''],
+    ['r','Gümrük Müşaviri Kom.',r.fcB,r.fcB===0],
+    ['r','Dosya / Beyanname',r.fcDosya,r.fcDosya===0],
+    ['r','Antrepo / Depolama',r.fcS,r.fcS===0],
+    ['r','Liman / Havalimanı THC',r.fcP,r.fcP===0],
+    ['r','Yurt İçi Nakliye',r.fcD,r.fcD===0],
+    ['r','Test & Belgelendirme',r.fcTest,r.fcTest===0],
+    ['r','Diğer',r.fcO,r.fcO===0],
+    ['sub','Sabit Alt Toplam',r.fixed],
   ];
-  $('btbl').innerHTML = rows.map(([l,v,z,sec])=>
-    `<tr class="${sec?'tr':''} ${z?'zero':''}">`+
-    `<td>${l}</td><td>${fTRY(v)}</td></tr>`
-  ).join('')+
-  `<tr class="tr"><td>🏁 Toplam (${fmt(r.qty)} ${r.qu})</td><td>${fTRY(r.totalCost)}</td></tr>`+
-  `<tr class="tr"><td>📌 Birim Maliyet</td><td>${fTRY(r.unitCost)}</td></tr>`+
-  `<tr class="tr"><td>🎯 Satış Fiyatı (%${r.mgn} kâr)</td><td style="color:var(--gold)">${fTRY(r.salePrice)}</td></tr>`;
-  // Donut
-  const segs = [
+
+  $('sumtbl').innerHTML=segs3.map(s=>{
+    if(s[0]==='th')return`<tr class="sec-hdr"><td colspan="2">${s[1]}</td><td style="text-align:right;font-size:9.5px;color:var(--txt3)">${s[2]}</td><td style="text-align:right;font-size:9.5px;color:var(--txt3)">${s[3]}</td></tr>`;
+    if(s[0]==='sub')return`<tr class="subtot"><td colspan="2">${s[1]}</td><td>${fTRY(s[2])}</td><td>${fU(s[2])}</td></tr>`;
+    const z=s[3]||false;const sec=s[4]||false;
+    return`<tr class="${z?'zero':''} ${sec?'subtot':''}" style="${sec?'background:var(--s2)':''}">`+
+      `<td colspan="2">${s[1]}</td><td>${fTRY(s[2])}</td><td>${fU(s[2])}</td></tr>`;
+  }).join('')+
+  `<tr class="grandtot"><td colspan="2">🏁 TOPLAM MALİYET</td><td>${fTRY(r.totalCost)}</td><td>${fTRY(r.unitCost)}</td></tr>`+
+  `<tr class="grandtot" style="background:var(--acc-d)"><td colspan="2">🎯 Satış Fiyatı (%${r.mgn} kâr)</td><td colspan="2" style="text-align:right;color:var(--gold)">${fTRY(r.salePrice)}</td></tr>`;
+
+  // ── Donut ──
+  const segs=[
     {l:'Mal Bedeli',v:r.goodsTRY,c:'#2f80ed'},
     {l:'Gümrük Vergisi',v:r.gvTRY,c:'#e05252'},
     {l:'KDV',v:r.kdvTRY,c:'#e89a20'},
     {l:'ÖTV',v:r.otvTRY,c:'#8b5cf6'},
     {l:'Navlun & Sigorta',v:r.frtTRY+r.insTRY,c:'#0ea672'},
-    {l:'KKDF & Diğer',v:r.kkdfTRY+r.adTRY+r.dagTRY,c:'#f97316'},
+    {l:'KKDF & Diğer Vergi',v:r.kkdfTRY+r.adTRY+r.dagTRY,c:'#f97316'},
     {l:'Sabit Masraflar',v:r.fixed,c:'#6366f1'},
   ].filter(x=>x.v>0);
-  drawDonut(segs, r.totalCost);
-  // Summary text
-  const pname = S.product ? S.product.n : 'Belirtilmemiş';
-  const pgtip = S.product ? S.product.g : '—';
-  $('sumbox').textContent =
-`İTHALATMATİK HESAPLAMA ÖZETI
-${'═'.repeat(34)}
-Ürün        : ${pname}
-GTİP        : ${pgtip}
-Miktar      : ${fmt(r.qty)} ${r.qu}
-Birim Fiyat : ${fmt(r.up)} ${r.pc}
-Teslim Şekli: ${S.incoterm}
-${'-'.repeat(34)}
-Mal Bedeli  : ${fTRY(r.goodsTRY)}
-Navlun      : ${fTRY(r.frtTRY)}
-Sigorta     : ${fTRY(r.insTRY)}
-CIF Matrah  : ${fTRY(r.cifTRY)}
-${'-'.repeat(34)}
-Gümrük Verg.: ${fTRY(r.gvTRY)}  (${pct(r.gvR)})
-Anti-Dumping: ${fTRY(r.adTRY)}
-KKDF        : ${fTRY(r.kkdfTRY)}
-ÖTV         : ${fTRY(r.otvTRY)}  (${pct(r.otvR)})
-KDV         : ${fTRY(r.kdvTRY)}  (${pct(r.kdvR)})
-Damga       : ${fTRY(r.dagTRY)}
-Sabit Masraf: ${fTRY(r.fixed)}
-${'─'.repeat(34)}
-Toplam      : ${fTRY(r.totalCost)}
-Birim Maliyet: ${fTRY(r.unitCost)}
-Satış Fiyatı: ${fTRY(r.salePrice)} (%${r.mgn} kâr)
-${'═'.repeat(34)}
-${new Date().toLocaleDateString('tr-TR')} – İthalatMatik`;
+  drawDonut(segs,r.totalCost);
+
+  // ── Metin Özeti ──
+  const pn=S.product?S.product.n:'Belirtilmemiş';
+  const pg=S.product?S.product.g:'—';
+  const boxStr=S.boxed?'Kutulu':'Kutusuz';
+  const shipStr={SEA:'Deniz Yolu',AIR:'Hava Yolu',ROAD:'Kara Yolu'}[S.shipping]||S.shipping;
+  $('sumbox').textContent=
+`İTHALATMATİK — LANDED COST HESAPLAMA
+${'═'.repeat(38)}
+Ürün          : ${pn}
+GTİP          : ${pg}
+Miktar        : ${fmt(r.qty)} ${r.qu}  (${boxStr})
+Birim Fiyat   : ${fmt(r.up)} ${r.pc}
+Teslim Şekli  : ${S.incoterm}  ·  ${shipStr}
+Çıkış Noktası : ${getPortName()}
+${'─'.repeat(38)}
+DEĞİŞKEN MALİYETLER
+Mal Bedeli    : ${fTRY(r.goodsTRY)}
+Navlun        : ${fTRY(r.frtTRY)}
+Sigorta       : ${fTRY(r.insTRY)}
+CIF Matrah    : ${fTRY(r.cifTRY)}
+Gümrük Vergisi: ${fTRY(r.gvTRY)}   (${pct(r.gvR)})
+Anti-Dumping  : ${fTRY(r.adTRY)}
+KKDF          : ${fTRY(r.kkdfTRY)}
+ÖTV           : ${fTRY(r.otvTRY)}   (${pct(r.otvR)})
+KDV           : ${fTRY(r.kdvTRY)}   (${pct(r.kdvR)})
+Damga         : ${fTRY(r.dagTRY)}
+Değ. Alt Top. : ${fTRY(r.varCost)}
+${'─'.repeat(38)}
+SABİT MALİYETLER
+Müşavir Kom.  : ${fTRY(r.fcB)}
+Dosya Masrafı : ${fTRY(r.fcDosya)}
+Antrepo       : ${fTRY(r.fcS)}
+Liman/THC     : ${fTRY(r.fcP)}
+Yurt İçi Nak. : ${fTRY(r.fcD)}
+Test/Belgel.  : ${fTRY(r.fcTest)}
+Sabit Alt Top.: ${fTRY(r.fixed)}
+${'═'.repeat(38)}
+TOPLAM         : ${fTRY(r.totalCost)}
+BİRİM MALİYET  : ${fTRY(r.unitCost)}
+SATIŞ FİYATI   : ${fTRY(r.salePrice)}  (%${r.mgn} kâr)
+${'═'.repeat(38)}
+${new Date().toLocaleDateString('tr-TR')} – İthalmatik`;
 }
-function drawDonut(segs, total) {
-  const cv = $('donut'), ctx = cv.getContext('2d');
+
+function drawDonut(segs,total){
+  const cv=$('donut'),ctx=cv.getContext('2d');
   const cx=70,cy=70,or=62,ir=40;
   ctx.clearRect(0,0,140,140);
-  let ang = -Math.PI/2;
-  segs.forEach(seg=>{
-    const a=(seg.v/total)*2*Math.PI;
-    ctx.beginPath();ctx.moveTo(cx,cy);
-    ctx.arc(cx,cy,or,ang,ang+a);ctx.closePath();
-    ctx.fillStyle=seg.c;ctx.fill();
-    ang+=a;
-  });
-  // hole
-  ctx.beginPath();ctx.arc(cx,cy,ir,0,2*Math.PI);
-  ctx.fillStyle='#0d1829';ctx.fill();
-  // labels
-  ctx.fillStyle='#dce8f5';ctx.textAlign='center';
-  ctx.font='bold 10px DM Mono,monospace';ctx.fillText('TOPLAM',cx,cy-3);
-  ctx.font='8.5px DM Mono,monospace';ctx.fillStyle='#4d6e90';
-  ctx.fillText(fTRY(total),cx,cy+10);
-  $('cleg').innerHTML = segs.map(s=>`
-    <div class="cli">
-      <div class="cld" style="background:${s.c}"></div>
-      <div class="cll">${s.l}</div>
-      <div class="clp">${((s.v/total)*100).toFixed(1)}%</div>
-    </div>`).join('');
+  let ang=-Math.PI/2;
+  segs.forEach(s=>{const a=(s.v/total)*2*Math.PI;ctx.beginPath();ctx.moveTo(cx,cy);ctx.arc(cx,cy,or,ang,ang+a);ctx.closePath();ctx.fillStyle=s.c;ctx.fill();ang+=a;});
+  ctx.beginPath();ctx.arc(cx,cy,ir,0,2*Math.PI);ctx.fillStyle='#0d1829';ctx.fill();
+  ctx.fillStyle='#dce8f5';ctx.textAlign='center';ctx.font='bold 10px DM Mono,monospace';ctx.fillText('TOPLAM',cx,cy-3);
+  ctx.font='8px DM Mono,monospace';ctx.fillStyle='#4d6e90';ctx.fillText(fTRY(total),cx,cy+10);
+  $('cleg').innerHTML=segs.map(s=>`<div class="cli"><div class="cld" style="background:${s.c}"></div><div class="cll">${s.l}</div><div class="clp">${((s.v/total)*100).toFixed(1)}%</div></div>`).join('');
 }
-// ══════════════════════════════════════════
-// UTILS
-// ══════════════════════════════════════════
+
+// ── Utils ──
 function $(id){return document.getElementById(id);}
+function round2(n){return Math.round(n*100)/100;}
+function round4(n){return Math.round(n*10000)/10000;}
+function showBanner(id,msg,cls){const el=$(id);if(!el)return;el.className=`banner ${cls}`;el.textContent=msg;el.classList.remove('hidden');}
 function copySum(){
-  navigator.clipboard.writeText($('sumbox').textContent).then(()=>{
-    const b=$('copybtn');b.textContent='✅ Kopyalandı';
-    setTimeout(()=>b.textContent='📋 Kopyala',2200);
-  }).catch(()=>{
-    const ta=document.createElement('textarea');
-    ta.value=$('sumbox').textContent;
-    document.body.appendChild(ta);ta.select();
-    document.execCommand('copy');document.body.removeChild(ta);
-  });
+  navigator.clipboard.writeText($('sumbox').textContent).then(()=>{$('copybtn').textContent='✅ Kopyalandı';setTimeout(()=>$('copybtn').textContent='📋 Kopyala',2200);}).catch(()=>{const t=document.createElement('textarea');t.value=$('sumbox').textContent;document.body.appendChild(t);t.select();document.execCommand('copy');document.body.removeChild(t);});
 }
 function newCalc(){
-  S.product=null;S.result=null;
-  clearProd();
-  ['uprice','qty','gwt','frt','ins','mrate'].forEach(id=>{const el=$(id);if(el)el.value=id==='qty'?'1':''});
-  $('fcB').value=0;$('fcS').value=0;$('fcP').value=0;$('fcD').value=0;$('fcO').value=0;
-  $('fcAutoTag').style.display='none';$('fcAutoHint').style.display='none';
-  $('mgn').value=20;
+  S.product=null;S.result=null;clearProd();
+  ['uprice','qty','gwt','gvol','frt','ins','mrate'].forEach(id=>{const e=$(id);if(e)e.value=id==='qty'?'1':'';});
+  $('fcB').value=5500;$('fcDosya').value=900;$('fcS').value=1200;$('fcP').value=3500;$('fcD').value=2500;$('fcTest').value=0;$('fcO').value=0;$('mgn').value=20;
+  ['awvBanner','frtBanner','fixedBanner'].forEach(id=>{const e=$(id);if(e)e.classList.add('hidden');});
 }
-// INIT
+
+// ── Init ──
 loadRates();
-// qty değişince ağırlık/hacim güncelle
-$('qty').addEventListener('input', autoFillDims);
-$('volRow').style.display='';
 $('airCard').classList.add('hidden');
+$('roadCard').classList.add('hidden');
+$('roadOpt').classList.add('hidden');
+populateCities($('orig').value);
 </script>
 </body>
 </html>
