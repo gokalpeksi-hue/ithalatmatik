@@ -1,1149 +1,909 @@
 <!DOCTYPE html>
 <html lang="tr">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-<title>İthalatMatik – Türkiye İthalat Maliyet Hesaplama</title>
-
-<!-- PWA -->
-<link rel="manifest" href="manifest.json">
-<meta name="theme-color" content="#1a56db">
-<meta name="mobile-web-app-capable" content="yes">
-<meta name="apple-mobile-web-app-capable" content="yes">
-<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-<meta name="apple-mobile-web-app-title" content="İthalatMatik">
-
-<!-- İkonlar -->
-<link rel="icon" href="icon.svg" type="image/svg+xml">
-<link rel="apple-touch-icon" href="icon-192.png">
-
-<!-- SEO / Social -->
-<meta name="description" content="Türkiye ithalat landed cost hesaplama: gümrük vergisi, KDV, nakliye, test maliyeti dahil birim maliyet">
-<meta property="og:title" content="İthalatMatik">
-<meta property="og:description" content="Türkiye İthalat Landed Cost Hesaplama">
-<meta property="og:image" content="icon-512.png">
-<style>
-:root {
-  --primary: #1a56db;
-  --primary-dark: #1e429f;
-  --green: #059669;
-  --orange: #d97706;
-  --red: #dc2626;
-  --bg: #f1f5f9;
-  --card: #ffffff;
-  --border: #e2e8f0;
-  --text: #0f172a;
-  --muted: #64748b;
-  --radius: 12px;
-}
-* { box-sizing: border-box; margin: 0; padding: 0; }
-body { font-family: 'Segoe UI', system-ui, sans-serif; background: var(--bg); color: var(--text); min-height: 100vh; }
-
-/* HEADER */
-.header {
-  background: linear-gradient(135deg, #1e3a8a 0%, #1a56db 100%);
-  padding: 18px 32px;
-  display: flex; align-items: center; gap: 14px;
-  box-shadow: 0 2px 12px rgba(0,0,0,0.2);
-}
-.header-logo { font-size: 32px; }
-.header-title { color: white; }
-.header-title h1 { font-size: 22px; font-weight: 800; letter-spacing: -0.5px; }
-.header-title p { font-size: 13px; opacity: 0.75; margin-top: 2px; }
-
-/* KUR BANDI */
-.kur-band {
-  background: #1e3a8a;
-  color: white;
-  padding: 8px 32px;
-  display: flex; align-items: center; gap: 20px;
-  font-size: 13px; flex-wrap: wrap;
-  border-bottom: 1px solid rgba(255,255,255,0.1);
-}
-.kur-item { display: flex; align-items: center; gap: 6px; }
-.kur-label { opacity: 0.65; }
-.kur-val { font-weight: 700; font-size: 14px; }
-.kur-live { display: flex; align-items: center; gap: 5px; margin-left: auto; font-size: 12px; opacity: 0.65; }
-.dot { width: 7px; height: 7px; border-radius: 50%; background: #34d399; animation: blink 2s infinite; }
-@keyframes blink { 0%,100%{opacity:1} 50%{opacity:0.3} }
-
-/* WIZARD STEPS */
-.wizard-nav {
-  background: white;
-  border-bottom: 1px solid var(--border);
-  padding: 0 32px;
-  display: flex; align-items: stretch;
-}
-.step-btn {
-  display: flex; align-items: center; gap: 10px;
-  padding: 16px 20px;
-  border: none; background: none; cursor: pointer;
-  font-size: 14px; font-weight: 500; color: var(--muted);
-  border-bottom: 3px solid transparent;
-  transition: all 0.2s; white-space: nowrap;
-}
-.step-btn.active { color: var(--primary); border-bottom-color: var(--primary); }
-.step-btn.done { color: var(--green); }
-.step-num {
-  width: 26px; height: 26px; border-radius: 50%;
-  display: flex; align-items: center; justify-content: center;
-  font-size: 12px; font-weight: 700;
-  background: #e2e8f0; color: var(--muted);
-  flex-shrink: 0;
-}
-.step-btn.active .step-num { background: var(--primary); color: white; }
-.step-btn.done .step-num { background: var(--green); color: white; }
-.step-arrow { color: var(--border); padding: 0 4px; display: flex; align-items: center; font-size: 18px; }
-
-/* MAIN */
-.main { max-width: 900px; margin: 0 auto; padding: 28px 20px; }
-
-/* STEP PANELS */
-.step-panel { display: none; }
-.step-panel.active { display: block; }
-
-/* CARDS */
-.card {
-  background: var(--card);
-  border: 1px solid var(--border);
-  border-radius: var(--radius);
-  padding: 24px;
-  margin-bottom: 20px;
-  box-shadow: 0 1px 3px rgba(0,0,0,0.04);
-}
-.card-title {
-  font-size: 15px; font-weight: 700; color: var(--primary-dark);
-  margin-bottom: 18px; display: flex; align-items: center; gap: 8px;
-  padding-bottom: 12px; border-bottom: 2px solid #eff6ff;
-}
-
-/* SEARCH */
-.search-wrap { position: relative; margin-bottom: 20px; }
-.search-input {
-  width: 100%; padding: 14px 14px 14px 46px;
-  border: 2px solid var(--border); border-radius: var(--radius);
-  font-size: 16px; outline: none; transition: border-color 0.2s;
-}
-.search-input:focus { border-color: var(--primary); box-shadow: 0 0 0 4px rgba(26,86,219,0.08); }
-.search-icon { position: absolute; left: 14px; top: 50%; transform: translateY(-50%); font-size: 20px; }
-
-/* PRODUCT GRID */
-.product-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 12px; }
-.product-card {
-  border: 2px solid var(--border); border-radius: 10px;
-  padding: 14px; cursor: pointer; transition: all 0.15s;
-  background: white; text-align: left;
-}
-.product-card:hover { border-color: var(--primary); background: #eff6ff; transform: translateY(-1px); }
-.product-card.selected { border-color: var(--primary); background: #eff6ff; box-shadow: 0 0 0 3px rgba(26,86,219,0.15); }
-.product-icon { font-size: 28px; margin-bottom: 8px; }
-.product-name { font-size: 13px; font-weight: 600; color: var(--text); margin-bottom: 4px; }
-.product-gtip { font-size: 11px; color: var(--muted); font-family: monospace; }
-.product-tags { display: flex; gap: 4px; flex-wrap: wrap; margin-top: 6px; }
-.tag {
-  font-size: 10px; padding: 2px 6px; border-radius: 20px; font-weight: 500;
-}
-.tag-blue { background: #dbeafe; color: #1e40af; }
-.tag-green { background: #d1fae5; color: #065f46; }
-.tag-orange { background: #fef3c7; color: #92400e; }
-
-.cat-filter { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 16px; }
-.cat-btn {
-  padding: 6px 14px; border-radius: 20px; border: 1px solid var(--border);
-  background: white; cursor: pointer; font-size: 13px; color: var(--muted);
-  transition: all 0.15s;
-}
-.cat-btn:hover, .cat-btn.active { background: var(--primary); color: white; border-color: var(--primary); }
-
-.no-result { text-align: center; padding: 40px; color: var(--muted); font-size: 15px; }
-
-/* FORMS */
-.form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
-.form-full { grid-column: 1 / -1; }
-label { font-size: 13px; font-weight: 500; color: var(--muted); display: block; margin-bottom: 5px; }
-input, select {
-  width: 100%; padding: 10px 12px;
-  border: 1px solid var(--border); border-radius: 8px;
-  font-size: 14px; color: var(--text); outline: none;
-  transition: border-color 0.15s;
-}
-input:focus, select:focus { border-color: var(--primary); box-shadow: 0 0 0 3px rgba(26,86,219,0.08); }
-.input-row { display: flex; gap: 0; }
-.input-row input { border-radius: 8px 0 0 8px; border-right: none; }
-.input-row select { width: 90px; border-radius: 0 8px 8px 0; flex-shrink: 0; }
-.tip { font-size: 11px; color: var(--muted); margin-top: 4px; }
-
-/* TOGGLE BUTTONS */
-.toggle-group { display: flex; border: 1px solid var(--border); border-radius: 8px; overflow: hidden; }
-.toggle-group input[type="radio"] { display: none; }
-.toggle-group label {
-  flex: 1; text-align: center; padding: 10px 8px;
-  cursor: pointer; font-size: 13px; font-weight: 600;
-  color: var(--muted); margin: 0; transition: all 0.15s;
-}
-.toggle-group input[type="radio"]:checked + label { background: var(--primary); color: white; }
-
-/* SHIPPING CARDS */
-.shipping-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
-.ship-card {
-  border: 2px solid var(--border); border-radius: 10px;
-  padding: 20px; cursor: pointer; transition: all 0.15s; text-align: center;
-}
-.ship-card:hover { border-color: var(--primary); }
-.ship-card.selected { border-color: var(--primary); background: #eff6ff; }
-.ship-card input[type="radio"] { display: none; }
-.ship-icon { font-size: 36px; margin-bottom: 8px; }
-.ship-title { font-size: 15px; font-weight: 700; margin-bottom: 4px; }
-.ship-sub { font-size: 12px; color: var(--muted); }
-.ship-price { font-size: 11px; color: var(--green); font-weight: 600; margin-top: 6px; }
-
-/* VERGI */
-.vergi-row {
-  display: flex; align-items: center; justify-content: space-between;
-  padding: 10px 0; border-bottom: 1px solid #f8fafc;
-}
-.vergi-row:last-child { border-bottom: none; }
-.vergi-label { display: flex; align-items: center; gap: 10px; font-size: 14px; }
-.vergi-label input[type="checkbox"] { width: 16px; height: 16px; accent-color: var(--primary); cursor: pointer; }
-.vergi-input-wrap { display: flex; align-items: center; gap: 6px; }
-.vergi-input { width: 72px; text-align: right; padding: 6px 8px; }
-
-/* MASRAFLAR */
-.masraf-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-top: 8px; }
-
-/* TEST PANEL */
-.test-panel {
-  background: #fef3c7; border: 1px solid #fcd34d;
-  border-radius: 10px; padding: 16px; margin-bottom: 16px;
-}
-.test-panel-title { font-size: 14px; font-weight: 700; color: #92400e; margin-bottom: 10px; }
-.test-birim { font-size: 13px; color: #78350f; margin-top: 8px; font-weight: 600; }
-
-/* BUTONLAR */
-.btn-primary {
-  background: linear-gradient(135deg, #1a56db, #1e429f);
-  color: white; border: none; border-radius: 10px;
-  padding: 13px 28px; font-size: 15px; font-weight: 600;
-  cursor: pointer; transition: all 0.15s; width: 100%;
-}
-.btn-primary:hover { opacity: 0.92; transform: translateY(-1px); }
-.btn-secondary {
-  background: white; color: var(--primary);
-  border: 2px solid var(--primary); border-radius: 10px;
-  padding: 11px 24px; font-size: 14px; font-weight: 600;
-  cursor: pointer; transition: all 0.15s;
-}
-.btn-secondary:hover { background: #eff6ff; }
-.btn-row { display: flex; gap: 12px; margin-top: 8px; }
-
-/* SONUÇ */
-.result-header {
-  background: linear-gradient(135deg, #1e3a8a, #1a56db);
-  color: white; border-radius: var(--radius);
-  padding: 24px; margin-bottom: 20px;
-}
-.result-product { font-size: 13px; opacity: 0.75; margin-bottom: 4px; }
-.result-title { font-size: 20px; font-weight: 800; margin-bottom: 16px; }
-
-.cost-table { width: 100%; border-collapse: collapse; font-size: 14px; }
-.cost-table tr td { padding: 9px 12px; border-bottom: 1px solid rgba(255,255,255,0.1); }
-.cost-table tr td:last-child { text-align: right; font-weight: 600; }
-.cost-table .section-row td { opacity: 0.6; font-size: 12px; padding-top: 14px; }
-.cost-table .subtotal-row td { opacity: 0.8; }
-.cost-table .total-row { background: rgba(255,255,255,0.12); border-radius: 8px; }
-.cost-table .total-row td { font-size: 17px; font-weight: 800; border: none; padding: 12px; }
-.cost-table .grand-row { background: rgba(5,150,105,0.3); border-radius: 8px; }
-.cost-table .grand-row td { font-size: 20px; font-weight: 800; border: none; padding: 14px; color: #6ee7b7; }
-
-/* CHART */
-.chart-wrap { margin: 20px 0; }
-.chart-bar-row { display: flex; align-items: center; gap: 10px; margin-bottom: 8px; }
-.chart-label { font-size: 12px; color: var(--muted); width: 140px; flex-shrink: 0; text-align: right; }
-.chart-bar-bg { flex: 1; background: #f1f5f9; border-radius: 4px; height: 22px; overflow: hidden; }
-.chart-bar { height: 100%; border-radius: 4px; display: flex; align-items: center; padding-left: 8px; font-size: 11px; font-weight: 600; color: white; transition: width 0.8s ease; }
-.chart-pct { font-size: 12px; color: var(--muted); width: 40px; text-align: right; }
-
-.result-actions { display: flex; gap: 12px; flex-wrap: wrap; margin-top: 16px; }
-.result-actions button {
-  padding: 10px 18px; border-radius: 8px; border: none;
-  font-size: 13px; font-weight: 600; cursor: pointer; transition: all 0.15s;
-}
-.btn-print { background: white; color: var(--primary); border: 2px solid var(--primary); }
-.btn-new { background: var(--green); color: white; }
-.btn-copy { background: #f8fafc; color: var(--text); border: 1px solid var(--border); }
-
-/* SEÇİLİ ÜRÜN BADGE */
-.selected-product-bar {
-  background: #eff6ff; border: 1px solid #bfdbfe;
-  border-radius: 10px; padding: 12px 16px;
-  display: flex; align-items: center; gap: 12px; margin-bottom: 16px;
-}
-.sp-icon { font-size: 24px; }
-.sp-name { font-size: 15px; font-weight: 700; }
-.sp-gtip { font-size: 12px; color: var(--muted); font-family: monospace; }
-.sp-change { margin-left: auto; font-size: 12px; color: var(--primary); cursor: pointer; text-decoration: underline; }
-
-@media(max-width: 600px) {
-  .product-grid { grid-template-columns: 1fr 1fr; }
-  .form-grid { grid-template-columns: 1fr; }
-  .masraf-grid { grid-template-columns: 1fr; }
-  .shipping-grid { grid-template-columns: 1fr; }
-  .wizard-nav { overflow-x: auto; }
-  .step-btn { padding: 14px 12px; font-size: 12px; }
-  .step-arrow { display: none; }
-}
-
-@media print {
-  .header, .kur-band, .wizard-nav, .result-actions, .btn-row { display: none !important; }
-  body { background: white; }
-  .result-header { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
-}
-</style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="İthalatMatik">
+  <meta name="description" content="Türkiye ithalat landed cost hesaplama: gümrük vergisi, KDV, nakliye dahil birim maliyet">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta property="og:title" content="İthalatMatik">
+  <meta property="og:description" content="Türkiye İthalat Landed Cost Hesaplama">
+  <meta property="og:image" content="icon-512.png">
+  <meta name="theme-color" content="#060d1a">
+  <title>İthalatMatik – Türkiye İthalat Maliyet Hesaplama</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@600;700;800&family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500;9..40,600&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg:       #060d1a;
+      --s1:       #0d1829;
+      --s2:       #122035;
+      --s3:       #1b2d47;
+      --bdr:      #253550;
+      --bdr2:     #365070;
+      --txt:      #dce8f5;
+      --txt2:     #8aaac8;
+      --txt3:     #4d6e90;
+      --acc:      #2f80ed;
+      --acc2:     #5ba3f5;
+      --acc-d:    rgba(47,128,237,.14);
+      --grn:      #0ea672;
+      --grn-d:    rgba(14,166,114,.14);
+      --amb:      #e89a20;
+      --amb-d:    rgba(232,154,32,.13);
+      --red:      #e05252;
+      --red-d:    rgba(224,82,82,.13);
+      --gold:     #f5c842;
+      --r:        12px;
+      --rs:       8px;
+    }
+    *{box-sizing:border-box;margin:0;padding:0}
+    html{height:100%;scroll-behavior:smooth}
+    body{font-family:\'DM Sans\',sans-serif;background:var(--bg);color:var(--txt);min-height:100%;-webkit-font-smoothing:antialiased;line-height:1.6}
+    /* ── HEADER ── */
+    .hdr{background:var(--s1);border-bottom:1px solid var(--bdr);position:sticky;top:0;z-index:99;padding:0 16px}
+    .hdr-in{max-width:780px;margin:0 auto;display:flex;align-items:center;justify-content:space-between;height:52px;gap:12px}
+    .logo{display:flex;align-items:center;gap:9px;font-family:\'Syne\',sans-serif;font-size:17px;font-weight:700;letter-spacing:-.02em;white-space:nowrap;color:var(--txt)}
+    .logo-box{width:30px;height:30px;background:linear-gradient(135deg,var(--acc),#1456c4);border-radius:7px;display:flex;align-items:center;justify-content:center;font-size:15px;flex-shrink:0}
+    .rates{display:flex;gap:10px;overflow-x:auto;scrollbar-width:none}
+    .rates::-webkit-scrollbar{display:none}
+    .ri{display:flex;align-items:center;gap:4px;font-family:\'DM Mono\',monospace;font-size:10.5px;white-space:nowrap;color:var(--txt3)}
+    .rv{color:var(--grn);font-weight:500}
+    .rv.ld{color:var(--txt3)}
+    /* ── MAIN ── */
+    .main{max-width:780px;margin:0 auto;padding:20px 14px 80px}
+    /* ── STEP NAV ── */
+    .snav{display:flex;background:var(--s1);border:1px solid var(--bdr);border-radius:var(--r);overflow:hidden;margin-bottom:22px}
+    .si{flex:1;display:flex;flex-direction:column;align-items:center;padding:11px 6px 9px;font-size:10px;font-weight:500;color:var(--txt3);border-right:1px solid var(--bdr);cursor:default;gap:4px;transition:.15s}
+    .si:last-child{border-right:none}
+    .sn{width:20px;height:20px;border-radius:50%;background:var(--s3);border:1.5px solid var(--bdr2);display:flex;align-items:center;justify-content:center;font-size:9px;font-weight:700;font-family:\'DM Mono\',monospace;color:var(--txt3);transition:.15s}
+    .si.active{color:var(--acc2);background:var(--acc-d)}
+    .si.active .sn{background:var(--acc);border-color:var(--acc);color:#fff}
+    .si.done{color:var(--grn)}
+    .si.done .sn{background:var(--grn-d);border-color:var(--grn);color:var(--grn)}
+    .slb{font-size:10px;text-align:center;line-height:1.2}
+    /* ── CARDS ── */
+    .card{background:var(--s1);border:1px solid var(--bdr);border-radius:var(--r);padding:18px;margin-bottom:14px}
+    .ct{font-family:\'Syne\',sans-serif;font-size:12px;font-weight:700;color:var(--txt2);text-transform:uppercase;letter-spacing:.09em;margin-bottom:14px;display:flex;align-items:center;gap:7px}
+    /* ── FORM ── */
+    label.lbl{display:block;font-size:11.5px;font-weight:500;color:var(--txt2);margin-bottom:5px}
+    input,select{width:100%;background:var(--s2);border:1px solid var(--bdr);border-radius:var(--rs);color:var(--txt);font-family:\'DM Sans\',sans-serif;font-size:13.5px;padding:9px 11px;transition:border-color .15s,box-shadow .15s;outline:none;-webkit-appearance:none}
+    input:focus,select:focus{border-color:var(--acc);box-shadow:0 0 0 3px var(--acc-d)}
+    select option{background:var(--s2)}
+    .fr{margin-bottom:13px}
+    .g2{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+    .ia{display:flex}
+    .ia input{border-radius:var(--rs) 0 0 var(--rs);border-right:none}
+    .ia select{width:auto;min-width:72px;border-radius:0 var(--rs) var(--rs) 0;flex-shrink:0;border-left:1px solid var(--bdr2)}
+    .iat{background:var(--s3);border:1px solid var(--bdr);border-left:none;border-radius:0 var(--rs) var(--rs) 0;padding:9px 11px;font-size:13px;color:var(--txt3);white-space:nowrap;display:flex;align-items:center}
+    .hint{font-size:11px;color:var(--txt3);margin-top:4px;line-height:1.4}
+    .divider{height:1px;background:var(--bdr);margin:14px 0}
+    /* ── TOGGLE OPTIONS ── */
+    .tg{display:grid;gap:7px}
+    .to{display:flex;align-items:center;gap:11px;padding:11px 13px;border:1px solid var(--bdr);border-radius:var(--rs);cursor:pointer;transition:.15s;background:var(--s2);user-select:none}
+    .to:hover{border-color:var(--bdr2)}
+    .to.sel{border-color:var(--acc);background:var(--acc-d)}
+    .to input[type=radio]{width:15px;height:15px;flex-shrink:0;accent-color:var(--acc)}
+    .ti{font-size:19px;width:26px;text-align:center}
+    .tinfo{flex:1}
+    .ttl{font-weight:600;font-size:13.5px;color:var(--txt)}
+    .tdesc{font-size:11px;color:var(--txt3)}
+    .tbadge{font-size:9.5px;padding:3px 8px;border-radius:20px;font-weight:600;white-space:nowrap}
+    .bg{background:var(--grn-d);color:var(--grn)}
+    .ba{background:var(--amb-d);color:var(--amb)}
+    .bb{background:var(--acc-d);color:var(--acc2)}
+    /* ── SEARCH ── */
+    .sw{position:relative}
+    .sw .si2{position:absolute;left:11px;top:50%;transform:translateY(-50%);color:var(--txt3);font-size:15px;pointer-events:none}
+    .sw input{padding-left:35px}
+    .sr{margin-top:7px;border:1px solid var(--bdr);border-radius:var(--rs);background:var(--s2);max-height:300px;overflow-y:auto}
+    .sri{padding:9px 13px;cursor:pointer;display:flex;justify-content:space-between;align-items:center;border-bottom:1px solid var(--bdr);transition:background .1s;gap:10px}
+    .sri:last-child{border-bottom:none}
+    .sri:hover{background:var(--s3)}
+    .sri.sei{background:var(--acc-d)}
+    .sn2{font-size:12.5px;color:var(--txt);line-height:1.3}
+    .sm{display:flex;gap:7px;align-items:center;flex-shrink:0}
+    .sg{font-family:\'DM Mono\',monospace;font-size:9.5px;color:var(--txt3);background:var(--s3);padding:2px 6px;border-radius:4px}
+    .ssc{font-size:10px;color:var(--txt3)}
+    .spc{display:flex;align-items:center;gap:13px;padding:13px;background:var(--grn-d);border:1px solid var(--grn);border-radius:var(--rs);margin-top:9px}
+    .spi{font-size:22px;width:32px;text-align:center}
+    .spinfo{flex:1}
+    .spn{font-weight:600;font-size:13.5px;color:var(--txt)}
+    .spg{font-family:\'DM Mono\',monospace;font-size:10.5px;color:var(--txt2);margin-top:2px}
+    .sprts{display:flex;gap:5px;flex-wrap:wrap;margin-top:5px}
+    .chip{font-size:9.5px;padding:2px 7px;border-radius:20px;font-weight:600}
+    .cr{background:var(--red-d);color:var(--red)}
+    .cb{background:var(--acc-d);color:var(--acc2)}
+    .cg{background:var(--grn-d);color:var(--grn)}
+    .cn{background:var(--s3);color:var(--txt3)}
+    .ca{background:var(--amb-d);color:var(--amb)}
+    .spchg{font-size:10.5px;color:var(--txt3);cursor:pointer;padding:4px 8px;border-radius:6px;background:var(--s3);border:1px solid var(--bdr);flex-shrink:0}
+    .no-r{padding:22px;text-align:center;color:var(--txt3);font-size:13px}
+    mark{background:var(--amb-d);color:var(--amb);border-radius:2px}
+    /* ── BANNER ── */
+    .banner{background:var(--grn-d);border:1px solid var(--grn);border-radius:var(--rs);padding:9px 13px;font-size:11.5px;color:var(--grn);display:flex;align-items:center;gap:7px;margin-bottom:13px}
+    /* ── TAX GRID ── */
+    .txg{display:grid;grid-template-columns:1fr 1fr;gap:9px}
+    .txi{background:var(--s2);border:1px solid var(--bdr);border-radius:var(--rs);padding:9px 11px}
+    .txlbl{font-size:10.5px;color:var(--txt3);margin-bottom:3px}
+    .txiw{display:flex;align-items:center;gap:4px}
+    .txinput{width:68px;background:transparent;border:none;border-bottom:1.5px solid var(--bdr2);border-radius:0;padding:3px 0;font-size:15px;font-weight:700;font-family:\'DM Mono\',monospace;color:var(--acc2);outline:none}
+    .txinput:focus{border-bottom-color:var(--acc)}
+    .txpct{font-size:12px;color:var(--txt3)}
+    /* ── FIXED COSTS ── */
+    .fcg{display:grid;grid-template-columns:1fr 1fr;gap:9px}
+    /* ── BUTTONS ── */
+    .btn{display:inline-flex;align-items:center;gap:7px;padding:11px 18px;border-radius:var(--rs);font-family:\'DM Sans\',sans-serif;font-size:13.5px;font-weight:600;border:none;cursor:pointer;transition:.15s;white-space:nowrap}
+    .btn-p{background:var(--acc);color:#fff}
+    .btn-p:hover{background:#1e6fd9}
+    .btn-g{background:transparent;color:var(--txt2);border:1px solid var(--bdr)}
+    .btn-g:hover{background:var(--s2)}
+    .btn-s{background:var(--grn);color:#fff}
+    .btn-s:hover{background:#0b8f61}
+    .bnav{display:flex;gap:8px;margin-top:18px}
+    .bnav .btn{flex:1;justify-content:center}
+    /* ── RESULTS ── */
+    .rh{background:linear-gradient(135deg,#162a4a 0%,#0b1a33 100%);border:1px solid var(--acc);border-radius:var(--r);padding:22px 18px;text-align:center;margin-bottom:14px}
+    .rlbl{font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:.1em;color:var(--txt3);margin-bottom:7px}
+    .rval{font-family:\'Syne\',sans-serif;font-size:34px;font-weight:800;color:var(--txt);letter-spacing:-.02em}
+    .rsub{font-size:12.5px;color:var(--txt3);margin-top:3px}
+    .rusd{font-family:\'DM Mono\',monospace;font-size:13px;color:var(--txt3);margin-top:3px}
+    .rsale{margin-top:14px;padding-top:14px;border-top:1px solid rgba(255,255,255,.08)}
+    .rsalev{font-family:\'Syne\',sans-serif;font-size:22px;font-weight:700;color:var(--gold)}
+    /* ── BREAKDOWN TABLE ── */
+    .bt{width:100%;border-collapse:collapse}
+    .bt tr{border-bottom:1px solid var(--bdr)}
+    .bt tr:last-child{border-bottom:none}
+    .bt td{padding:9px 3px;font-size:12.5px}
+    .bt td:last-child{text-align:right;font-family:\'DM Mono\',monospace;font-size:11.5px;color:var(--txt2);white-space:nowrap}
+    .bt td:first-child{color:var(--txt2)}
+    .bt tr.tr{border-top:2px solid var(--bdr2)}
+    .bt tr.tr td{font-weight:700;color:var(--txt);font-size:13.5px;padding-top:11px}
+    .bt tr.tr td:last-child{color:var(--acc2);font-size:13.5px}
+    .bt tr.zero td{opacity:.4}
+    /* ── DONUT ── */
+    .cw{display:flex;align-items:center;gap:18px;padding:14px 0}
+    #donut{flex-shrink:0}
+    .cl{flex:1;display:flex;flex-direction:column;gap:7px}
+    .cli{display:flex;align-items:center;gap:7px;font-size:11.5px}
+    .cld{width:9px;height:9px;border-radius:50%;flex-shrink:0}
+    .cll{flex:1;color:var(--txt2)}
+    .clp{font-family:\'DM Mono\',monospace;font-size:10.5px;color:var(--txt3)}
+    /* ── SUMMARY ── */
+    .sumbox{background:var(--s2);border:1px solid var(--bdr);border-radius:var(--rs);padding:13px;font-family:\'DM Mono\',monospace;font-size:10.5px;color:var(--txt2);line-height:1.9;white-space:pre-wrap;word-break:break-word}
+    /* ── UTILS ── */
+    .hidden{display:none!important}
+    .panel{animation:fi .2s ease}
+    @keyframes fi{from{opacity:0;transform:translateY(7px)}to{opacity:1;transform:translateY(0)}}
+    ::-webkit-scrollbar{width:4px;height:4px}
+    ::-webkit-scrollbar-track{background:var(--s1)}
+    ::-webkit-scrollbar-thumb{background:var(--bdr2);border-radius:3px}
+    /* ── PRINT ── */
+    @media print{
+      .hdr,.snav,.bnav,.btn{display:none!important}
+      body{background:#fff;color:#000}
+      .card{border:1px solid #ccc;break-inside:avoid}
+      .rh{background:#eef3ff!important;-webkit-print-color-adjust:exact}
+    }
+    /* ── RESPONSIVE ── */
+    @media(max-width:480px){
+      .g2{grid-template-columns:1fr}
+      .txg{grid-template-columns:1fr}
+      .fcg{grid-template-columns:1fr}
+      .cw{flex-direction:column}
+      .rval{font-size:26px}
+      .bnav{flex-wrap:wrap}
+    }
+  </style>
 </head>
 <body>
-
-<div class="header">
-  <div class="header-logo">🛳️</div>
-  <div class="header-title">
-    <h1>İthalatMatik</h1>
-    <p>Türkiye İthalat Landed Cost Hesaplama</p>
-  </div>
-</div>
-
-<div class="kur-band">
-  <div class="kur-item"><span class="kur-label">USD/TRY</span><span class="kur-val" id="k-usd">—</span></div>
-  <div class="kur-item"><span class="kur-label">EUR/TRY</span><span class="kur-val" id="k-eur">—</span></div>
-  <div class="kur-item"><span class="kur-label">GBP/TRY</span><span class="kur-val" id="k-gbp">—</span></div>
-  <div class="kur-item"><span class="kur-label">CNY/TRY</span><span class="kur-val" id="k-cny">—</span></div>
-  <div class="kur-live"><span class="dot"></span><span id="k-time">Kur yükleniyor...</span></div>
-</div>
-
-<nav class="wizard-nav">
-  <button class="step-btn active" id="nav-1" onclick="goStep(1)">
-    <span class="step-num" id="sn-1">1</span> Ürün Seç
-  </button>
-  <span class="step-arrow">›</span>
-  <button class="step-btn" id="nav-2" onclick="goStep(2)">
-    <span class="step-num" id="sn-2">2</span> Fiyat & Miktar
-  </button>
-  <span class="step-arrow">›</span>
-  <button class="step-btn" id="nav-3" onclick="goStep(3)">
-    <span class="step-num" id="sn-3">3</span> Nakliye
-  </button>
-  <span class="step-arrow">›</span>
-  <button class="step-btn" id="nav-4" onclick="goStep(4)">
-    <span class="step-num" id="sn-4">4</span> Sonuç
-  </button>
-</nav>
-
-<div class="main">
-
-  <!-- ADIM 1: ÜRÜN SEÇ -->
-  <div class="step-panel active" id="step-1">
-    <div class="card">
-      <div class="card-title">🔍 Ürün Ara & Seç</div>
-      <div class="search-wrap">
-        <span class="search-icon">🔍</span>
-        <input type="text" class="search-input" id="search-input"
-          placeholder="Ürün adı veya GTİP kodu girin... (örn: motor, 8501, tekstil)"
-          oninput="filterProducts()">
-      </div>
-      <div class="cat-filter" id="cat-filter"></div>
-      <div class="product-grid" id="product-grid"></div>
-      <div class="no-result" id="no-result" style="display:none">
-        🔎 Sonuç bulunamadı — farklı bir arama deneyin
-      </div>
+<header class="hdr">
+  <div class="hdr-in">
+    <div class="logo">
+      <div class="logo-box">🛳️</div>
+      İthalatMatik
     </div>
-    <div class="btn-row">
-      <button class="btn-primary" id="btn-step1" onclick="goStep(2)" disabled style="opacity:0.5">
-        Devam Et → Fiyat & Miktar
-      </button>
+    <div class="rates">
+      <div class="ri"><span>USD/TRY</span>&nbsp;<span class="rv ld" id="rU">—</span></div>
+      <div class="ri"><span>EUR/TRY</span>&nbsp;<span class="rv ld" id="rE">—</span></div>
+      <div class="ri"><span>GBP/TRY</span>&nbsp;<span class="rv ld" id="rG">—</span></div>
+      <div class="ri"><span>CNY/TRY</span>&nbsp;<span class="rv ld" id="rC">—</span></div>
     </div>
   </div>
-
-  <!-- ADIM 2: FİYAT & MİKTAR -->
-  <div class="step-panel" id="step-2">
-    <div class="selected-product-bar" id="selected-bar"></div>
+</header>
+<main class="main">
+  <!-- Step nav -->
+  <nav class="snav" id="snav">
+    <div class="si active" data-s="1"><div class="sn">1</div><div class="slb">Ürün</div></div>
+    <div class="si" data-s="2"><div class="sn">2</div><div class="slb">Fiyat</div></div>
+    <div class="si" data-s="3"><div class="sn">3</div><div class="slb">Nakliye</div></div>
+    <div class="si" data-s="4"><div class="sn">4</div><div class="slb">Sonuç</div></div>
+  </nav>
+  <!-- ═══════════════ STEP 1 ═══════════════ -->
+  <div id="p1" class="panel">
     <div class="card">
-      <div class="card-title">💰 Teslim Şekli & Fiyat</div>
-      <div class="form-grid">
-        <div class="form-full">
-          <label>Teslim Şekli</label>
-          <div class="toggle-group">
-            <input type="radio" name="teslim" id="t-exw" value="EXW"><label for="t-exw">EXW<br><span style="font-size:10px;font-weight:400">Fabrika Çıkışı</span></label>
-            <input type="radio" name="teslim" id="t-fob" value="FOB" checked><label for="t-fob">FOB<br><span style="font-size:10px;font-weight:400">Yükleme Limanı</span></label>
-            <input type="radio" name="teslim" id="t-cif" value="CIF"><label for="t-cif">CIF<br><span style="font-size:10px;font-weight:400">Türkiye Limanı</span></label>
-          </div>
-        </div>
-        <div>
-          <label>Birim Fiyat</label>
-          <div class="input-row">
-            <input type="number" id="birim-fiyat" placeholder="0.00" min="0" step="any">
-            <select id="fiyat-doviz">
-              <option value="USD">USD</option>
-              <option value="EUR">EUR</option>
-              <option value="GBP">GBP</option>
-              <option value="CNY">CNY</option>
-              <option value="TRY">TRY</option>
-            </select>
-          </div>
-          <div class="tip" id="kur-goster"></div>
-        </div>
-        <div>
-          <label>Sipariş Miktarı</label>
-          <div class="input-row">
-            <input type="number" id="miktar" placeholder="1" min="1">
-            <select id="birim">
-              <option>adet</option><option>kg</option><option>ton</option>
-              <option>m²</option><option>m³</option><option>litre</option>
-            </select>
-          </div>
-        </div>
-        <div>
-          <label>Brüt Ağırlık (kg) – nakliye için</label>
-          <input type="number" id="agirlik" placeholder="0" min="0">
-        </div>
-        <div>
-          <label>Menşei Ülke</label>
-          <select id="ulke" onchange="updateSehir()">
-            <option value="CN">🇨🇳 Çin</option>
-            <option value="DE">🇩🇪 Almanya</option>
-            <option value="US">🇺🇸 ABD</option>
-            <option value="IT">🇮🇹 İtalya</option>
-            <option value="JP">🇯🇵 Japonya</option>
-            <option value="KR">🇰🇷 Güney Kore</option>
-            <option value="IN">🇮🇳 Hindistan</option>
-            <option value="FR">🇫🇷 Fransa</option>
-            <option value="GB">🇬🇧 İngiltere</option>
-            <option value="NL">🇳🇱 Hollanda</option>
-            <option value="BE">🇧🇪 Belçika</option>
-            <option value="TW">🇹🇼 Tayvan</option>
-            <option value="VN">🇻🇳 Vietnam</option>
-            <option value="BD">🇧🇩 Bangladeş</option>
-            <option value="PK">🇵🇰 Pakistan</option>
-            <option value="OTHER">🌐 Diğer</option>
-          </select>
-        </div>
-        <div>
-          <label>Çıkış Şehri / Limanı</label>
-          <select id="sehir"></select>
-        </div>
-        <div>
-          <label>Varış (Türkiye)</label>
-          <select id="varis">
-            <option value="IST_H">✈️ İstanbul Havalimanı</option>
-            <option value="SAW_H">✈️ Sabiha Gökçen</option>
-            <option value="ESB_H">✈️ Ankara Esenboğa</option>
-            <option value="ADB_H">✈️ İzmir Adnan Menderes</option>
-            <option value="AMB">🚢 Ambarlı Limanı</option>
-            <option value="HAY">🚢 Haydarpaşa Limanı</option>
-            <option value="IZM">🚢 İzmir Alsancak</option>
-            <option value="MER">🚢 Mersin Limanı</option>
-            <option value="GEB">🚢 Gebze/Körfez</option>
-          </select>
-        </div>
-        <div>
-          <label>Manuel Kur Girişi (boş = otomatik)</label>
-          <input type="number" id="manuel-kur" placeholder="Otomatik TCMB" step="0.001" min="0">
-        </div>
+      <div class="ct">🔍 Ürün Ara &amp; GTİP Seç</div>
+      <div class="fr sw">
+        <span class="si2">🔎</span>
+        <input type="text" id="psearch" placeholder="Ürün adı, GTİP kodu veya sektör..." autocomplete="off" autocorrect="off" spellcheck="false">
       </div>
+      <div id="sres" class="sr hidden"></div>
+      <div id="spcard" class="spc hidden">
+        <div class="spi">📦</div>
+        <div class="spinfo">
+          <div class="spn" id="spn">—</div>
+          <div class="spg" id="spg">—</div>
+          <div class="sprts" id="sprts"></div>
+        </div>
+        <div class="spchg" onclick="clearProd()">Değiştir</div>
+      </div>
+      <div class="hint" id="sh" style="margin-top:9px">Ürün seçimi GTİP koduna göre gümrük vergisi, KDV ve ÖTV oranlarını <strong>otomatik doldurur</strong>. Seçim yapmadan da devam edebilirsiniz.</div>
     </div>
-    <div class="btn-row">
-      <button class="btn-secondary" onclick="goStep(1)">← Geri</button>
-      <button class="btn-primary" onclick="goStep(3)">Devam Et → Nakliye</button>
+    <div class="bnav">
+      <button class="btn btn-p" onclick="goStep(2)">Devam Et → Fiyat &amp; Miktar</button>
     </div>
   </div>
-
-  <!-- ADIM 3: NAKLİYE -->
-  <div class="step-panel" id="step-3">
-    <div class="selected-product-bar" id="selected-bar-3"></div>
+  <!-- ═══════════════ STEP 2 ═══════════════ -->
+  <div id="p2" class="panel hidden">
     <div class="card">
-      <div class="card-title">🚀 Nakliye Yöntemi</div>
-      <div class="shipping-grid">
-        <label class="ship-card selected" id="sc-deniz">
-          <input type="radio" name="nakliye" value="deniz" checked>
-          <div class="ship-icon">🚢</div>
-          <div class="ship-title">Deniz Yolu</div>
-          <div class="ship-sub">FCL / LCL · 25–45 gün</div>
-          <div class="ship-price">En Ekonomik</div>
+      <div class="ct">💰 Teslim Şekli</div>
+      <div class="tg" id="igrp">
+        <label class="to sel" onclick="setInc(this,\'EXW\')">
+          <input type="radio" name="inc" value="EXW" checked>
+          <div class="ti">🏭</div>
+          <div class="tinfo"><div class="ttl">EXW — Fabrika Çıkışı</div><div class="tdesc">Tüm nakliye ve gümrük alıcıya ait</div></div>
         </label>
-        <label class="ship-card" id="sc-hava">
-          <input type="radio" name="nakliye" value="hava">
-          <div class="ship-icon">✈️</div>
-          <div class="ship-title">Hava Yolu</div>
-          <div class="ship-sub">Express / Genel · 3–7 gün</div>
-          <div class="ship-price">En Hızlı</div>
+        <label class="to" onclick="setInc(this,\'FOB\')">
+          <input type="radio" name="inc" value="FOB">
+          <div class="ti">⚓</div>
+          <div class="tinfo"><div class="ttl">FOB — Yükleme Limanı</div><div class="tdesc">Navlun ve sigorta alıcıya ait</div></div>
+        </label>
+        <label class="to" onclick="setInc(this,\'CIF\')">
+          <input type="radio" name="inc" value="CIF">
+          <div class="ti">🚢</div>
+          <div class="tinfo"><div class="ttl">CIF — Türkiye Limanı</div><div class="tdesc">Navlun ve sigorta fiyata dahil</div></div>
+          <span class="tbadge bg">Dahil</span>
         </label>
       </div>
-
-      <div style="margin-top:20px" id="deniz-opts">
-        <label>Konteyner Tipi</label>
-        <div class="toggle-group" style="max-width:360px">
-          <input type="radio" name="konteyner" id="k-fcl20" value="FCL20" checked><label for="k-fcl20">FCL 20'</label>
-          <input type="radio" name="konteyner" id="k-fcl40" value="FCL40"><label for="k-fcl40">FCL 40'</label>
-          <input type="radio" name="konteyner" id="k-lcl" value="LCL"><label for="k-lcl">LCL (Parsiyel)</label>
+    </div>
+    <div class="card">
+      <div class="ct">📊 Fiyat &amp; Miktar</div>
+      <div class="fr"><label class="lbl">Birim Fiyat</label>
+        <div class="ia">
+          <input type="number" id="uprice" placeholder="0.00" min="0" step="0.01">
+          <select id="ucur" onchange="updRateHint()">
+            <option value="USD">USD</option><option value="EUR">EUR</option>
+            <option value="GBP">GBP</option><option value="CNY">CNY</option>
+            <option value="TRY">TRY</option>
+          </select>
         </div>
       </div>
-
-      <div style="margin-top:20px" id="hava-opts" style="display:none">
-        <div class="form-grid">
-          <div>
-            <label>Hacim (m³) – chargeable weight için</label>
-            <input type="number" id="hacim" placeholder="0.00" step="0.001" min="0">
-            <div class="tip" id="chargeable-info"></div>
-          </div>
+      <div class="fr"><label class="lbl">Sipariş Miktarı</label>
+        <div class="ia">
+          <input type="number" id="qty" placeholder="1" min="1" step="1" value="1">
+          <select id="qunit">
+            <option>adet</option><option>kg</option><option>ton</option>
+            <option>m²</option><option>m³</option><option>litre</option>
+          </select>
         </div>
       </div>
-
-      <div class="form-grid" style="margin-top:16px">
-        <div>
-          <label>Navlun Bedeli</label>
-          <div class="input-row">
-            <input type="number" id="navlun" placeholder="0" min="0" step="any" oninput="updateSigorta()">
-            <select id="navlun-doviz"><option>USD</option><option>EUR</option><option>TRY</option></select>
-          </div>
-          <div class="tip">CIF alımda boş bırakın (dahil)</div>
-        </div>
-        <div>
-          <label>Sigorta Bedeli (USD)</label>
-          <input type="number" id="sigorta" placeholder="0" min="0" step="any">
-          <div class="tip">Genelde CIF değerinin %0.3–0.5'i</div>
-        </div>
-        <div>
-          <label>Ödeme Şekli (KKDF için)</label>
-          <div class="toggle-group">
-            <input type="radio" name="odeme" id="o-pesin" value="pesin" checked><label for="o-pesin">Peşin / Akreditif<br><span style="font-size:10px;font-weight:400">KKDF: %0</span></label>
-            <input type="radio" name="odeme" id="o-vadeli" value="vadeli"><label for="o-vadeli">Vadeli<br><span style="font-size:10px;font-weight:400">KKDF: %15</span></label>
-          </div>
-        </div>
+      <div class="fr"><label class="lbl">Brüt Ağırlık (kg) — nakliye hesabı için</label>
+        <input type="number" id="gwt" placeholder="0" min="0" step="0.1">
       </div>
     </div>
-    <div class="btn-row">
-      <button class="btn-secondary" onclick="goStep(2)">← Geri</button>
-      <button class="btn-primary" onclick="hesaplaVeGoster()">⚡ Hesapla & Sonucu Gör</button>
+    <div class="card">
+      <div class="ct">🌍 Menşei &amp; Varış</div>
+      <div class="g2">
+        <div class="fr"><label class="lbl">Menşei Ülke</label>
+          <select id="orig">
+            <option value="CN">🇨🇳 Çin</option><option value="DE">🇩🇪 Almanya</option>
+            <option value="US">🇺🇸 ABD</option><option value="IT">🇮🇹 İtalya</option>
+            <option value="JP">🇯🇵 Japonya</option><option value="KR">🇰🇷 G. Kore</option>
+            <option value="IN">🇮🇳 Hindistan</option><option value="FR">🇫🇷 Fransa</option>
+            <option value="GB">🇬🇧 İngiltere</option><option value="NL">🇳🇱 Hollanda</option>
+            <option value="BE">🇧🇪 Belçika</option><option value="TW">🇹🇼 Tayvan</option>
+            <option value="VN">🇻🇳 Vietnam</option><option value="BD">🇧🇩 Bangladeş</option>
+            <option value="PK">🇵🇰 Pakistan</option><option value="OT">🌐 Diğer</option>
+          </select>
+        </div>
+        <div class="fr"><label class="lbl">Varış (Türkiye)</label>
+          <select id="dest">
+            <option value="IST">✈️ İstanbul Hav.</option><option value="SAW">✈️ Sabiha Gökçen</option>
+            <option value="ESB">✈️ Ankara Esenboğa</option><option value="IZM">✈️ İzmir A.Menderes</option>
+            <option value="AMB">🚢 Ambarlı</option><option value="HAY">🚢 Haydarpaşa</option>
+            <option value="ALS">🚢 İzmir Alsancak</option><option value="MER">🚢 Mersin</option>
+            <option value="GBZ">🚢 Gebze/Körfez</option>
+          </select>
+        </div>
+      </div>
+      <div class="fr"><label class="lbl">Çıkış Şehri / Limanı</label>
+        <input type="text" id="oport" placeholder="Ör: Shanghai, Hamburg, Rotterdam...">
+      </div>
+      <div class="fr"><label class="lbl">Manuel Kur (boş = otomatik)</label>
+        <div class="ia">
+          <input type="number" id="mrate" placeholder="Otomatik" min="0" step="0.01">
+          <div class="iat" id="mrlbl">TRY/USD</div>
+        </div>
+        <div class="hint" id="rhint">Güncel kur yükleniyor...</div>
+      </div>
+    </div>
+    <div class="bnav">
+      <button class="btn btn-g" onclick="goStep(1)">← Geri</button>
+      <button class="btn btn-p" onclick="goStep(3)">Devam → Nakliye</button>
     </div>
   </div>
-
-  <!-- ADIM 4: SONUÇ -->
-  <div class="step-panel" id="step-4">
-    <div class="result-header" id="result-header"></div>
+  <!-- ═══════════════ STEP 3 ═══════════════ -->
+  <div id="p3" class="panel hidden">
     <div class="card">
-      <div class="card-title">📊 Maliyet Dağılımı</div>
-      <div class="chart-wrap" id="chart-wrap"></div>
+      <div class="ct">🚀 Nakliye Yöntemi</div>
+      <div class="tg" id="shgrp">
+        <label class="to sel" onclick="setShip(this,\'SEA\')">
+          <input type="radio" name="ship" value="SEA" checked>
+          <div class="ti">🚢</div>
+          <div class="tinfo"><div class="ttl">Deniz Yolu</div><div class="tdesc">FCL / LCL · 25–45 gün</div></div>
+          <span class="tbadge bg">En Ekonomik</span>
+        </label>
+        <label class="to" onclick="setShip(this,\'AIR\')">
+          <input type="radio" name="ship" value="AIR">
+          <div class="ti">✈️</div>
+          <div class="tinfo"><div class="ttl">Hava Yolu</div><div class="tdesc">Express / Genel · 3–7 gün</div></div>
+          <span class="tbadge ba">En Hızlı</span>
+        </label>
+      </div>
+    </div>
+    <div class="card" id="seaCard">
+      <div class="ct">🔷 Konteyner Seçeneği</div>
+      <div class="tg" id="cgrp">
+        <label class="to" onclick="setCont(this,\'FCL20\')">
+          <input type="radio" name="cont" value="FCL20">
+          <div class="ti">📦</div>
+          <div class="tinfo"><div class="ttl">FCL 20′</div><div class="tdesc">~28 ton / 25 m³</div></div>
+        </label>
+        <label class="to" onclick="setCont(this,\'FCL40\')">
+          <input type="radio" name="cont" value="FCL40">
+          <div class="ti">🗃️</div>
+          <div class="tinfo"><div class="ttl">FCL 40′</div><div class="tdesc">~26 ton / 60 m³</div></div>
+        </label>
+        <label class="to sel" onclick="setCont(this,\'LCL\')">
+          <input type="radio" name="cont" value="LCL" checked>
+          <div class="ti">📫</div>
+          <div class="tinfo"><div class="ttl">LCL — Parsiyel</div><div class="tdesc">m³ başına ödeme · Küçük yükler</div></div>
+          <span class="tbadge bb">Küçük Yük</span>
+        </label>
+      </div>
+      <div class="fr" id="volRow" style="margin-top:13px">
+        <label class="lbl">Hacim (m³) — LCL için</label>
+        <input type="number" id="vol" placeholder="0.0" min="0" step="0.01">
+        <div class="hint">Chargeable = max(brüt kg, hacim × 1000)</div>
+      </div>
+    </div>
+    <div class="card hidden" id="airCard">
+      <div class="ct">✈️ Hava Yolu Detayı</div>
+      <div class="fr"><label class="lbl">Hacim (m³) — volumetrik ağırlık için</label>
+        <input type="number" id="airvol" placeholder="0.000" min="0" step="0.001">
+        <div class="hint">Volumetrik kg = Hacim(m³) × 167 &nbsp;·&nbsp; Chargeable = max(brüt, volumetrik)</div>
+      </div>
     </div>
     <div class="card">
-      <div class="card-title">🏛️ Vergi & Masraf Detayı</div>
-      <div id="vergi-detay"></div>
+      <div class="ct">💵 Navlun &amp; Sigorta</div>
+      <div class="fr" id="freightRow">
+        <label class="lbl">Navlun Bedeli</label>
+        <div class="ia">
+          <input type="number" id="frt" placeholder="0" min="0" step="1">
+          <select id="fcur"><option value="USD">USD</option><option value="EUR">EUR</option><option value="TRY">TRY</option></select>
+        </div>
+        <div class="hint" id="fhint">CIF alımda navlun zaten dahildir — sıfır bırakın</div>
+      </div>
+      <div class="fr"><label class="lbl">Sigorta Bedeli (USD)</label>
+        <input type="number" id="ins" placeholder="Otomatik %0.4" min="0" step="1">
+        <div class="hint">Boş bırakılırsa CIF değerinin %0.4\'ü otomatik hesaplanır</div>
+      </div>
+      <div class="fr"><label class="lbl">Ödeme Şekli (KKDF)</label>
+        <div style="display:flex;gap:8px" id="paygrp">
+          <label class="to sel" onclick="setPay(this,\'PRE\')" style="flex:1;padding:10px">
+            <input type="radio" name="pay" value="PRE" checked>
+            <div class="tinfo"><div class="ttl" style="font-size:12.5px">Peşin / Akreditif</div><div class="tdesc">KKDF: %0</div></div>
+          </label>
+          <label class="to" onclick="setPay(this,\'CRD\')" style="flex:1;padding:10px">
+            <input type="radio" name="pay" value="CRD">
+            <div class="tinfo"><div class="ttl" style="font-size:12.5px">Vadeli Ödeme</div><div class="tdesc">KKDF: %15</div></div>
+          </label>
+        </div>
+      </div>
     </div>
-    <div class="result-actions">
-      <button class="btn-print result-actions" onclick="window.print()">🖨️ PDF / Yazdır</button>
-      <button class="btn-new" onclick="yeniHesaplama()">🔄 Yeni Hesaplama</button>
-      <button class="btn-copy" onclick="kopyala()">📋 Özeti Kopyala</button>
+    <div class="card">
+      <div class="ct">🏛️ Vergi Oranları</div>
+      <div class="banner hidden" id="autobanner">✅ GTİP veritabanından otomatik dolduruldu — düzenleyebilirsiniz.</div>
+      <div class="txg">
+        <div class="txi"><div class="txlbl">Gümrük Vergisi</div><div class="txiw"><input type="number" class="txinput" id="tGV" value="0" min="0" max="300" step="0.1"><span class="txpct">%</span></div></div>
+        <div class="txi"><div class="txlbl">KDV</div><div class="txiw"><input type="number" class="txinput" id="tKDV" value="20" min="0" max="100" step="1"><span class="txpct">%</span></div></div>
+        <div class="txi"><div class="txlbl">ÖTV</div><div class="txiw"><input type="number" class="txinput" id="tOTV" value="0" min="0" max="300" step="0.1"><span class="txpct">%</span></div></div>
+        <div class="txi"><div class="txlbl">KKDF</div><div class="txiw"><input type="number" class="txinput" id="tKKDF" value="0" min="0" max="100" step="1"><span class="txpct">%</span></div></div>
+        <div class="txi"><div class="txlbl">Damga Vergisi</div><div class="txiw"><input type="number" class="txinput" id="tDamga" value="0.948" min="0" max="10" step="0.001"><span class="txpct">%</span></div></div>
+        <div class="txi"><div class="txlbl">Anti-Damping / İGV</div><div class="txiw"><input type="number" class="txinput" id="tAD" value="0" min="0" max="200" step="0.1"><span class="txpct">%</span></div></div>
+      </div>
+    </div>
+    <div class="card">
+      <div class="ct">💼 Sabit Masraflar (TRY)</div>
+      <div class="fcg">
+        <div class="fr"><label class="lbl">Gümrük Müşaviri</label><input type="number" id="fcB" placeholder="0" min="0" value="2500"></div>
+        <div class="fr"><label class="lbl">Antrepo / Depolama</label><input type="number" id="fcS" placeholder="0" min="0" value="500"></div>
+        <div class="fr"><label class="lbl">Liman / Havalimanı</label><input type="number" id="fcP" placeholder="0" min="0" value="750"></div>
+        <div class="fr"><label class="lbl">Yurt İçi Nakliye</label><input type="number" id="fcD" placeholder="0" min="0" value="1000"></div>
+      </div>
+      <div class="fr"><label class="lbl">Diğer Masraf (TRY)</label><input type="number" id="fcO" placeholder="0" min="0" value="0"></div>
+      <div class="divider"></div>
+      <div class="fr"><label class="lbl">Hedef Kâr Marjı</label>
+        <div class="ia"><input type="number" id="mgn" placeholder="0" min="0" max="500" step="1" value="20"><div class="iat">%</div></div>
+      </div>
+    </div>
+    <div class="bnav">
+      <button class="btn btn-g" onclick="goStep(2)">← Geri</button>
+      <button class="btn btn-s" onclick="calc()">⚡ Hesapla &amp; Sonucu Gör</button>
     </div>
   </div>
-
-</div><!-- /main -->
-
-<!-- VERGİ AYARLAR PANEL (adım 4 öncesi) -->
-<div id="vergi-panel" style="display:none">
-  <div class="main" style="padding-top:0">
-    <div class="card">
-      <div class="card-title">🏛️ Vergi Oranları (Düzenlenebilir)</div>
-      <div class="vergi-row">
-        <label class="vergi-label"><input type="checkbox" id="ch-gumruk" checked> Gümrük Vergisi</label>
-        <div class="vergi-input-wrap"><input type="number" class="vergi-input" id="r-gumruk" value="5" min="0" max="200" step="0.1"> %</div>
-      </div>
-      <div class="vergi-row">
-        <label class="vergi-label"><input type="checkbox" id="ch-kdv" checked> KDV</label>
-        <div class="vergi-input-wrap"><input type="number" class="vergi-input" id="r-kdv" value="20" min="0" max="50" step="0.1"> %</div>
-      </div>
-      <div class="vergi-row">
-        <label class="vergi-label"><input type="checkbox" id="ch-otv"> ÖTV</label>
-        <div class="vergi-input-wrap"><input type="number" class="vergi-input" id="r-otv" value="0" min="0" max="300" step="0.1"> %</div>
-      </div>
-      <div class="vergi-row">
-        <label class="vergi-label"><input type="checkbox" id="ch-kkdf"> KKDF</label>
-        <div class="vergi-input-wrap"><input type="number" class="vergi-input" id="r-kkdf" value="15" min="0" max="30" step="0.1"> %</div>
-      </div>
-      <div class="vergi-row">
-        <label class="vergi-label"><input type="checkbox" id="ch-damga"> Damga Vergisi</label>
-        <div class="vergi-input-wrap"><input type="number" class="vergi-input" id="r-damga" value="0.948" min="0" max="5" step="0.001"> %</div>
-      </div>
-      <div class="vergi-row">
-        <label class="vergi-label"><input type="checkbox" id="ch-adump"> Anti-Damping / İlave Gümrük</label>
-        <div class="vergi-input-wrap"><input type="number" class="vergi-input" id="r-adump" value="0" min="0" max="100" step="0.1"> %</div>
+  <!-- ═══════════════ STEP 4 ═══════════════ -->
+  <div id="p4" class="panel hidden">
+    <div class="rh">
+      <div class="rlbl">Birim Maliyet (KDV Dahil)</div>
+      <div class="rval" id="rv1">—</div>
+      <div class="rsub" id="rv2">—</div>
+      <div class="rusd" id="rv3">—</div>
+      <div class="rsale">
+        <div class="rlbl" style="margin-bottom:3px">Hedef Satış Fiyatı (<span id="rmgn">20</span>% Kâr)</div>
+        <div class="rsalev" id="rv4">—</div>
       </div>
     </div>
     <div class="card">
-      <div class="card-title">💼 Sabit Masraflar (TRY)</div>
-      <div class="masraf-grid">
-        <div><label>Gümrük Müşaviri</label><input type="number" id="m-muhavir" placeholder="0" min="0"></div>
-        <div><label>Antrepo / Depolama</label><input type="number" id="m-antrepo" placeholder="0" min="0"></div>
-        <div><label>Liman / Havalimanı Hizm.</label><input type="number" id="m-liman" placeholder="0" min="0"></div>
-        <div><label>Yurt İçi Nakliye</label><input type="number" id="m-icnak" placeholder="0" min="0"></div>
-        <div><label>Diğer Masraf</label><input type="number" id="m-diger" placeholder="0" min="0"></div>
-        <div><label>Hedef Kâr Marjı (%)</label><input type="number" id="m-kar" placeholder="0" min="0" step="0.1" value="0"></div>
+      <div class="ct">📊 Maliyet Dağılımı</div>
+      <div class="cw">
+        <canvas id="donut" width="140" height="140"></canvas>
+        <div class="cl" id="cleg"></div>
       </div>
     </div>
-    <div id="test-panel-wrap"></div>
-    <div class="btn-row">
-      <button class="btn-secondary" onclick="goStep(3);document.getElementById('vergi-panel').style.display='none'">← Geri</button>
-      <button class="btn-primary" onclick="hesaplaFinal()">⚡ Maliyeti Hesapla</button>
+    <div class="card">
+      <div class="ct">🏛️ Vergi &amp; Masraf Detayı</div>
+      <table class="bt" id="btbl"></table>
+    </div>
+    <div class="card">
+      <div class="ct">📋 Metin Özeti</div>
+      <pre class="sumbox" id="sumbox"></pre>
+    </div>
+    <div class="bnav" style="flex-wrap:wrap">
+      <button class="btn btn-g" onclick="goStep(3)">← Düzenle</button>
+      <button class="btn btn-g" onclick="window.print()">🖨️ Yazdır</button>
+      <button class="btn btn-g" id="copybtn" onclick="copySum()">📋 Kopyala</button>
+      <button class="btn btn-p" onclick="newCalc()">🔄 Yeni</button>
     </div>
   </div>
-</div>
-
+</main>
 <script>
-// ===== KUR =====
-const KUR = {};
-async function kurCek() {
-  try {
-    const r = await fetch('https://open.er-api.com/v6/latest/USD');
-    const d = await r.json();
-    if (d.rates) {
-      const try_ = d.rates.TRY;
-      KUR.USD = try_;
-      KUR.EUR = try_ / d.rates.EUR;
-      KUR.GBP = try_ / d.rates.GBP;
-      KUR.CNY = try_ / d.rates.CNY;
-      KUR.JPY = try_ / d.rates.JPY;
-      KUR.TRY = 1;
-      document.getElementById('k-usd').textContent = try_.toFixed(2);
-      document.getElementById('k-eur').textContent = KUR.EUR.toFixed(2);
-      document.getElementById('k-gbp').textContent = KUR.GBP.toFixed(2);
-      document.getElementById('k-cny').textContent = KUR.CNY.toFixed(4);
-      document.getElementById('k-time').textContent = 'Canlı · ' + new Date().toLocaleTimeString('tr-TR');
-      updateKurGoster();
-    }
-  } catch(e) {
-    document.getElementById('k-time').textContent = 'Kur alınamadı – manuel girin';
-  }
-}
-kurCek(); setInterval(kurCek, 600000);
-
-function getKur(doviz) {
-  const m = parseFloat(document.getElementById('manuel-kur')?.value);
-  if (m > 0) return m;
-  return KUR[doviz] || 1;
-}
-
-function updateKurGoster() {
-  const d = document.getElementById('fiyat-doviz')?.value;
-  const k = KUR[d];
-  if (k && document.getElementById('kur-goster')) {
-    document.getElementById('kur-goster').textContent = `1 ${d} = ${k.toFixed(4)} ₺ (TCMB)`;
-  }
-}
-document.addEventListener('change', e => { if (e.target.id === 'fiyat-doviz') updateKurGoster(); });
-
-// ===== ÜRÜN VERİTABANI =====
-const URUNLER = [
-  // MAKİNE
-  {id:'motor_el', ad:'Elektrik Motoru', ikon:'⚡', kat:'Makine', gtip:'8501.10', gumruk:0, kdv:20, otv:false, kkdf:15, test:true, testTRY:8000, testAc:'CE belgesi + EMC testi'},
-  {id:'pompa', ad:'Santrifüj Pompa', ikon:'💧', kat:'Makine', gtip:'8413.70', gumruk:1.7, kdv:20, otv:false, kkdf:15, test:true, testTRY:5000, testAc:'Basınç testi + CE'},
-  {id:'kompres', ad:'Kompresör', ikon:'🔧', kat:'Makine', gtip:'8414.80', gumruk:1.7, kdv:20, otv:false, kkdf:15, test:false},
-  {id:'jener', ad:'Jeneratör', ikon:'🔌', kat:'Makine', gtip:'8502.11', gumruk:0, kdv:20, otv:false, kkdf:15, test:true, testTRY:12000, testAc:'EMC + CE + TSE'},
-  {id:'cnc', ad:'CNC Tezgahı', ikon:'🏭', kat:'Makine', gtip:'8457.10', gumruk:0, kdv:20, otv:false, kkdf:15, test:false},
-  {id:'forklift', ad:'Forklift / İstif Makinesi', ikon:'🏗️', kat:'Makine', gtip:'8427.20', gumruk:1.7, kdv:20, otv:false, kkdf:15, test:false},
-  {id:'reduk', ad:'Redüktör / Dişli Kutusu', ikon:'⚙️', kat:'Makine', gtip:'8483.40', gumruk:1.7, kdv:20, otv:false, kkdf:15, test:false},
-  {id:'kazan', ad:'Kazan / Isı Eşanjörü', ikon:'🔥', kat:'Makine', gtip:'8402.11', gumruk:0, kdv:20, otv:false, kkdf:15, test:true, testTRY:6000, testAc:'Basınç dayanım testi'},
-  // ELEKTRONİK
-  {id:'laptop', ad:'Laptop / Notebook', ikon:'💻', kat:'Elektronik', gtip:'8471.30', gumruk:0, kdv:20, otv:false, kkdf:15, test:true, testTRY:3000, testAc:'CE/FCC uyumluluk testi'},
-  {id:'tablet', ad:'Tablet Bilgisayar', ikon:'📱', kat:'Elektronik', gtip:'8471.30', gumruk:0, kdv:20, otv:false, kkdf:15, test:true, testTRY:2500, testAc:'CE belgesi'},
-  {id:'plc', ad:'PLC / Kontrol Paneli', ikon:'🖥️', kat:'Elektronik', gtip:'8537.10', gumruk:0, kdv:20, otv:false, kkdf:15, test:false},
-  {id:'sensor', ad:'Sensör / Transdüser', ikon:'📡', kat:'Elektronik', gtip:'9026.10', gumruk:0, kdv:20, otv:false, kkdf:15, test:false},
-  {id:'inverter', ad:'Frekans İnvertörü', ikon:'🔄', kat:'Elektronik', gtip:'8504.40', gumruk:0, kdv:20, otv:false, kkdf:15, test:true, testTRY:4000, testAc:'EMC testi'},
-  {id:'led', ad:'LED Panel / Aydınlatma', ikon:'💡', kat:'Elektronik', gtip:'9405.40', gumruk:6.5, kdv:20, otv:false, kkdf:15, test:true, testTRY:3500, testAc:'CE + LVD testi'},
-  {id:'cctv', ad:'CCTV Kamera Sistemi', ikon:'📷', kat:'Elektronik', gtip:'8525.80', gumruk:3.7, kdv:20, otv:false, kkdf:15, test:false},
-  {id:'pcb', ad:'PCB / Devre Kartı', ikon:'🔬', kat:'Elektronik', gtip:'8534.00', gumruk:0, kdv:20, otv:false, kkdf:15, test:false},
-  // TEKSTİL
-  {id:'poly_kum', ad:'Polyester Kumaş', ikon:'🧵', kat:'Tekstil', gtip:'5407.61', gumruk:12, kdv:10, otv:false, kkdf:15, test:false},
-  {id:'pamuk_kum', ad:'Pamuklu Kumaş', ikon:'🌿', kat:'Tekstil', gtip:'5208.11', gumruk:12, kdv:10, otv:false, kkdf:15, test:false},
-  {id:'denim', ad:'Denim Kumaş', ikon:'👖', kat:'Tekstil', gtip:'5209.42', gumruk:12, kdv:10, otv:false, kkdf:15, test:false},
-  {id:'iplik', ad:'İplik / Tekstil İpliği', ikon:'🧶', kat:'Tekstil', gtip:'5205.11', gumruk:5, kdv:10, otv:false, kkdf:15, test:false},
-  {id:'fermu', ad:'Fermuar', ikon:'🔗', kat:'Tekstil', gtip:'9607.11', gumruk:6.5, kdv:20, otv:false, kkdf:15, test:false},
-  {id:'elastik', ad:'Elastik Bant', ikon:'📏', kat:'Tekstil', gtip:'5806.20', gumruk:12, kdv:10, otv:false, kkdf:15, test:false},
-  // KİMYA & PLASTİK
-  {id:'plastik_g', ad:'Plastik Granül (Ham)', ikon:'🔵', kat:'Kimya', gtip:'3902.10', gumruk:6.5, kdv:20, otv:false, kkdf:15, test:false},
-  {id:'boya', ad:'Boya / Pigment', ikon:'🎨', kat:'Kimya', gtip:'3204.17', gumruk:6.5, kdv:20, otv:false, kkdf:15, test:false},
-  {id:'yapistirici', ad:'Yapıştırıcı / Tutkal', ikon:'🧪', kat:'Kimya', gtip:'3506.10', gumruk:6.5, kdv:20, otv:false, kkdf:15, test:false},
-  {id:'ambalaj_film', ad:'Ambalaj Filmi / PP Film', ikon:'📦', kat:'Kimya', gtip:'3920.20', gumruk:6.5, kdv:20, otv:false, kkdf:15, test:false},
-  // METAL
-  {id:'celik_boru', ad:'Çelik Boru', ikon:'🔩', kat:'Metal', gtip:'7306.30', gumruk:5, kdv:20, otv:false, kkdf:15, test:false},
-  {id:'alum_profil', ad:'Alüminyum Profil', ikon:'🔧', kat:'Metal', gtip:'7604.10', gumruk:7.5, kdv:20, otv:false, kkdf:15, test:false},
-  {id:'rulman', ad:'Rulman / Bilyalı Yatak', ikon:'⚙️', kat:'Metal', gtip:'8482.10', gumruk:3.7, kdv:20, otv:false, kkdf:15, test:false},
-  {id:'paslanmaz', ad:'Paslanmaz Çelik Sac', ikon:'🪙', kat:'Metal', gtip:'7219.11', gumruk:0, kdv:20, otv:false, kkdf:15, test:false},
-  {id:'vida_somun', ad:'Vida / Somun / Cıvata', ikon:'🔩', kat:'Metal', gtip:'7318.15', gumruk:3.7, kdv:20, otv:false, kkdf:15, test:false},
-  // GIDA
-  {id:'cay', ad:'Çay (Siyah)', ikon:'🍵', kat:'Gıda', gtip:'0902.20', gumruk:145, kdv:1, otv:false, kkdf:0, test:true, testTRY:2000, testAc:'Tarım Bakanlığı analiz testi'},
-  {id:'kahve', ad:'Kahve (İşlenmemiş)', ikon:'☕', kat:'Gıda', gtip:'0901.11', gumruk:0, kdv:1, otv:false, kkdf:0, test:true, testTRY:1500, testAc:'Sağlık sertifikası'},
-  {id:'baharat', ad:'Baharat', ikon:'🌶️', kat:'Gıda', gtip:'0904.12', gumruk:145, kdv:1, otv:false, kkdf:0, test:true, testTRY:1500, testAc:'Tarım analizi'},
-  {id:'zeytin_yag', ad:'Zeytinyağı', ikon:'🫒', kat:'Gıda', gtip:'1509.10', gumruk:36.6, kdv:1, otv:false, kkdf:0, test:true, testTRY:2500, testAc:'Analiz ve sağlık sertifikası'},
-  // OTOMOTİV
-  {id:'yedek_parca', ad:'Otomotiv Yedek Parça', ikon:'🚗', kat:'Otomotiv', gtip:'8708.99', gumruk:4.5, kdv:20, otv:false, kkdf:15, test:false},
-  {id:'lastik', ad:'Lastik / Dış Lastik', ikon:'🛞', kat:'Otomotiv', gtip:'4011.10', gumruk:4.5, kdv:20, otv:false, kkdf:15, test:true, testTRY:5000, testAc:'ECE R30 homologasyon'},
-  {id:'aku', ad:'Akü / Batarya', ikon:'🔋', kat:'Otomotiv', gtip:'8507.10', gumruk:3.7, kdv:20, otv:false, kkdf:15, test:true, testTRY:4000, testAc:'CE + UN38.3 testi'},
-  // TIBBİ
-  {id:'tibbi_cihaz', ad:'Tıbbi Cihaz (Genel)', ikon:'🏥', kat:'Tıbbi', gtip:'9018.90', gumruk:0, kdv:10, otv:false, kkdf:15, test:true, testTRY:15000, testAc:'TİTCK onayı + CE MDR'},
-  {id:'sarf_malz', ad:'Tıbbi Sarf Malzeme', ikon:'💊', kat:'Tıbbi', gtip:'9018.39', gumruk:0, kdv:10, otv:false, kkdf:15, test:true, testTRY:8000, testAc:'TİTCK kayıt belgesi'},
-  // İNŞAAT
-  {id:'seramik', ad:'Seramik / Fayans', ikon:'🏗️', kat:'İnşaat', gtip:'6908.90', gumruk:10, kdv:20, otv:false, kkdf:15, test:false},
-  {id:'granit', ad:'Granit / Mermer', ikon:'🪨', kat:'İnşaat', gtip:'6802.91', gumruk:5, kdv:20, otv:false, kkdf:15, test:false},
-  {id:'cam', ad:'Düz Cam', ikon:'🪟', kat:'İnşaat', gtip:'7003.12', gumruk:3.7, kdv:20, otv:false, kkdf:15, test:false},
-  // MOBİLYA
-  {id:'mobilya', ad:'Mobilya / Oturma Grubu', ikon:'🛋️', kat:'Mobilya', gtip:'9401.61', gumruk:6.5, kdv:20, otv:false, kkdf:15, test:false},
-  {id:'aydinlatma', ad:'Aydınlatma Armatürü', ikon:'🪔', kat:'Mobilya', gtip:'9405.10', gumruk:6.5, kdv:20, otv:false, kkdf:15, test:true, testTRY:3000, testAc:'CE LVD belgesi'},
-  {id:'hali', ad:'Halı / Kilim', ikon:'🏠', kat:'Mobilya', gtip:'5701.10', gumruk:12, kdv:20, otv:false, kkdf:15, test:false},
-
-  // SU & HAVA ARITMA
-  {id:'su_aritma', ad:'Su Arıtma Cihazı (RO)', ikon:'💧', kat:'Su & Arıtma', gtip:'8421.21', gumruk:1.7, kdv:20, otv:false, kkdf:15, test:true, testTRY:6000, testAc:'TSE belgesi + CE + su kalitesi analizi'},
-  {id:'su_aritma_endustri', ad:'Endüstriyel Su Arıtma', ikon:'🏭', kat:'Su & Arıtma', gtip:'8421.29', gumruk:1.7, kdv:20, otv:false, kkdf:15, test:true, testTRY:12000, testAc:'CE + TSE + çevre izin belgesi'},
-  {id:'hava_filtre', ad:'Hava Filtresi / Arıtıcı', ikon:'🌬️', kat:'Su & Arıtma', gtip:'8421.39', gumruk:1.7, kdv:20, otv:false, kkdf:15, test:true, testTRY:4000, testAc:'CE belgesi + EMC testi'},
-  {id:'ozon_jen', ad:'Ozon Jeneratörü', ikon:'⚗️', kat:'Su & Arıtma', gtip:'8543.70', gumruk:0, kdv:20, otv:false, kkdf:15, test:true, testTRY:5000, testAc:'CE + EMC belgesi'},
-  {id:'uv_steril', ad:'UV Sterilizatör', ikon:'🔵', kat:'Su & Arıtma', gtip:'8543.70', gumruk:0, kdv:20, otv:false, kkdf:15, test:true, testTRY:4000, testAc:'CE belgesi'},
-  {id:'pompa_su', ad:'Su Pompası (Dalgıç)', ikon:'💦', kat:'Su & Arıtma', gtip:'8413.70', gumruk:1.7, kdv:20, otv:false, kkdf:15, test:false},
-
-  // CEP TELEFONU & MOBİL
-  {id:'cep_telefonu', ad:'Cep Telefonu / Akıllı Telefon', ikon:'📱', kat:'Mobil & Aksesuar', gtip:'8517.13', gumruk:0, kdv:20, otv:false, kkdf:15, test:true, testTRY:5000, testAc:'BTK tip onayı + CE + EMC + SAR testi'},
-  {id:'cep_aksesuar_kilif', ad:'Telefon Kılıfı / Kapak', ikon:'🛡️', kat:'Mobil & Aksesuar', gtip:'3926.90', gumruk:6.5, kdv:20, otv:false, kkdf:15, test:false},
-  {id:'cep_aksesuar_sarj', ad:'Şarj Aleti / Adaptör', ikon:'🔌', kat:'Mobil & Aksesuar', gtip:'8504.40', gumruk:0, kdv:20, otv:false, kkdf:15, test:true, testTRY:3000, testAc:'CE + LVD + EMC testi'},
-  {id:'cep_aksesuar_kablo', ad:'USB Kablo / Data Kablosu', ikon:'🔗', kat:'Mobil & Aksesuar', gtip:'8544.42', gumruk:0, kdv:20, otv:false, kkdf:15, test:false},
-  {id:'powerbank', ad:'Powerbank / Taşınabilir Şarj', ikon:'🔋', kat:'Mobil & Aksesuar', gtip:'8507.60', gumruk:0, kdv:20, otv:false, kkdf:15, test:true, testTRY:4000, testAc:'CE + UN38.3 batarya testi'},
-  {id:'telefon_cam', ad:'Ekran Koruyucu Cam', ikon:'🪟', kat:'Mobil & Aksesuar', gtip:'7007.19', gumruk:5, kdv:20, otv:false, kkdf:15, test:false},
-  {id:'telefon_tutucu', ad:'Araç Telefon Tutucu', ikon:'🚗', kat:'Mobil & Aksesuar', gtip:'8714.99', gumruk:3.7, kdv:20, otv:false, kkdf:15, test:false},
-  {id:'selfie_cubuk', ad:'Selfie Çubuğu / Tripod', ikon:'🤳', kat:'Mobil & Aksesuar', gtip:'9620.00', gumruk:3.7, kdv:20, otv:false, kkdf:15, test:false},
-  {id:'wireless_sarj', ad:'Kablosuz Şarj Pedi', ikon:'⚡', kat:'Mobil & Aksesuar', gtip:'8504.40', gumruk:0, kdv:20, otv:false, kkdf:15, test:true, testTRY:3500, testAc:'CE + Qi sertifikası'},
-
-  // AKILLI SAAT & GİYİLEBİLİR
-  {id:'akilli_saat', ad:'Akıllı Saat (Smartwatch)', ikon:'⌚', kat:'Giyilebilir', gtip:'8517.62', gumruk:0, kdv:20, otv:false, kkdf:15, test:true, testTRY:6000, testAc:'CE + BTK tip onayı + EMC + SAR testi'},
-  {id:'fitness_bileklik', ad:'Fitness Bilekliği / Tracker', ikon:'💪', kat:'Giyilebilir', gtip:'8517.62', gumruk:0, kdv:20, otv:false, kkdf:15, test:true, testTRY:4000, testAc:'CE + BTK onayı'},
-  {id:'akilli_gozluk', ad:'Akıllı Gözlük / AR Gözlük', ikon:'🥽', kat:'Giyilebilir', gtip:'8517.62', gumruk:0, kdv:20, otv:false, kkdf:15, test:true, testTRY:8000, testAc:'CE + EMC + SAR testi'},
-  {id:'saat_kordon', ad:'Akıllı Saat Kordon / Kayış', ikon:'⌚', kat:'Giyilebilir', gtip:'9113.90', gumruk:6.5, kdv:20, otv:false, kkdf:15, test:false},
-
-  // TABLET
-  {id:'tablet', ad:'Tablet Bilgisayar', ikon:'📟', kat:'Tablet & PC', gtip:'8471.30', gumruk:0, kdv:20, otv:false, kkdf:15, test:true, testTRY:5000, testAc:'CE + BTK tip onayı + EMC testi'},
-  {id:'tablet_klavye', ad:'Tablet Klavyesi / Kapak', ikon:'⌨️', kat:'Tablet & PC', gtip:'8471.60', gumruk:0, kdv:20, otv:false, kkdf:15, test:false},
-  {id:'tablet_kalem', ad:'Dijital Kalem / Stylus', ikon:'✏️', kat:'Tablet & PC', gtip:'8471.60', gumruk:0, kdv:20, otv:false, kkdf:15, test:false},
-  {id:'e_kitap', ad:'E-Kitap Okuyucu', ikon:'📚', kat:'Tablet & PC', gtip:'8471.30', gumruk:0, kdv:20, otv:false, kkdf:15, test:true, testTRY:3000, testAc:'CE belgesi'},
-
-  // KULAKLIK
-  {id:'kulaklik_telli', ad:'Kablolu Kulaklık (Kulak İçi)', ikon:'🎧', kat:'Ses & Kulaklık', gtip:'8518.30', gumruk:3.7, kdv:20, otv:false, kkdf:15, test:true, testTRY:2500, testAc:'CE + EMC belgesi'},
-  {id:'kulaklik_kafaustu', ad:'Kafa Üstü Kulaklık', ikon:'🎧', kat:'Ses & Kulaklık', gtip:'8518.30', gumruk:3.7, kdv:20, otv:false, kkdf:15, test:true, testTRY:3000, testAc:'CE + EMC belgesi'},
-  {id:'kulaklik_bluetooth', ad:'Kablosuz Bluetooth Kulaklık', ikon:'🔵', kat:'Ses & Kulaklık', gtip:'8518.30', gumruk:3.7, kdv:20, otv:false, kkdf:15, test:true, testTRY:4000, testAc:'CE + BTK + Bluetooth SIG sertifikası'},
-  {id:'kulaklik_tws', ad:'TWS Kablosuz Kulaklık (AirPods tipi)', ikon:'🎵', kat:'Ses & Kulaklık', gtip:'8518.30', gumruk:3.7, kdv:20, otv:false, kkdf:15, test:true, testTRY:5000, testAc:'CE + BTK tip onayı + EMC + SAR'},
-  {id:'kulaklik_anc', ad:'Gürültü Önleyici Kulaklık (ANC)', ikon:'🔇', kat:'Ses & Kulaklık', gtip:'8518.30', gumruk:3.7, kdv:20, otv:false, kkdf:15, test:true, testTRY:5000, testAc:'CE + EMC + BTK onayı'},
-  {id:'kulaklik_gaming', ad:'Gaming Kulaklık', ikon:'🎮', kat:'Ses & Kulaklık', gtip:'8518.30', gumruk:3.7, kdv:20, otv:false, kkdf:15, test:true, testTRY:3500, testAc:'CE + EMC belgesi'},
-  {id:'hoparlor_bt', ad:'Bluetooth Hoparlör', ikon:'🔊', kat:'Ses & Kulaklık', gtip:'8518.22', gumruk:3.7, kdv:20, otv:false, kkdf:15, test:true, testTRY:3500, testAc:'CE + EMC belgesi'},
-
-  // 5G & 4G NETWORK
-  {id:'5g_cpe', ad:'5G CPE (Sabit Kablosuz Ağ Cihazı)', ikon:'📡', kat:'5G & Network', gtip:'8517.62', gumruk:0, kdv:20, otv:false, kkdf:15, test:true, testTRY:15000, testAc:'BTK tip onayı + 5G uyumluluk + CE + EMC + SAR testi (zorunlu)'},
-  {id:'4g_cpe', ad:'4G CPE / LTE Router', ikon:'📶', kat:'5G & Network', gtip:'8517.62', gumruk:0, kdv:20, otv:false, kkdf:15, test:true, testTRY:10000, testAc:'BTK tip onayı + CE + EMC + SAR testi'},
-  {id:'5g_modem', ad:'5G USB Modem / Dongle', ikon:'🔌', kat:'5G & Network', gtip:'8517.62', gumruk:0, kdv:20, otv:false, kkdf:15, test:true, testTRY:10000, testAc:'BTK tip onayı + CE + EMC + SAR testi'},
-  {id:'wifi6_router', ad:'WiFi 6 / 6E Router', ikon:'📡', kat:'5G & Network', gtip:'8517.62', gumruk:0, kdv:20, otv:false, kkdf:15, test:true, testTRY:8000, testAc:'BTK onayı + CE + EMC testi'},
-  {id:'network_switch', ad:'Network Switch (Yönetilebilir)', ikon:'🔀', kat:'5G & Network', gtip:'8517.62', gumruk:0, kdv:20, otv:false, kkdf:15, test:false},
-  {id:'5g_anteni', ad:'5G Anten / MIMO Anten', ikon:'📻', kat:'5G & Network', gtip:'8517.70', gumruk:0, kdv:20, otv:false, kkdf:15, test:true, testTRY:5000, testAc:'CE + EMC + BTK frekans uyumluluk testi'},
-  {id:'4g_anteni', ad:'4G LTE Harici Anten', ikon:'📡', kat:'5G & Network', gtip:'8517.70', gumruk:0, kdv:20, otv:false, kkdf:15, test:false},
-  {id:'sfp_modul', ad:'SFP / SFP+ Fiber Modül', ikon:'💡', kat:'5G & Network', gtip:'8517.62', gumruk:0, kdv:20, otv:false, kkdf:15, test:false},
-  {id:'poe_switch', ad:'PoE Switch', ikon:'⚡', kat:'5G & Network', gtip:'8517.62', gumruk:0, kdv:20, otv:false, kkdf:15, test:false},
-  {id:'fiber_ekipman', ad:'Fiber Optik Ekipman / OLT', ikon:'🌐', kat:'5G & Network', gtip:'8517.62', gumruk:0, kdv:20, otv:false, kkdf:15, test:true, testTRY:12000, testAc:'BTK onayı + CE + EMC testi'},
+// ══════════════════════════════════════════
+// GTİP VERİTABANI — Türkiye Gümrük Tarife
+// Kaynak: TGTC 2024 / Türkiye Gümrük Tarifeleri
+// ══════════════════════════════════════════
+const DB = [
+  // Elektronik
+  {g:"8471.30",n:"Taşınabilir Bilgisayar (Laptop / Notebook)",s:"Elektronik",gv:0,kdv:20,otv:0},
+  {g:"8471.41",n:"Masaüstü Bilgisayar (PC / Desktop)",s:"Elektronik",gv:0,kdv:20,otv:0},
+  {g:"8471.80",n:"Tablet Bilgisayar (iPad, Android Tablet)",s:"Elektronik",gv:0,kdv:20,otv:0},
+  {g:"8517.12",n:"Cep Telefonu / Akıllı Telefon",s:"Elektronik",gv:0,kdv:20,otv:0},
+  {g:"8528.72",n:"Televizyon (LCD / OLED / QLED)",s:"Elektronik",gv:3.7,kdv:20,otv:0},
+  {g:"8518.30",n:"Kulaklık / Kulak İçi (Bluetooth dahil)",s:"Elektronik",gv:3.7,kdv:20,otv:0},
+  {g:"8519.81",n:"Taşınabilir Hoparlör / Ses Sistemi",s:"Elektronik",gv:3.7,kdv:20,otv:0},
+  {g:"8543.70",n:"Akıllı Saat / Wearable Cihaz",s:"Elektronik",gv:0,kdv:20,otv:0},
+  {g:"8471.60",n:"Klavye / Mouse / Giriş Birimi",s:"Elektronik",gv:0,kdv:20,otv:0},
+  {g:"8473.30",n:"Bilgisayar Parçaları (RAM, SSD, GPU, Anakart)",s:"Elektronik",gv:0,kdv:20,otv:0},
+  {g:"8504.40",n:"Güç Kaynağı / Şarj Cihazı / Adaptör",s:"Elektronik",gv:3.7,kdv:20,otv:0},
+  {g:"8544.42",n:"Elektrik Kablosu / USB Kablo / HDMI",s:"Elektronik",gv:3.7,kdv:20,otv:0},
+  {g:"8536.50",n:"Elektrik Şalteri / Priz / Sigorta Elemanı",s:"Elektronik",gv:3.7,kdv:20,otv:0},
+  {g:"8525.80",n:"Kamera / Webcam / Güvenlik Kamerası",s:"Elektronik",gv:3.7,kdv:20,otv:0},
+  {g:"9504.50",n:"Video Oyun Konsolu (PlayStation, Xbox, Switch)",s:"Elektronik",gv:0,kdv:20,otv:0},
+  // Beyaz Eşya
+  {g:"8450.11",n:"Çamaşır Makinesi",s:"Beyaz Eşya",gv:3.7,kdv:20,otv:0},
+  {g:"8422.11",n:"Bulaşık Makinesi",s:"Beyaz Eşya",gv:3.7,kdv:20,otv:0},
+  {g:"8418.21",n:"Buzdolabı (Kombine Soğutucu)",s:"Beyaz Eşya",gv:3.7,kdv:20,otv:0},
+  {g:"8516.60",n:"Fırın / Mikrodalga / Ocak (Ev tipi)",s:"Beyaz Eşya",gv:3.7,kdv:20,otv:0},
+  {g:"8509.40",n:"Elektrikli Süpürge / Robot Süpürge",s:"Beyaz Eşya",gv:3.7,kdv:20,otv:0},
+  {g:"8415.10",n:"Klima (Split Sistem / Enerji Tasarruflu)",s:"Beyaz Eşya",gv:3.7,kdv:20,otv:0},
+  {g:"8414.51",n:"Fan / Vantilatör (Ev tipi)",s:"Beyaz Eşya",gv:3.7,kdv:20,otv:0},
+  // Tekstil & Giyim
+  {g:"6109.10",n:"T-Shirt / Pamuklu Üst Giysi",s:"Tekstil/Giyim",gv:12,kdv:20,otv:0},
+  {g:"6203.42",n:"Erkek Pantolon (Pamuk)",s:"Tekstil/Giyim",gv:12,kdv:20,otv:0},
+  {g:"6204.62",n:"Kadın Pantolon (Pamuk)",s:"Tekstil/Giyim",gv:12,kdv:20,otv:0},
+  {g:"6110.20",n:"Kazak / Sweatshirt / Hoodie",s:"Tekstil/Giyim",gv:12,kdv:20,otv:0},
+  {g:"6201.92",n:"Mont / Ceket (Erkek, Pamuk / Sentetik)",s:"Tekstil/Giyim",gv:12,kdv:20,otv:0},
+  {g:"6301.40",n:"Battaniye / Polar Örtü",s:"Tekstil/Ev",gv:12,kdv:20,otv:0},
+  {g:"6302.21",n:"Yatak Çarşafı / Nevresim Takımı",s:"Tekstil/Ev",gv:12,kdv:20,otv:0},
+  {g:"6403.91",n:"Ayakkabı (Deri Tabanlı)",s:"Tekstil/Giyim",gv:3.7,kdv:20,otv:0},
+  {g:"6404.11",n:"Spor Ayakkabı (Tekstil Üst)",s:"Tekstil/Giyim",gv:3.7,kdv:20,otv:0},
+  {g:"5208.21",n:"Pamuklu Dokuma Kumaş",s:"Tekstil/Ham Madde",gv:8,kdv:20,otv:0},
+  {g:"5402.20",n:"Polyester / Sentetik İplik",s:"Tekstil/Ham Madde",gv:4,kdv:20,otv:0},
+  {g:"6217.10",n:"Giysi Aksesuarı (Düğme, Fermuar, Dantel)",s:"Tekstil/Aksesuar",gv:6.5,kdv:20,otv:0},
+  // Makine & Endüstriyel
+  {g:"8479.89",n:"Endüstriyel Makine (Genel Amaçlı)",s:"Makine",gv:0,kdv:20,otv:0},
+  {g:"8482.10",n:"Rulman (Bilyalı / Makaralı)",s:"Makine",gv:3.7,kdv:20,otv:0},
+  {g:"8413.11",n:"Pompa (Sıvı Transferi / Hidrolik)",s:"Makine",gv:1.7,kdv:20,otv:0},
+  {g:"8481.80",n:"Vana / Musluk (Endüstriyel)",s:"Makine",gv:1.7,kdv:20,otv:0},
+  {g:"8501.10",n:"Elektrik Motoru (DC / AC / Servo)",s:"Makine",gv:1.7,kdv:20,otv:0},
+  {g:"8467.11",n:"Elektrikli El Aleti (Matkap, Taşlama, Tornavida)",s:"Makine",gv:1.7,kdv:20,otv:0},
+  {g:"8428.90",n:"Taşıma / Kaldırma Ekipmanı (Konveyör, Forklift aksesuarı)",s:"Makine",gv:0,kdv:20,otv:0},
+  {g:"8483.10",n:"Şaft / Mili / Transmisyon Parçası",s:"Makine",gv:3.7,kdv:20,otv:0},
+  // Otomotiv
+  {g:"8708.29",n:"Otomobil Karoseri / Tampon / Kapı Parçaları",s:"Otomotiv",gv:4.5,kdv:20,otv:0},
+  {g:"8708.99",n:"Otomobil Yedek Parça (Diğer)",s:"Otomotiv",gv:4.5,kdv:20,otv:0},
+  {g:"8409.91",n:"Motor Parçaları (Piston, Supap, Silindir)",s:"Otomotiv",gv:4.5,kdv:20,otv:0},
+  {g:"8544.30",n:"Araç Kablo Demeti",s:"Otomotiv",gv:4.5,kdv:20,otv:0},
+  {g:"4011.10",n:"Binek Araç Lastiği",s:"Otomotiv",gv:4.5,kdv:20,otv:0},
+  {g:"8708.10",n:"Araç Tampon / Ön Panel",s:"Otomotiv",gv:4.5,kdv:20,otv:0},
+  // Kimya & Plastik
+  {g:"3901.10",n:"Polietilen (HDPE / LDPE) Granül",s:"Kimya/Plastik",gv:3.7,kdv:20,otv:0},
+  {g:"3902.10",n:"Polipropilen (PP) Granül",s:"Kimya/Plastik",gv:3.7,kdv:20,otv:0},
+  {g:"3904.10",n:"PVC Ham Madde / Granül",s:"Kimya/Plastik",gv:3.7,kdv:20,otv:0},
+  {g:"3926.90",n:"Plastik Mamul (Çeşitli Ürün)",s:"Kimya/Plastik",gv:6.5,kdv:20,otv:0},
+  {g:"3402.20",n:"Deterjan / Yüzey Aktif Madde",s:"Kimya",gv:6.5,kdv:20,otv:0},
+  {g:"3812.31",n:"Plastik Katkı Maddesi / Stabilizatör",s:"Kimya",gv:3.7,kdv:20,otv:0},
+  // Kozmetik
+  {g:"3304.10",n:"Dudak Makyaj Ürünü (Ruj, Lip Gloss)",s:"Kozmetik",gv:6.5,kdv:20,otv:0},
+  {g:"3305.10",n:"Şampuan / Saç Bakım Ürünü",s:"Kozmetik",gv:6.5,kdv:20,otv:0},
+  {g:"3303.00",n:"Parfüm / Kolonya / Eau de Parfum",s:"Kozmetik",gv:6.5,kdv:20,otv:0},
+  {g:"3304.99",n:"Cilt Bakım Ürünü / Krem / Losyon / Serum",s:"Kozmetik",gv:6.5,kdv:20,otv:0},
+  {g:"3401.11",n:"Kişisel Bakım Sabunu",s:"Kozmetik",gv:6.5,kdv:20,otv:0},
+  // Tıbbi Cihaz
+  {g:"9018.11",n:"Tansiyon Aleti (Elektronik / Dijital)",s:"Tıbbi Cihaz",gv:0,kdv:10,otv:0},
+  {g:"9018.90",n:"Tıbbi Alet ve Cihaz (Cerrahi / Genel)",s:"Tıbbi Cihaz",gv:0,kdv:10,otv:0},
+  {g:"9019.20",n:"Oksijen Konsantratörü / Solunum Cihazı",s:"Tıbbi Cihaz",gv:0,kdv:10,otv:0},
+  {g:"3004.50",n:"İlaç / Vitamin / Bitkisel Takviye",s:"Tıbbi/Eczacılık",gv:0,kdv:10,otv:0},
+  // Mobilya & Ev
+  {g:"9401.61",n:"Koltuk / Kanepe (Kumaş Döşemeli)",s:"Mobilya",gv:0,kdv:20,otv:0},
+  {g:"9403.20",n:"Metal Mobilya (Ofis / Endüstriyel)",s:"Mobilya",gv:0,kdv:20,otv:0},
+  {g:"9403.60",n:"Ahşap Mobilya (Masa, Dolap, Raf, Sandalye)",s:"Mobilya",gv:0,kdv:20,otv:0},
+  {g:"9405.10",n:"Avize / Aydınlatma Armatürü",s:"Mobilya/Aydınlatma",gv:6.5,kdv:20,otv:0},
+  // İnşaat & Metal
+  {g:"7210.49",n:"Galvanizli Çelik Sac / Levha",s:"İnşaat/Metal",gv:0,kdv:20,otv:0},
+  {g:"7208.51",n:"Sıcak Haddelenmiş Çelik Sac",s:"İnşaat/Metal",gv:0,kdv:20,otv:0},
+  {g:"7604.10",n:"Alüminyum Profil / Boru / Köşebent",s:"İnşaat/Metal",gv:3.7,kdv:20,otv:0},
+  {g:"6907.21",n:"Seramik Yer / Duvar Karosu",s:"İnşaat/Yapı",gv:6.5,kdv:20,otv:0},
+  {g:"3918.10",n:"PVC Zemin Kaplama / Plastik Parke",s:"İnşaat/Yapı",gv:6.5,kdv:20,otv:0},
+  {g:"7308.90",n:"Metal Yapı Elemanı / Çelik Konstrüksiyon",s:"İnşaat/Metal",gv:0,kdv:20,otv:0},
+  // Enerji
+  {g:"8541.40",n:"Güneş Paneli (Fotovoltaik, Mono / Poli)",s:"Enerji/Solar",gv:0,kdv:20,otv:0},
+  {g:"8507.60",n:"Lityum-İyon / LiFePO4 Batarya",s:"Enerji/Batarya",gv:1.7,kdv:20,otv:0},
+  {g:"8504.31",n:"İnvertör / Şarj Kontrol Cihazı (Solar)",s:"Enerji/Solar",gv:3.7,kdv:20,otv:0},
+  // Gıda
+  {g:"0901.11",n:"Kahve (Kavrulmamış Ham)",s:"Gıda",gv:7.5,kdv:1,otv:0},
+  {g:"2101.11",n:"Kahve Özü / Instant Kahve",s:"Gıda",gv:20,kdv:10,otv:0},
+  {g:"1806.32",n:"Çikolata / Kakao Ürünü",s:"Gıda",gv:56.3,kdv:10,otv:0},
+  {g:"2106.90",n:"Gıda Takviyesi / Protein Tozu / Supplement",s:"Gıda/Sağlık",gv:20,kdv:10,otv:0},
+  // Oyuncak & Spor
+  {g:"9503.00",n:"Oyuncak (Çocuk, Genel)",s:"Oyuncak",gv:0,kdv:20,otv:0},
+  {g:"9506.91",n:"Spor Ekipmanı (Fitness, Genel)",s:"Spor",gv:3.7,kdv:20,otv:0},
+  {g:"9506.40",n:"Tenis / Badminton / Masa Tenisi Ekipmanı",s:"Spor",gv:3.7,kdv:20,otv:0},
+  // Kağıt & Ambalaj
+  {g:"4802.56",n:"Ofis Kağıdı / Baskı Kağıdı (A4 vb.)",s:"Kağıt/Ambalaj",gv:0,kdv:20,otv:0},
+  {g:"4819.10",n:"Oluklu Mukavva Kutu / Karton Ambalaj",s:"Kağıt/Ambalaj",gv:0,kdv:20,otv:0},
+  // Tarım
+  {g:"8432.21",n:"Diskaro / Pulluk / Tarım Makinesi",s:"Tarım Makinesi",gv:0,kdv:20,otv:0},
+  {g:"3101.00",n:"Organik Gübre / Kompost",s:"Tarım",gv:0,kdv:1,otv:0},
 ];
-
-const KATEGORILER = ['Makine','Elektronik','Mobil & Aksesuar','Giyilebilir','Tablet & PC','Ses & Kulaklık','5G & Network','Su & Arıtma','Tekstil','Kimya','Metal','Gıda','Otomotiv','Tıbbi','İnşaat','Mobilya'];
-let seciliUrun = null;
-let aktifKat = 'Tümü';
-
-function initCatFilter() {
-  const wrap = document.getElementById('cat-filter');
-  wrap.innerHTML = ['Tümü', ...KATEGORILER].map(k =>
-    `<button class="cat-btn ${k==='Tümü'?'active':''}" onclick="filterCat('${k}')">${k}</button>`
-  ).join('');
-}
-
-function filterCat(kat) {
-  aktifKat = kat;
-  document.querySelectorAll('.cat-btn').forEach(b => {
-    b.classList.toggle('active', b.textContent === kat);
-  });
-  filterProducts();
-}
-
-function filterProducts() {
-  const q = document.getElementById('search-input').value.toLowerCase().trim();
-  const grid = document.getElementById('product-grid');
-  const noRes = document.getElementById('no-result');
-  let sonuc = URUNLER.filter(u => {
-    const katOk = aktifKat === 'Tümü' || u.kat === aktifKat;
-    const qOk = !q || u.ad.toLowerCase().includes(q) || u.gtip.includes(q) || u.kat.toLowerCase().includes(q);
-    return katOk && qOk;
-  });
-  if (sonuc.length === 0) {
-    grid.innerHTML = '';
-    noRes.style.display = 'block';
-  } else {
-    noRes.style.display = 'none';
-    grid.innerHTML = sonuc.map(u => `
-      <div class="product-card ${seciliUrun?.id === u.id ? 'selected' : ''}"
-           onclick="selectUrun('${u.id}')">
-        <div class="product-icon">${u.ikon}</div>
-        <div class="product-name">${u.ad}</div>
-        <div class="product-gtip">GTİP: ${u.gtip}</div>
-        <div class="product-tags">
-          <span class="tag tag-blue">${u.kat}</span>
-          ${u.test ? '<span class="tag tag-orange">🔬 Test</span>' : ''}
-          ${u.gumruk === 0 ? '<span class="tag tag-green">%0 Gümrük</span>' : ''}
-        </div>
-      </div>
-    `).join('');
-  }
-}
-
-function selectUrun(id) {
-  seciliUrun = URUNLER.find(u => u.id === id);
-  filterProducts();
-  document.getElementById('btn-step1').disabled = false;
-  document.getElementById('btn-step1').style.opacity = '1';
-  // Vergi oranlarını urunle doldur
-  if (document.getElementById('r-gumruk')) {
-    document.getElementById('r-gumruk').value = seciliUrun.gumruk;
-    document.getElementById('r-kdv').value = seciliUrun.kdv;
-    document.getElementById('ch-otv').checked = seciliUrun.otv;
-    document.getElementById('ch-kkdf').checked = seciliUrun.kkdf > 0;
-    document.getElementById('r-kkdf').value = seciliUrun.kkdf;
-  }
-}
-
-// ===== ŞEHİR =====
-const SEHIRLER = {
-  CN: ['Shanghai','Shenzhen','Guangzhou','Ningbo','Tianjin','Qingdao','Chengdu','Beijing'],
-  DE: ['Hamburg','Frankfurt','Munich','Dusseldorf','Berlin'],
-  US: ['New York','Los Angeles','Chicago','Miami','Houston'],
-  IT: ['Milan','Genoa','Trieste','Rome'],
-  JP: ['Tokyo','Osaka','Kobe','Yokohama'],
-  KR: ['Seoul','Busan','Incheon'],
-  IN: ['Mumbai','Chennai','Delhi','Nhava Sheva'],
-  FR: ['Paris','Le Havre','Marseille'],
-  GB: ['London','Felixstowe','Southampton'],
-  NL: ['Amsterdam','Rotterdam'],
-  BE: ['Brussels','Antwerp'],
-  TW: ['Taipei','Kaohsiung'],
-  VN: ['Ho Chi Minh','Hanoi'],
-  BD: ['Dhaka','Chittagong'],
-  PK: ['Karachi','Lahore'],
-  OTHER: ['Diğer'],
+// ══════════════════════════════════════════
+// STATE
+// ══════════════════════════════════════════
+const S = {
+  step: 1,
+  product: null,
+  incoterm: \'EXW\',
+  shipping: \'SEA\',
+  container: \'LCL\',
+  payment: \'PRE\',
+  rates: { USD:32.5, EUR:35.3, GBP:41.2, CNY:4.5, TRY:1 },
+  result: null
 };
-function updateSehir() {
-  const ulke = document.getElementById('ulke').value;
-  const s = document.getElementById('sehir');
-  s.innerHTML = (SEHIRLER[ulke] || ['Diğer']).map(x => `<option>${x}</option>`).join('');
-}
-
-// ===== NAKLİYE SEÇİMİ =====
-document.addEventListener('change', e => {
-  if (e.target.name === 'nakliye') {
-    document.querySelectorAll('.ship-card').forEach(c => c.classList.remove('selected'));
-    document.getElementById('sc-' + e.target.value).classList.add('selected');
-    document.getElementById('deniz-opts').style.display = e.target.value === 'deniz' ? 'block' : 'none';
-    document.getElementById('hava-opts').style.display = e.target.value === 'hava' ? 'block' : 'none';
+// ══════════════════════════════════════════
+// EXCHANGE RATES
+// ══════════════════════════════════════════
+async function loadRates() {
+  try {
+    const res = await fetch(\'https://api.frankfurter.app/latest?from=USD&to=TRY,EUR,GBP,CNY\');
+    const d = await res.json();
+    const r = d.rates;
+    S.rates.USD = r.TRY;
+    S.rates.EUR = r.TRY / r.EUR;
+    S.rates.GBP = r.TRY / r.GBP;
+    S.rates.CNY = r.TRY / r.CNY;
+    S.rates.TRY = 1;
+    $(\'rU\').textContent = r.TRY.toFixed(2);
+    $(\'rE\').textContent = (r.TRY/r.EUR).toFixed(2);
+    $(\'rG\').textContent = (r.TRY/r.GBP).toFixed(2);
+    $(\'rC\').textContent = (r.TRY/r.CNY).toFixed(2);
+    document.querySelectorAll(\'.rv\').forEach(e=>e.classList.remove(\'ld\'));
+    updRateHint();
+  } catch(e) {
+    document.querySelectorAll(\'.rv\').forEach(e=>e.textContent=\'hata\');
   }
-  if (e.target.name === 'odeme') {
-    const kkdf = e.target.value === 'vadeli';
-    document.getElementById('ch-kkdf').checked = kkdf;
-  }
-});
-document.querySelectorAll('.ship-card').forEach(c => {
-  c.addEventListener('click', () => {
-    const radio = c.querySelector('input[type="radio"]');
-    radio.checked = true;
-    radio.dispatchEvent(new Event('change', {bubbles: true}));
-  });
-});
-
-function updateSigorta() {
-  const nav = parseFloat(document.getElementById('navlun').value) || 0;
-  const oto = nav * 0.004;
-  if (oto > 0) document.getElementById('sigorta').placeholder = `Ör: ${oto.toFixed(0)} (navlunun %0.4'ü)`;
 }
-
-// ===== WIZARD NAVİGASYON =====
-let mevcutAdim = 1;
+function updRateHint() {
+  const cur = $(\'ucur\')?.value || \'USD\';
+  const rate = S.rates[cur];
+  $(\'mrlbl\').textContent = `TRY/${cur}`;
+  $(\'rhint\').textContent = `Güncel kur: 1 ${cur} = ${rate?.toFixed(4)||\'—\'} TRY`;
+}
+// ══════════════════════════════════════════
+// SEARCH
+// ══════════════════════════════════════════
+let stimer;
+$(\'psearch\').addEventListener(\'input\', function() {
+  clearTimeout(stimer);
+  stimer = setTimeout(()=>doSearch(this.value.trim()), 180);
+});
+function doSearch(q) {
+  const el = $(\'sres\');
+  if (!q) { el.classList.add(\'hidden\'); return; }
+  const lq = q.toLowerCase();
+  const hits = DB.filter(x => x.n.toLowerCase().includes(lq)||x.g.includes(q)||x.s.toLowerCase().includes(lq)).slice(0,12);
+  el.classList.remove(\'hidden\');
+  if (!hits.length) { el.innerHTML=\'<div class="no-r">🔎 Sonuç bulunamadı — farklı arama deneyin</div>\'; return; }
+  el.innerHTML = hits.map(x=>`
+    <div class="sri" onclick=\'pickProd(${JSON.stringify(x).replace(/\'/g,"&#39;")})\'>
+      <div class="sn2">${hl(x.n,q)}</div>
+      <div class="sm"><span class="sg">${x.g}</span><span class="ssc">${x.s}</span></div>
+    </div>`).join(\'\');
+}
+function hl(txt, q) {
+  if (!q) return txt;
+  const re = new RegExp(`(${q.replace(/[.*+?^${}()|[\\]\\\\]/g,\'\\\\$&\')})`, \'gi\');
+  return txt.replace(re,\'<mark>$1</mark>\');
+}
+function pickProd(x) {
+  S.product = x;
+  $(\'psearch\').value=\'\';
+  $(\'sres\').classList.add(\'hidden\');
+  $(\'sh\').classList.add(\'hidden\');
+  const c = $(\'spcard\'); c.classList.remove(\'hidden\');
+  $(\'spn\').textContent = x.n;
+  $(\'spg\').textContent = `GTİP: ${x.g}  ·  ${x.s}`;
+  $(\'sprts\').innerHTML = `
+    <span class="chip cr">GV %${x.gv}</span>
+    <span class="chip cb">KDV %${x.kdv}</span>
+    ${x.otv>0?`<span class="chip ca">ÖTV %${x.otv}</span>`:\'<span class="chip cn">ÖTV %0</span>\'}`;
+  // autofill taxes
+  $(\'tGV\').value=x.gv; $(\'tKDV\').value=x.kdv; $(\'tOTV\').value=x.otv;
+  const ab=$(\'autobanner\'); if(ab) ab.classList.remove(\'hidden\');
+}
+function clearProd() {
+  S.product=null;
+  $(\'spcard\').classList.add(\'hidden\');
+  $(\'sh\').classList.remove(\'hidden\');
+  $(\'psearch\').value=\'\';
+  const ab=$(\'autobanner\'); if(ab) ab.classList.add(\'hidden\');
+}
+// ══════════════════════════════════════════
+// TOGGLE HELPERS
+// ══════════════════════════════════════════
+function selGrp(grpId, el) {
+  document.querySelectorAll(`#${grpId} .to`).forEach(e=>e.classList.remove(\'sel\'));
+  el.classList.add(\'sel\');
+  el.querySelector(\'input\').checked=true;
+}
+function setInc(el,v){selGrp(\'igrp\',el);S.incoterm=v;$(\'fhint\').textContent=v===\'CIF\'?\'CIF alımda navlun zaten dahildir — sıfır bırakın\':\'Navlun bedelini girin (USD, EUR veya TRY)\';}
+function setShip(el,v){selGrp(\'shgrp\',el);S.shipping=v;$(\'seaCard\').classList.toggle(\'hidden\',v!==\'SEA\');$(\'airCard\').classList.toggle(\'hidden\',v!==\'AIR\');}
+function setCont(el,v){selGrp(\'cgrp\',el);S.container=v;$(\'volRow\').style.display=v===\'LCL\'?\'\':\'none\';}
+function setPay(el,v){selGrp(\'paygrp\',el);S.payment=v;$(\'tKKDF\').value=v===\'CRD\'?15:0;}
+// ══════════════════════════════════════════
+// NAVIGATION
+// ══════════════════════════════════════════
 function goStep(n) {
-  if (n === 2 && !seciliUrun) { alert('Lütfen önce bir ürün seçin.'); return; }
-  mevcutAdim = n;
-  document.querySelectorAll('.step-panel').forEach((p, i) => {
-    p.classList.toggle('active', i + 1 === n);
+  if (n>=3) {
+    const up=parseFloat($(\'uprice\').value);
+    if (!up||up<=0){alert(\'Lütfen birim fiyat girin.\');return;}
+  }
+  S.step=n;
+  [1,2,3,4].forEach(i=>{
+    const p=$(`p${i}`); if(p) p.classList.toggle(\'hidden\',i!==n);
+    const si=document.querySelector(`.si[data-s="${i}"]`);
+    if(si){si.classList.remove(\'active\',\'done\');if(i===n)si.classList.add(\'active\');else if(i<n)si.classList.add(\'done\');}
   });
-  document.querySelectorAll('.step-btn').forEach((b, i) => {
-    b.classList.remove('active', 'done');
-    if (i + 1 === n) b.classList.add('active');
-    if (i + 1 < n) b.classList.add('done');
-  });
-  document.getElementById('vergi-panel').style.display = 'none';
-  if (n === 2) renderSelectedBar();
-  if (n === 3) { renderSelectedBar3(); updateSehir(); }
-  if (n === 4) { /* sonuç gösterilir hesaplaVeGoster'den */ }
-  window.scrollTo(0, 0);
+  window.scrollTo({top:0,behavior:\'smooth\'});
 }
-
-function renderSelectedBar() {
-  if (!seciliUrun) return;
-  document.getElementById('selected-bar').innerHTML = `
-    <span class="sp-icon">${seciliUrun.ikon}</span>
-    <div><div class="sp-name">${seciliUrun.ad}</div><div class="sp-gtip">GTİP: ${seciliUrun.gtip}</div></div>
-    <span class="sp-change" onclick="goStep(1)">✏️ Değiştir</span>
-  `;
-}
-function renderSelectedBar3() {
-  if (!seciliUrun) return;
-  document.getElementById('selected-bar-3').innerHTML = `
-    <span class="sp-icon">${seciliUrun.ikon}</span>
-    <div><div class="sp-name">${seciliUrun.ad}</div><div class="sp-gtip">GTİP: ${seciliUrun.gtip}</div></div>
-    <span class="sp-change" onclick="goStep(1)">✏️ Değiştir</span>
-  `;
-}
-
-// ===== HESAPLA (adım 3'ten vergi paneline geç) =====
-function hesaplaVeGoster() {
-  // Vergi panelini göster
-  document.getElementById('vergi-panel').style.display = 'block';
-  // Ürüne göre oranları doldur
-  if (seciliUrun) {
-    document.getElementById('r-gumruk').value = seciliUrun.gumruk;
-    document.getElementById('r-kdv').value = seciliUrun.kdv;
-    document.getElementById('ch-otv').checked = seciliUrun.otv;
-    document.getElementById('ch-kkdf').checked = seciliUrun.kkdf > 0;
-    document.getElementById('r-kkdf').value = seciliUrun.kkdf;
-    // Test paneli
-    if (seciliUrun.test) {
-      document.getElementById('test-panel-wrap').innerHTML = `
-        <div class="card" style="border-color:#fcd34d">
-          <div class="card-title">🔬 Test & Sertifikasyon Maliyeti</div>
-          <div class="test-panel">
-            <div class="test-panel-title">⚠️ Bu ürün test/sertifikasyon gerektirir</div>
-            <div style="font-size:13px;color:#78350f;margin-bottom:10px">${seciliUrun.testAc}</div>
-            <div class="form-grid">
-              <div><label>Toplam Test Maliyeti (TRY)</label>
-                <input type="number" id="test-toplam" value="${seciliUrun.testTRY}" min="0">
-              </div>
-              <div><label>Test Kaç Adete Bölünsün</label>
-                <input type="number" id="test-adet" placeholder="Sipariş adedini girin" min="1">
-              </div>
-            </div>
-            <div class="test-birim" id="test-birim-goster">→ Birim test maliyeti: hesaplanacak</div>
-          </div>
-        </div>
-      `;
-      ['test-toplam','test-adet'].forEach(id => {
-        document.getElementById(id)?.addEventListener('input', updateTestBirim);
-      });
-      // Sipariş miktarını otomatik doldur
-      const mik = document.getElementById('miktar')?.value;
-      if (mik) document.getElementById('test-adet').value = mik;
-      updateTestBirim();
-    } else {
-      document.getElementById('test-panel-wrap').innerHTML = '';
-    }
+// ══════════════════════════════════════════
+// CALCULATION ENGINE
+// ══════════════════════════════════════════
+function getRate(cur) {
+  const m=parseFloat($(\'mrate\')?.value);
+  const baseCur=$(\'ucur\')?.value||\'USD\';
+  if(!isNaN(m)&&m>0) {
+    if(cur===baseCur) return m;
+    return m*(S.rates[cur]/S.rates[baseCur]);
   }
-  window.scrollTo(0, document.getElementById('vergi-panel').offsetTop - 80);
+  return S.rates[cur]||1;
 }
-
-function updateTestBirim() {
-  const top = parseFloat(document.getElementById('test-toplam')?.value) || 0;
-  const adet = parseFloat(document.getElementById('test-adet')?.value) || 1;
-  const birim = top / adet;
-  const el = document.getElementById('test-birim-goster');
-  if (el) el.textContent = `→ Birim test maliyeti: ${fmt(top)} ÷ ${adet} adet = ${fmt(birim)} ₺/adet`;
-}
-
-// ===== HESAPLAMA MOTORu =====
-function hesaplaFinal() {
-  if (!seciliUrun) { alert('Ürün seçilmedi!'); return; }
-
-  const birimFiyat = parseFloat(document.getElementById('birim-fiyat').value) || 0;
-  const doviz = document.getElementById('fiyat-doviz').value;
-  const miktar = parseFloat(document.getElementById('miktar').value) || 1;
-  const teslim = document.querySelector('input[name="teslim"]:checked').value;
-  const nakliye = document.querySelector('input[name="nakliye"]:checked').value;
-  const kur = getKur(doviz);
-
-  const birimFiyatTRY = birimFiyat * kur;
-  const toplamFiyatTRY = birimFiyatTRY * miktar;
-
-  // Navlun
-  const navlunDoviz = document.getElementById('navlun-doviz').value;
-  const navlunRaw = parseFloat(document.getElementById('navlun').value) || 0;
-  const navlunTRY = navlunRaw * (getKur(navlunDoviz));
-
-  const sigortaUSD = parseFloat(document.getElementById('sigorta').value) || 0;
-  const sigortaTRY = sigortaUSD * (KUR.USD || kur);
-
-  // CIF matrah
-  let cifTRY;
-  if (teslim === 'CIF') {
-    cifTRY = toplamFiyatTRY; // navlun + sigorta dahil
-  } else {
-    cifTRY = toplamFiyatTRY + navlunTRY + sigortaTRY;
-  }
-
-  // Vergiler
-  const gumrukOr = document.getElementById('ch-gumruk').checked ? parseFloat(document.getElementById('r-gumruk').value)/100 : 0;
-  const kdvOr = document.getElementById('ch-kdv').checked ? parseFloat(document.getElementById('r-kdv').value)/100 : 0;
-  const otvOr = document.getElementById('ch-otv').checked ? parseFloat(document.getElementById('r-otv').value)/100 : 0;
-  const kkdfOr = document.getElementById('ch-kkdf').checked ? parseFloat(document.getElementById('r-kkdf').value)/100 : 0;
-  const damgaOr = document.getElementById('ch-damga').checked ? parseFloat(document.getElementById('r-damga').value)/100 : 0;
-  const adumpOr = document.getElementById('ch-adump').checked ? parseFloat(document.getElementById('r-adump').value)/100 : 0;
-
-  const gumrukTRY = cifTRY * gumrukOr;
-  const adumpTRY = cifTRY * adumpOr;
-  const kkdfTRY = cifTRY * kkdfOr;
-  const otvTRY = (cifTRY + gumrukTRY) * otvOr;
-  const kdvTRY = (cifTRY + gumrukTRY + otvTRY) * kdvOr;
-  const damgaTRY = cifTRY * damgaOr;
-  const toplamVergi = gumrukTRY + adumpTRY + kkdfTRY + otvTRY + kdvTRY + damgaTRY;
-
-  // Masraflar
-  const muhavir = parseFloat(document.getElementById('m-muhavir').value) || 0;
-  const antrepo = parseFloat(document.getElementById('m-antrepo').value) || 0;
-  const liman = parseFloat(document.getElementById('m-liman').value) || 0;
-  const icnak = parseFloat(document.getElementById('m-icnak').value) || 0;
-  const diger = parseFloat(document.getElementById('m-diger').value) || 0;
-  const karOran = parseFloat(document.getElementById('m-kar').value) || 0;
-  const toplamMasraf = muhavir + antrepo + liman + icnak + diger;
-
-  // Test
-  let testToplamTRY = 0, testBirimTRY = 0;
-  if (seciliUrun.test && document.getElementById('test-toplam')) {
-    testToplamTRY = parseFloat(document.getElementById('test-toplam').value) || 0;
-    const testAdet = parseFloat(document.getElementById('test-adet').value) || miktar;
-    testBirimTRY = testToplamTRY / testAdet;
-  }
-
-  const landedCostToplam = cifTRY + toplamVergi + toplamMasraf + testToplamTRY;
-  const landedCostBirim = (cifTRY + toplamVergi + toplamMasraf) / miktar + testBirimTRY;
-  const satisFiyatiBirim = karOran > 0 ? landedCostBirim * (1 + karOran/100) : 0;
-
-  // --- SONUÇ RENDER ---
-  const ulkeEl = document.getElementById('ulke');
-  const ulkeAdi = ulkeEl.options[ulkeEl.selectedIndex].text;
-  const sehirAdi = document.getElementById('sehir').value;
-  const varisEl = document.getElementById('varis');
-  const varisAdi = varisEl.options[varisEl.selectedIndex].text;
-
-  document.getElementById('result-header').innerHTML = `
-    <div class="result-product">${seciliUrun.ikon} ${seciliUrun.ad} · GTİP: ${seciliUrun.gtip}</div>
-    <div class="result-title">Landed Cost Hesap Özeti</div>
-    <table class="cost-table">
-      <tr><td>📍 Menşei</td><td>${ulkeAdi} · ${sehirAdi} → ${varisAdi}</td></tr>
-      <tr><td>🚀 Nakliye</td><td>${nakliye === 'deniz' ? '🚢 Deniz Yolu' : '✈️ Hava Yolu'} · ${teslim}</td></tr>
-      <tr><td>📦 Miktar</td><td>${miktar} ${document.getElementById('birim').value}</td></tr>
-      <tr><td>💵 Birim Fiyat</td><td>${birimFiyat} ${doviz} = ${fmt(birimFiyatTRY)} ₺</td></tr>
-      <tr><td>📅 Kur</td><td>1 ${doviz} = ${fmt(kur)} ₺ · ${new Date().toLocaleDateString('tr-TR')}</td></tr>
-      <tr class="section-row"><td colspan="2">─────── Maliyet Detayı ───────</td></tr>
-      <tr class="subtotal-row"><td>Ürün Bedeli (${teslim})</td><td>${fmt(toplamFiyatTRY)} ₺</td></tr>
-      ${teslim !== 'CIF' ? `<tr class="subtotal-row"><td>Navlun</td><td>${fmt(navlunTRY)} ₺</td></tr>` : ''}
-      ${sigortaTRY > 0 ? `<tr class="subtotal-row"><td>Sigorta</td><td>${fmt(sigortaTRY)} ₺</td></tr>` : ''}
-      <tr class="total-row"><td>📋 Gümrük Matrahı (CIF)</td><td>${fmt(cifTRY)} ₺</td></tr>
-      ${gumrukTRY > 0 ? `<tr class="subtotal-row"><td>Gümrük Vergisi (%${(gumrukOr*100).toFixed(1)})</td><td>${fmt(gumrukTRY)} ₺</td></tr>` : ''}
-      ${adumpTRY > 0 ? `<tr class="subtotal-row"><td>Anti-Damping</td><td>${fmt(adumpTRY)} ₺</td></tr>` : ''}
-      ${kkdfTRY > 0 ? `<tr class="subtotal-row"><td>KKDF (%${(kkdfOr*100).toFixed(1)})</td><td>${fmt(kkdfTRY)} ₺</td></tr>` : ''}
-      ${otvTRY > 0 ? `<tr class="subtotal-row"><td>ÖTV (%${(otvOr*100).toFixed(1)})</td><td>${fmt(otvTRY)} ₺</td></tr>` : ''}
-      ${kdvTRY > 0 ? `<tr class="subtotal-row"><td>KDV (%${(kdvOr*100).toFixed(1)})</td><td>${fmt(kdvTRY)} ₺</td></tr>` : ''}
-      ${damgaTRY > 0 ? `<tr class="subtotal-row"><td>Damga Vergisi</td><td>${fmt(damgaTRY)} ₺</td></tr>` : ''}
-      <tr class="total-row"><td>Toplam Vergi</td><td>${fmt(toplamVergi)} ₺</td></tr>
-      ${toplamMasraf > 0 ? `<tr class="subtotal-row"><td>Toplam Sabit Masraf</td><td>${fmt(toplamMasraf)} ₺</td></tr>` : ''}
-      ${testToplamTRY > 0 ? `<tr class="subtotal-row"><td>Test/Sertifikasyon (birim: ${fmt(testBirimTRY)} ₺)</td><td>${fmt(testToplamTRY)} ₺</td></tr>` : ''}
-      <tr class="grand-row"><td>🎯 TOPLAM LANDED COST</td><td>${fmt(landedCostToplam)} ₺</td></tr>
-      <tr class="grand-row" style="background:rgba(5,150,105,0.5)"><td>📦 BİRİM MALİYET</td><td>${fmt(landedCostBirim)} ₺ / ${document.getElementById('birim').value}</td></tr>
-      ${satisFiyatiBirim > 0 ? `<tr class="grand-row" style="background:rgba(217,119,6,0.4)"><td>💚 SATIŞ FİYATI (%${karOran} kâr)</td><td>${fmt(satisFiyatiBirim)} ₺</td></tr>` : ''}
-    </table>
-  `;
-
-  // Grafik
-  const toplamTum = landedCostToplam + (satisFiyatiBirim > 0 ? (satisFiyatiBirim - landedCostBirim) * miktar : 0);
-  const renkler = ['#1a56db','#0ea5e9','#f59e0b','#10b981','#8b5cf6','#f43f5e','#059669'];
-  const barlar = [
-    {ad:'Ürün Bedeli', val:toplamFiyatTRY, renk:renkler[0]},
-    teslim !== 'CIF' && navlunTRY > 0 ? {ad:'Navlun', val:navlunTRY, renk:renkler[1]} : null,
-    toplamVergi > 0 ? {ad:'Toplam Vergi', val:toplamVergi, renk:renkler[2]} : null,
-    toplamMasraf > 0 ? {ad:'Sabit Masraflar', val:toplamMasraf, renk:renkler[3]} : null,
-    testToplamTRY > 0 ? {ad:'Test Maliyeti', val:testToplamTRY, renk:renkler[4]} : null,
-  ].filter(Boolean);
-  const maks = Math.max(...barlar.map(b => b.val));
-  document.getElementById('chart-wrap').innerHTML = barlar.map(b => `
-    <div class="chart-bar-row">
-      <div class="chart-label">${b.ad}</div>
-      <div class="chart-bar-bg">
-        <div class="chart-bar" style="width:${Math.max(2, b.val/landedCostToplam*100).toFixed(1)}%;background:${b.renk}">
-          ${b.val/landedCostToplam > 0.1 ? fmt(b.val)+'₺' : ''}
-        </div>
-      </div>
-      <div class="chart-pct">${(b.val/landedCostToplam*100).toFixed(0)}%</div>
-    </div>
-  `).join('');
-
-  // localStorage'a kaydet
-  const kayit = {
-    tarih: new Date().toLocaleString('tr-TR'),
-    urun: seciliUrun.ad, gtip: seciliUrun.gtip,
-    landed: landedCostToplam, birim: landedCostBirim,
-    miktar, doviz, kur
-  };
-  const gecmis = JSON.parse(localStorage.getItem('ithalatmatik_gecmis') || '[]');
-  gecmis.unshift(kayit);
-  localStorage.setItem('ithalatmatik_gecmis', JSON.stringify(gecmis.slice(0, 10)));
-
-  document.getElementById('vergi-panel').style.display = 'none';
+function toTRY(amt,cur){return amt*getRate(cur);}
+function calc() {
+  const up   = parseFloat($(\'uprice\').value)||0;
+  const qty  = parseFloat($(\'qty\').value)||1;
+  const qu   = $(\'qunit\').value;
+  const pc   = $(\'ucur\').value;
+  const frt  = parseFloat($(\'frt\').value)||0;
+  const fc   = $(\'fcur\').value;
+  const ins  = parseFloat($(\'ins\').value)||0;
+  const mgn  = parseFloat($(\'mgn\').value)||0;
+  const gvR  = parseFloat($(\'tGV\').value)/100||0;
+  const kdvR = parseFloat($(\'tKDV\').value)/100||0.20;
+  const otvR = parseFloat($(\'tOTV\').value)/100||0;
+  const kkdfR= parseFloat($(\'tKKDF\').value)/100||0;
+  const dagR = parseFloat($(\'tDamga\').value)/100||0.00948;
+  const adR  = parseFloat($(\'tAD\').value)/100||0;
+  const fcB=parseFloat($(\'fcB\').value)||0;
+  const fcS=parseFloat($(\'fcS\').value)||0;
+  const fcP=parseFloat($(\'fcP\').value)||0;
+  const fcD=parseFloat($(\'fcD\').value)||0;
+  const fcO=parseFloat($(\'fcO\').value)||0;
+  const fixed=fcB+fcS+fcP+fcD+fcO;
+  // Convert goods to TRY
+  const upTRY  = toTRY(up,pc);
+  const goodsTRY = upTRY*qty;
+  // Freight (0 if CIF)
+  const frtTRY = S.incoterm===\'CIF\' ? 0 : toTRY(frt,fc);
+  // Insurance
+  const insTRY = ins>0 ? toTRY(ins,\'USD\') : (goodsTRY+frtTRY)*0.004;
+  // CIF = Gümrük Matrahı
+  const cifTRY = goodsTRY + frtTRY + insTRY;
+  // Taxes
+  const gvTRY   = cifTRY * gvR;
+  const adTRY   = cifTRY * adR;
+  const kkdfTRY = cifTRY * kkdfR;
+  const otvBase = cifTRY + gvTRY + adTRY;
+  const otvTRY  = otvBase * otvR;
+  const kdvBase = otvBase + otvTRY + kkdfTRY;
+  const kdvTRY  = kdvBase * kdvR;
+  const dagTRY  = cifTRY * dagR;
+  const totalTax = gvTRY+adTRY+kkdfTRY+otvTRY+kdvTRY+dagTRY;
+  const totalCost = cifTRY + totalTax + fixed;
+  const unitCost = totalCost / qty;
+  const salePrice = unitCost * (1+mgn/100);
+  S.result = {up,qty,qu,pc,goodsTRY,frtTRY,insTRY,cifTRY,
+    gvTRY,adTRY,kkdfTRY,otvTRY,kdvTRY,dagTRY,
+    totalTax,fixed,totalCost,unitCost,salePrice,mgn,
+    gvR,kdvR,otvR,kkdfR,dagR,adR};
+  renderResult();
   goStep(4);
-
-  // Paylaşım metni sakla
-  window._ozetMetin = `İthalatMatik Hesap Özeti\n${seciliUrun.ad} (GTİP: ${seciliUrun.gtip})\nMiktar: ${miktar} adet\nBirim Maliyet: ${fmt(landedCostBirim)} ₺\nToplam Landed Cost: ${fmt(landedCostToplam)} ₺\nTarih: ${new Date().toLocaleDateString('tr-TR')}`;
 }
-
-function yeniHesaplama() {
-  seciliUrun = null;
-  document.getElementById('search-input').value = '';
-  document.getElementById('btn-step1').disabled = true;
-  document.getElementById('btn-step1').style.opacity = '0.5';
-  filterProducts();
-  goStep(1);
+// ══════════════════════════════════════════
+// RENDER RESULTS
+// ══════════════════════════════════════════
+function fmt(n){return n.toLocaleString(\'tr-TR\',{minimumFractionDigits:2,maximumFractionDigits:2});}
+function fTRY(n){return `₺${fmt(n)}`;}
+function pct(r){const p=(r*100); return `%${p%1===0?p.toFixed(0):p.toFixed(1)}`;}
+function renderResult() {
+  const r = S.result;
+  $(\'rv1\').textContent = fTRY(r.unitCost);
+  $(\'rv2\').textContent = `${fmt(r.qty)} ${r.qu} için`;
+  $(\'rv3\').textContent = `≈ $${fmt(r.unitCost/S.rates.USD)} USD`;
+  $(\'rmgn\').textContent = r.mgn;
+  $(\'rv4\').textContent = fTRY(r.salePrice);
+  // Breakdown
+  const rows = [
+    [\'Mal Bedeli\',r.goodsTRY,false],
+    [\'Navlun\',r.frtTRY,r.frtTRY===0],
+    [\'Sigorta (oto %0.4)\',r.insTRY,false],
+    [\'Gümrük Matrahı (CIF)\',r.cifTRY,false,true],
+    [`Gümrük Vergisi (${pct(r.gvR)})`,r.gvTRY,r.gvTRY===0],
+    [`Anti-Damping / İGV (${pct(r.adR)})`,r.adTRY,r.adTRY===0],
+    [`KKDF (${pct(r.kkdfR)})`,r.kkdfTRY,r.kkdfTRY===0],
+    [`ÖTV (${pct(r.otvR)})`,r.otvTRY,r.otvTRY===0],
+    [`KDV (${pct(r.kdvR)})`,r.kdvTRY,false],
+    [`Damga Vergisi (${pct(r.dagR)})`,r.dagTRY,false],
+    [\'Toplam Vergi\',r.totalTax,false,true],
+    [\'Sabit Masraflar\',r.fixed,r.fixed===0],
+  ];
+  $(\'btbl\').innerHTML = rows.map(([l,v,z,sec])=>
+    `<tr class="${sec?\'tr\':\'\'} ${z?\'zero\':\'\'}">`+
+    `<td>${l}</td><td>${fTRY(v)}</td></tr>`
+  ).join(\'\')+
+  `<tr class="tr"><td>🏁 Toplam (${fmt(r.qty)} ${r.qu})</td><td>${fTRY(r.totalCost)}</td></tr>`+
+  `<tr class="tr"><td>📌 Birim Maliyet</td><td>${fTRY(r.unitCost)}</td></tr>`+
+  `<tr class="tr"><td>🎯 Satış Fiyatı (%${r.mgn} kâr)</td><td style="color:var(--gold)">${fTRY(r.salePrice)}</td></tr>`;
+  // Donut
+  const segs = [
+    {l:\'Mal Bedeli\',v:r.goodsTRY,c:\'#2f80ed\'},
+    {l:\'Gümrük Vergisi\',v:r.gvTRY,c:\'#e05252\'},
+    {l:\'KDV\',v:r.kdvTRY,c:\'#e89a20\'},
+    {l:\'ÖTV\',v:r.otvTRY,c:\'#8b5cf6\'},
+    {l:\'Navlun & Sigorta\',v:r.frtTRY+r.insTRY,c:\'#0ea672\'},
+    {l:\'KKDF & Diğer\',v:r.kkdfTRY+r.adTRY+r.dagTRY,c:\'#f97316\'},
+    {l:\'Sabit Masraflar\',v:r.fixed,c:\'#6366f1\'},
+  ].filter(x=>x.v>0);
+  drawDonut(segs, r.totalCost);
+  // Summary text
+  const pname = S.product ? S.product.n : \'Belirtilmemiş\';
+  const pgtip = S.product ? S.product.g : \'—\';
+  $(\'sumbox\').textContent =
+`İTHALATMATİK HESAPLAMA ÖZETI
+${\'═\'.repeat(34)}
+Ürün        : ${pname}
+GTİP        : ${pgtip}
+Miktar      : ${fmt(r.qty)} ${r.qu}
+Birim Fiyat : ${fmt(r.up)} ${r.pc}
+Teslim Şekli: ${S.incoterm}
+${\'-\'.repeat(34)}
+Mal Bedeli  : ${fTRY(r.goodsTRY)}
+Navlun      : ${fTRY(r.frtTRY)}
+Sigorta     : ${fTRY(r.insTRY)}
+CIF Matrah  : ${fTRY(r.cifTRY)}
+${\'-\'.repeat(34)}
+Gümrük Verg.: ${fTRY(r.gvTRY)}  (${pct(r.gvR)})
+Anti-Dumping: ${fTRY(r.adTRY)}
+KKDF        : ${fTRY(r.kkdfTRY)}
+ÖTV         : ${fTRY(r.otvTRY)}  (${pct(r.otvR)})
+KDV         : ${fTRY(r.kdvTRY)}  (${pct(r.kdvR)})
+Damga       : ${fTRY(r.dagTRY)}
+Sabit Masraf: ${fTRY(r.fixed)}
+${\'─\'.repeat(34)}
+Toplam      : ${fTRY(r.totalCost)}
+Birim Maliyet: ${fTRY(r.unitCost)}
+Satış Fiyatı: ${fTRY(r.salePrice)} (%${r.mgn} kâr)
+${\'═\'.repeat(34)}
+${new Date().toLocaleDateString(\'tr-TR\')} – İthalatMatik`;
 }
-
-function kopyala() {
-  navigator.clipboard.writeText(window._ozetMetin || '').then(() => alert('Özet panoya kopyalandı!'));
+function drawDonut(segs, total) {
+  const cv = $(\'donut\'), ctx = cv.getContext(\'2d\');
+  const cx=70,cy=70,or=62,ir=40;
+  ctx.clearRect(0,0,140,140);
+  let ang = -Math.PI/2;
+  segs.forEach(seg=>{
+    const a=(seg.v/total)*2*Math.PI;
+    ctx.beginPath();ctx.moveTo(cx,cy);
+    ctx.arc(cx,cy,or,ang,ang+a);ctx.closePath();
+    ctx.fillStyle=seg.c;ctx.fill();
+    ang+=a;
+  });
+  // hole
+  ctx.beginPath();ctx.arc(cx,cy,ir,0,2*Math.PI);
+  ctx.fillStyle=\'#0d1829\';ctx.fill();
+  // labels
+  ctx.fillStyle=\'#dce8f5\';ctx.textAlign=\'center\';
+  ctx.font=\'bold 10px DM Mono,monospace\';ctx.fillText(\'TOPLAM\',cx,cy-3);
+  ctx.font=\'8.5px DM Mono,monospace\';ctx.fillStyle=\'#4d6e90\';
+  ctx.fillText(fTRY(total),cx,cy+10);
+  $(\'cleg\').innerHTML = segs.map(s=>`
+    <div class="cli">
+      <div class="cld" style="background:${s.c}"></div>
+      <div class="cll">${s.l}</div>
+      <div class="clp">${((s.v/total)*100).toFixed(1)}%</div>
+    </div>`).join(\'\');
 }
-
-function fmt(n) {
-  return (n||0).toLocaleString('tr-TR', {minimumFractionDigits:2, maximumFractionDigits:2});
-}
-
-// ===== SERVICE WORKER (PWA) =====
-if ('serviceWorker' in navigator) {
-  window.addEventListener('load', () => {
-    navigator.serviceWorker.register('./sw.js').catch(() => {});
+// ══════════════════════════════════════════
+// UTILS
+// ══════════════════════════════════════════
+function $(id){return document.getElementById(id);}
+function copySum(){
+  navigator.clipboard.writeText($(\'sumbox\').textContent).then(()=>{
+    const b=$(\'copybtn\');b.textContent=\'✅ Kopyalandı\';
+    setTimeout(()=>b.textContent=\'📋 Kopyala\',2200);
+  }).catch(()=>{
+    const ta=document.createElement(\'textarea\');
+    ta.value=$(\'sumbox\').textContent;
+    document.body.appendChild(ta);ta.select();
+    document.execCommand(\'copy\');document.body.removeChild(ta);
   });
 }
-
-// PWA kurulum butonu
-let deferredPrompt;
-window.addEventListener('beforeinstallprompt', e => {
-  e.preventDefault();
-  deferredPrompt = e;
-  // Kurulum butonu göster
-  const btn = document.createElement('button');
-  btn.innerHTML = '📲 Uygulamayı Kur';
-  btn.style.cssText = 'position:fixed;bottom:20px;right:20px;z-index:9999;background:#059669;color:white;border:none;border-radius:12px;padding:12px 20px;font-size:14px;font-weight:700;cursor:pointer;box-shadow:0 4px 20px rgba(0,0,0,0.2)';
-  btn.onclick = async () => {
-    deferredPrompt.prompt();
-    const {outcome} = await deferredPrompt.userChoice;
-    if (outcome === 'accepted') btn.remove();
-    deferredPrompt = null;
-  };
-  document.body.appendChild(btn);
-});
-
+function newCalc(){
+  S.product=null;S.result=null;
+  clearProd();
+  [\'uprice\',\'qty\',\'gwt\',\'frt\',\'ins\',\'mrate\'].forEach(id=>{const el=$(id);if(el)el.value=id===\'qty\'?\'1\':\'\'});
+  $(\'fcB\').value=2500;$(\'fcS\').value=500;$(\'fcP\').value=750;$(\'fcD\').value=1000;$(\'fcO\').value=0;
+  $(\'mgn\').value=20;
+}
+// ══════════════════════════════════════════
 // INIT
-initCatFilter();
-filterProducts();
-updateSehir();
+// ══════════════════════════════════════════
+loadRates();
+// LCL default: show vol row
+$(\'volRow\').style.display=\'\';
+// sea default: show sea card
+$(\'airCard\').classList.add(\'hidden\');
 </script>
 </body>
 </html>
