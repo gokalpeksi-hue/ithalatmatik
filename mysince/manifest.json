@@ -1,0 +1,19 @@
+{
+  "name": "MySince – O günden bu yana",
+  "short_name": "MySince",
+  "description": "Hayatındaki önemli anlardan bu yana geçen zamanı yıl, ay ve gün olarak takip et.",
+  "start_url": "./index.html",
+  "scope": "./",
+  "display": "standalone",
+  "background_color": "#faf6f0",
+  "theme_color": "#faf6f0",
+  "orientation": "portrait-primary",
+  "icons": [
+    { "src": "icon-192.png", "sizes": "192x192", "type": "image/png", "purpose": "any maskable" },
+    { "src": "icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any maskable" },
+    { "src": "icon.svg",     "sizes": "any",     "type": "image/svg+xml" }
+  ],
+  "categories": ["lifestyle", "productivity"],
+  "lang": "tr",
+  "dir": "ltr"
+}

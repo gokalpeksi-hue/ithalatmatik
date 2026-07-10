@@ -1,0 +1,619 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="default">
+  <meta name="apple-mobile-web-app-title" content="MySince">
+  <meta name="description" content="MySince – Hayatındaki önemli anlardan bu yana geçen zamanı yıl, ay ve gün olarak takip et.">
+  <meta name="theme-color" content="#faf6f0">
+  <title>MySince – O günden bu yana</title>
+  <link rel="manifest" href="manifest.json">
+  <link rel="icon" type="image/svg+xml" href="icon.svg">
+  <link rel="apple-touch-icon" href="icon-192.png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600;9..144,700&family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    :root{
+      --bg:#faf6f0; --card:#ffffff; --ink:#2b2337; --ink2:#6f6580; --ink3:#a79db5;
+      --line:#eee6db; --shadow:0 10px 30px -12px rgba(80,60,110,.18);
+      --r:22px; --rs:14px;
+      --brand1:#ff7e5f; --brand2:#a06ee1;
+    }
+    *{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+    html{scroll-behavior:smooth}
+    body{
+      font-family:'Manrope',system-ui,sans-serif;background:var(--bg);color:var(--ink);
+      min-height:100dvh;line-height:1.55;-webkit-font-smoothing:antialiased;
+      background-image:radial-gradient(1200px 500px at 80% -100px, rgba(255,126,95,.10), transparent 60%),
+                       radial-gradient(900px 420px at -10% 0px, rgba(160,110,225,.10), transparent 60%);
+    }
+    .wrap{max-width:760px;margin:0 auto;padding:0 16px 120px}
+
+    /* ---------- header ---------- */
+    header{padding:22px 0 6px;display:flex;align-items:center;justify-content:space-between;gap:12px}
+    .logo{display:flex;align-items:center;gap:11px;min-width:0}
+    .logo svg{width:44px;height:44px;flex-shrink:0;filter:drop-shadow(0 6px 14px rgba(160,110,225,.35))}
+    .logo-name{font-family:'Fraunces',serif;font-size:26px;font-weight:700;letter-spacing:-.02em;line-height:1.05}
+    .logo-name em{font-style:normal;background:linear-gradient(100deg,var(--brand1),var(--brand2));-webkit-background-clip:text;background-clip:text;color:transparent}
+    .logo-sub{font-size:11.5px;color:var(--ink2);font-weight:600;letter-spacing:.02em}
+    .hbtns{display:flex;gap:8px;flex-shrink:0}
+    .ibtn{
+      width:42px;height:42px;border-radius:14px;border:1px solid var(--line);background:var(--card);
+      display:flex;align-items:center;justify-content:center;cursor:pointer;color:var(--ink2);
+      box-shadow:0 3px 10px -4px rgba(80,60,110,.15);transition:.18s;
+    }
+    .ibtn:hover{color:var(--ink);transform:translateY(-1px)}
+    .ibtn svg{width:20px;height:20px}
+
+    /* ---------- hero strip ---------- */
+    .hero{margin:14px 0 18px;padding:16px 18px;border-radius:var(--r);color:#fff;position:relative;overflow:hidden;
+      background:linear-gradient(115deg,#ff7e5f 0%,#e75f8e 45%,#a06ee1 100%);box-shadow:var(--shadow)}
+    .hero::after{content:"";position:absolute;inset:0;background:
+      radial-gradient(220px 120px at 88% 0%, rgba(255,255,255,.28), transparent 70%),
+      radial-gradient(160px 100px at 8% 110%, rgba(255,255,255,.16), transparent 70%);pointer-events:none}
+    .hero h1{font-family:'Fraunces',serif;font-size:19px;font-weight:600;letter-spacing:-.01em}
+    .hero p{font-size:12.5px;opacity:.92;margin-top:2px}
+
+    /* ---------- filter chips ---------- */
+    .chips{display:flex;gap:8px;overflow-x:auto;padding:2px 2px 14px;scrollbar-width:none}
+    .chips::-webkit-scrollbar{display:none}
+    .chip{
+      flex-shrink:0;display:flex;align-items:center;gap:6px;padding:7px 14px;border-radius:999px;
+      border:1.5px solid var(--line);background:var(--card);font-size:12.5px;font-weight:700;color:var(--ink2);
+      cursor:pointer;transition:.16s;font-family:inherit;
+    }
+    .chip .dot{width:9px;height:9px;border-radius:50%}
+    .chip.on{color:#fff;border-color:transparent}
+
+    /* ---------- cards ---------- */
+    .grid{display:grid;grid-template-columns:1fr;gap:18px}
+    @media(min-width:640px){.grid{grid-template-columns:1fr 1fr}}
+    .card{
+      background:var(--card);border-radius:var(--r);overflow:hidden;box-shadow:var(--shadow);
+      border:1px solid rgba(255,255,255,.6);display:flex;flex-direction:column;
+      animation:pop .35s cubic-bezier(.2,.9,.3,1.2) both;
+    }
+    @keyframes pop{from{opacity:0;transform:translateY(10px) scale(.98)}to{opacity:1;transform:none}}
+    .banner{position:relative;height:128px}
+    .banner svg{position:absolute;inset:0;width:100%;height:100%;display:block}
+    .badge{
+      position:absolute;top:12px;left:12px;display:flex;align-items:center;gap:6px;
+      background:rgba(255,255,255,.9);backdrop-filter:blur(6px);border-radius:999px;
+      padding:5px 12px 5px 9px;font-size:11px;font-weight:800;letter-spacing:.04em;text-transform:uppercase;
+    }
+    .badge .dot{width:8px;height:8px;border-radius:50%}
+    .cbody{padding:16px 18px 15px;display:flex;flex-direction:column;gap:10px;flex:1}
+    .ctitle{font-family:'Fraunces',serif;font-size:20px;font-weight:600;letter-spacing:-.01em;line-height:1.25}
+    .cdate{font-size:12px;color:var(--ink2);font-weight:600;display:flex;align-items:center;gap:6px}
+    .cdate svg{width:14px;height:14px;opacity:.7}
+    .counter{display:flex;gap:8px;margin-top:2px}
+    .unit{
+      flex:1;text-align:center;border-radius:var(--rs);padding:9px 4px 7px;
+      background:linear-gradient(180deg,rgba(0,0,0,.028),rgba(0,0,0,.055));
+    }
+    .unit b{display:block;font-size:24px;font-weight:800;letter-spacing:-.03em;line-height:1.1;font-variant-numeric:tabular-nums}
+    .unit span{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.1em;color:var(--ink2)}
+    .ctotal{font-size:12px;color:var(--ink2);text-align:center;font-weight:600}
+    .ctotal b{color:var(--ink);font-variant-numeric:tabular-nums}
+    .cnote{font-size:12.5px;color:var(--ink2);background:rgba(0,0,0,.03);border-radius:10px;padding:8px 11px;font-style:italic}
+    .cfoot{display:flex;gap:8px;margin-top:auto;padding-top:4px}
+    .cbtn{
+      flex:1;display:flex;align-items:center;justify-content:center;gap:6px;padding:8px 0;border-radius:11px;
+      border:1.5px solid var(--line);background:transparent;font-family:inherit;font-size:12px;font-weight:700;
+      color:var(--ink2);cursor:pointer;transition:.15s;
+    }
+    .cbtn svg{width:14px;height:14px}
+    .cbtn:hover{color:var(--ink);border-color:var(--ink3)}
+    .cbtn.del:hover{color:#d24a4a;border-color:#e8b4b4;background:#fdf3f3}
+
+    /* ---------- empty state ---------- */
+    .empty{text-align:center;padding:36px 20px 20px;display:none}
+    .empty.show{display:block}
+    .empty svg{width:190px;height:auto;margin-bottom:14px}
+    .empty h2{font-family:'Fraunces',serif;font-size:22px;font-weight:600;margin-bottom:6px}
+    .empty p{font-size:13.5px;color:var(--ink2);max-width:340px;margin:0 auto 18px}
+    .btn{
+      display:inline-flex;align-items:center;gap:8px;padding:12px 22px;border-radius:999px;border:none;
+      background:linear-gradient(100deg,var(--brand1),var(--brand2));color:#fff;font-family:inherit;
+      font-size:14px;font-weight:800;cursor:pointer;box-shadow:0 10px 24px -8px rgba(160,110,225,.5);transition:.18s;
+    }
+    .btn:hover{transform:translateY(-1px)}
+    .btn.ghost{background:var(--card);color:var(--ink2);border:1.5px solid var(--line);box-shadow:none;font-weight:700}
+
+    /* ---------- FAB ---------- */
+    .fab{
+      position:fixed;right:20px;bottom:24px;z-index:60;width:60px;height:60px;border-radius:50%;border:none;
+      background:linear-gradient(135deg,var(--brand1),var(--brand2));color:#fff;font-size:30px;cursor:pointer;
+      box-shadow:0 14px 30px -8px rgba(160,110,225,.6);display:flex;align-items:center;justify-content:center;
+      transition:.18s;padding-bottom:3px;
+    }
+    .fab:hover{transform:scale(1.06) rotate(90deg)}
+
+    /* ---------- modal ---------- */
+    .ovl{position:fixed;inset:0;z-index:100;background:rgba(43,35,55,.45);backdrop-filter:blur(4px);
+      display:none;align-items:flex-end;justify-content:center}
+    @media(min-width:560px){.ovl{align-items:center}}
+    .ovl.show{display:flex}
+    .sheet{
+      background:var(--bg);width:100%;max-width:520px;max-height:92dvh;overflow-y:auto;
+      border-radius:26px 26px 0 0;padding:22px 20px 30px;animation:up .28s cubic-bezier(.2,.9,.3,1.1);
+    }
+    @media(min-width:560px){.sheet{border-radius:26px;padding-bottom:24px}}
+    @keyframes up{from{transform:translateY(40px);opacity:0}to{transform:none;opacity:1}}
+    .sheet h2{font-family:'Fraunces',serif;font-size:21px;font-weight:600;margin-bottom:16px;display:flex;align-items:center;justify-content:space-between}
+    .x{width:34px;height:34px;border-radius:50%;border:none;background:rgba(0,0,0,.06);color:var(--ink2);font-size:17px;cursor:pointer}
+    label.f{display:block;font-size:12px;font-weight:800;letter-spacing:.03em;text-transform:uppercase;color:var(--ink2);margin:15px 0 7px}
+    input[type=text],input[type=date],textarea{
+      width:100%;background:var(--card);border:1.5px solid var(--line);border-radius:var(--rs);
+      font-family:inherit;font-size:15px;color:var(--ink);padding:12px 14px;outline:none;transition:border-color .15s;
+    }
+    input:focus,textarea:focus{border-color:var(--brand2)}
+    textarea{resize:vertical;min-height:70px}
+    .cats{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
+    .cat{
+      border:2px solid var(--line);border-radius:var(--rs);background:var(--card);cursor:pointer;
+      padding:10px 6px 8px;text-align:center;transition:.15s;font-family:inherit;
+    }
+    .cat .ic{width:34px;height:34px;border-radius:11px;margin:0 auto 6px;display:flex;align-items:center;justify-content:center}
+    .cat .ic svg{width:19px;height:19px;color:#fff}
+    .cat span{font-size:11px;font-weight:800;color:var(--ink2)}
+    .cat.on span{color:var(--ink)}
+    .save{width:100%;margin-top:22px;justify-content:center;padding:14px}
+
+    /* ---------- backup sheet ---------- */
+    .brow{
+      display:flex;align-items:center;gap:14px;width:100%;text-align:left;background:var(--card);
+      border:1.5px solid var(--line);border-radius:var(--rs);padding:14px;cursor:pointer;font-family:inherit;margin-bottom:10px;transition:.15s;
+    }
+    .brow:hover{border-color:var(--brand2)}
+    .brow .bic{width:42px;height:42px;border-radius:12px;flex-shrink:0;display:flex;align-items:center;justify-content:center;color:#fff}
+    .brow .bic svg{width:21px;height:21px}
+    .brow b{font-size:14px;display:block}
+    .brow small{font-size:12px;color:var(--ink2)}
+    .hint{font-size:12px;color:var(--ink2);background:rgba(160,110,225,.08);border:1px dashed rgba(160,110,225,.4);border-radius:var(--rs);padding:11px 13px;margin-top:6px}
+
+    /* ---------- toast ---------- */
+    .toast{
+      position:fixed;left:50%;bottom:100px;transform:translateX(-50%) translateY(20px);z-index:200;
+      background:var(--ink);color:#fff;font-size:13px;font-weight:700;padding:11px 20px;border-radius:999px;
+      opacity:0;pointer-events:none;transition:.25s;white-space:nowrap;box-shadow:0 10px 26px -8px rgba(0,0,0,.4);
+    }
+    .toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+
+    footer{margin-top:34px;text-align:center;font-size:11.5px;color:var(--ink3);font-weight:600}
+  </style>
+</head>
+<body>
+<div class="wrap">
+
+  <header>
+    <div class="logo">
+      <svg viewBox="0 0 64 64" aria-hidden="true">
+        <defs>
+          <linearGradient id="lg1" x1="0" y1="0" x2="1" y2="1">
+            <stop offset="0" stop-color="#ff7e5f"/><stop offset=".55" stop-color="#e75f8e"/><stop offset="1" stop-color="#a06ee1"/>
+          </linearGradient>
+        </defs>
+        <rect x="2" y="2" width="60" height="60" rx="17" fill="url(#lg1)"/>
+        <circle cx="32" cy="32" r="19" fill="none" stroke="#fff" stroke-width="3.4" stroke-linecap="round" stroke-dasharray="89 31" transform="rotate(-58 32 32)"/>
+        <circle cx="32" cy="13" r="3.4" fill="#ffe08a"/>
+        <path d="M32 25.5c-2.8-4.6-9.6-3-9.6 2 0 4.2 5.4 7.8 9.6 10.9 4.2-3.1 9.6-6.7 9.6-10.9 0-5-6.8-6.6-9.6-2z" fill="#fff"/>
+      </svg>
+      <div>
+        <div class="logo-name">My<em>Since</em></div>
+        <div class="logo-sub">o günden bu yana…</div>
+      </div>
+    </div>
+    <div class="hbtns">
+      <button class="ibtn" id="backupBtn" title="Yedekle / Geri Yükle" aria-label="Yedekle / Geri Yükle">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17.5 19a4.5 4.5 0 1 0-.9-8.9 6 6 0 1 0-11.4 2.4A3.5 3.5 0 0 0 6.5 19z"/><path d="M12 12v6m0-6-2.5 2.5M12 12l2.5 2.5"/></svg>
+      </button>
+    </div>
+  </header>
+
+  <div class="hero">
+    <h1 id="heroTitle">Zaman akıyor, anıların burada.</h1>
+    <p id="heroSub">Önemli günlerinden bu yana geçen zamanı takip et.</p>
+  </div>
+
+  <div class="chips" id="chips"></div>
+
+  <div class="empty" id="empty">
+    <svg viewBox="0 0 300 170">
+      <defs>
+        <linearGradient id="eg" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#ffd3c4"/><stop offset="1" stop-color="#d9c6f5"/></linearGradient>
+      </defs>
+      <ellipse cx="150" cy="150" rx="120" ry="14" fill="rgba(160,110,225,.10)"/>
+      <rect x="70" y="30" width="160" height="104" rx="18" fill="url(#eg)"/>
+      <rect x="70" y="30" width="160" height="30" rx="18" fill="rgba(255,255,255,.55)"/>
+      <circle cx="88" cy="45" r="5" fill="#ff7e5f"/><circle cx="104" cy="45" r="5" fill="#ffc46b"/><circle cx="120" cy="45" r="5" fill="#a06ee1"/>
+      <path d="M150 78c-6-9.5-20-6.2-20 4.1 0 8.7 11.2 16.2 20 22.6 8.8-6.4 20-13.9 20-22.6 0-10.3-14-13.6-20-4.1z" fill="#fff"/>
+      <circle cx="243" cy="38" r="10" fill="#ffe08a"/>
+      <path d="M40 60l4 9 9 4-9 4-4 9-4-9-9-4 9-4z" fill="#e75f8e" opacity=".7"/>
+    </svg>
+    <h2>İlk anını ekle</h2>
+    <p>Bir doğum, bir kayıp, bir kutlama, yeni bir alışkanlık… O günden bu yana geçen her yıl, ay ve günü MySince senin için saysın.</p>
+    <button class="btn" id="emptyAdd">+ &nbsp;An Ekle</button>
+  </div>
+
+  <div class="grid" id="grid"></div>
+
+  <footer>MySince · Verilerin bu cihazda saklanır, dilediğinde Drive'a yedekleyebilirsin 💜</footer>
+</div>
+
+<button class="fab" id="fab" title="Yeni an ekle" aria-label="Yeni an ekle">+</button>
+
+<!-- add / edit modal -->
+<div class="ovl" id="formOvl">
+  <div class="sheet">
+    <h2><span id="formTitle">Yeni An</span><button class="x" data-close>✕</button></h2>
+    <label class="f">Kategori</label>
+    <div class="cats" id="cats"></div>
+    <label class="f" for="fTitle">Başlık</label>
+    <input type="text" id="fTitle" maxlength="60" placeholder="Örn: Babaannemi kaybettik">
+    <label class="f" for="fDate">Tarih</label>
+    <input type="date" id="fDate">
+    <label class="f" for="fNote">Not <span style="font-weight:600;text-transform:none;opacity:.7">(isteğe bağlı)</span></label>
+    <textarea id="fNote" maxlength="200" placeholder="Bu anla ilgili bir not…"></textarea>
+    <button class="btn save" id="saveBtn">Kaydet</button>
+  </div>
+</div>
+
+<!-- backup modal -->
+<div class="ovl" id="backOvl">
+  <div class="sheet">
+    <h2>Yedekle &amp; Geri Yükle<button class="x" data-close>✕</button></h2>
+    <button class="brow" id="expShare">
+      <div class="bic" style="background:linear-gradient(135deg,#34a853,#188038)">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 16.5 12 3l8 13.5M8 22l4-6.8L16 22M4 16.5h6M14 16.5h6"/></svg>
+      </div>
+      <div><b>Drive'a Yedekle (Paylaş)</b><small>Yedek dosyasını Google Drive'a gönder</small></div>
+    </button>
+    <button class="brow" id="expFile">
+      <div class="bic" style="background:linear-gradient(135deg,#5ba3f5,#2f80ed)">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><path d="M7 10l5 5 5-5M12 15V3"/></svg>
+      </div>
+      <div><b>Yedek Dosyası İndir</b><small>.json dosyası olarak indir, Drive'a kendin yükle</small></div>
+    </button>
+    <button class="brow" id="impFile">
+      <div class="bic" style="background:linear-gradient(135deg,#e75f8e,#a06ee1)">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><path d="M7 8l5-5 5 5M12 3v12"/></svg>
+      </div>
+      <div><b>Yedekten Geri Yükle</b><small>Drive'dan indirdiğin .json dosyasını seç</small></div>
+    </button>
+    <input type="file" id="fileInput" accept=".json,application/json" hidden>
+    <div class="hint">💡 <b>Nasıl çalışır?</b> "Drive'a Yedekle" telefonda paylaşım menüsünü açar; oradan <b>Google Drive</b>'ı seç. Geri yüklemek için Drive'daki yedek dosyasını indirip "Yedekten Geri Yükle" ile seçmen yeterli.</div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+/* ================= categories ================= */
+const CATS = {
+  olum:      { name:'Ölüm',      c1:'#5b4b8a', c2:'#8a7ab5', dot:'#6d5a9e',
+    icon:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M12 2C8 2 5 5.5 5 10c0 6 3 10 7 12 4-2 7-6 7-12 0-4.5-3-8-7-8z"/><path d="M12 8v6M9 11h6"/></svg>' },
+  dogum:     { name:'Doğum',     c1:'#f78fb3', c2:'#fcbf8f', dot:'#f78fb3',
+    icon:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3a6.5 6.5 0 0 1 6.5 6.5c0 3.6-2.9 6.5-6.5 6.5S5.5 13.1 5.5 9.5A6.5 6.5 0 0 1 12 3z"/><path d="M12 16v3m0 0c0 1.5 1.2 2 2.5 2M12 19c0 1.5-1.2 2-2.5 2"/></svg>' },
+  kutlama:   { name:'Kutlama',   c1:'#f6b93b', c2:'#e8743b', dot:'#f0932b',
+    icon:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 15 3 21l6-2M5 15l8-8 4 4-8 8-4-4zM15 5l1-2M19 9l2-1M17 7l3-3"/></svg>' },
+  aliskanlik:{ name:'Alışkanlık',c1:'#38ada9', c2:'#78e08f', dot:'#44bd87',
+    icon:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22V9"/><path d="M12 13c0-4 3-7 8-7 0 4-3 7-8 7zM12 9C12 6 9.5 4 6 4c0 3.5 2.5 5 6 5z"/></svg>' },
+  an:        { name:'Önemli An', c1:'#e75f8e', c2:'#a06ee1', dot:'#e75f8e',
+    icon:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m12 2 2.6 6.6L22 9.3l-5.4 4.6 1.8 7.1L12 17l-6.4 4 1.8-7.1L2 9.3l7.4-.7z"/></svg>' },
+  seyahat:   { name:'Seyahat',   c1:'#3d9be9', c2:'#38d1c1', dot:'#3d9be9',
+    icon:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10.5 13.5 3 10l1.5-1.5 6 1 5-5a1.6 1.6 0 0 1 2.5 2.5l-5 5 1 6L12.5 19.5l-3.5-7.5z"/></svg>' },
+};
+
+/* ---- lifestyle banner scenes (SVG) ---- */
+function scene(cat){
+  const uid = 'g'+Math.random().toString(36).slice(2,8);
+  const S = {
+    olum: `
+      <linearGradient id="${uid}" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#3b3163"/><stop offset=".6" stop-color="#6d5a9e"/><stop offset="1" stop-color="#a58fc9"/></linearGradient>
+      <rect width="400" height="130" fill="url(#${uid})"/>
+      <circle cx="330" cy="34" r="16" fill="#f4ecd7" opacity=".95"/><circle cx="324" cy="30" r="14" fill="#584a8a" opacity=".55"/>
+      <circle cx="60" cy="26" r="1.6" fill="#fff" opacity=".9"/><circle cx="120" cy="16" r="1.2" fill="#fff" opacity=".7"/><circle cx="205" cy="30" r="1.5" fill="#fff" opacity=".8"/><circle cx="262" cy="14" r="1.2" fill="#fff" opacity=".6"/><circle cx="158" cy="48" r="1.2" fill="#fff" opacity=".55"/>
+      <path d="M0 108 Q70 78 150 100 T400 96 V130 H0 Z" fill="#2e2751" opacity=".85"/>
+      <path d="M0 118 Q110 96 220 112 T400 110 V130 H0 Z" fill="#241e40"/>
+      <g transform="translate(64,64)"><rect x="-5" y="14" width="10" height="32" rx="3" fill="#efe6f7"/><ellipse cx="0" cy="12" rx="4" ry="7" fill="#ffd27a"/><ellipse cx="0" cy="10" rx="1.8" ry="3.4" fill="#fff3d1"/></g>
+      <path d="M100 122c8-14 24-16 30-8-10 2-18 6-30 8z" fill="#8a7ab5" opacity=".8"/>`,
+    dogum: `
+      <linearGradient id="${uid}" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#ffe3ec"/><stop offset=".55" stop-color="#ffd1c4"/><stop offset="1" stop-color="#ffe9b8"/></linearGradient>
+      <rect width="400" height="130" fill="url(#${uid})"/>
+      <circle cx="200" cy="118" r="52" fill="#ffca7a"/><circle cx="200" cy="118" r="70" fill="#ffca7a" opacity=".35"/>
+      <path d="M0 112 Q100 92 200 106 T400 104 V130 H0 Z" fill="#f7a8c0" opacity=".8"/>
+      <path d="M0 122 Q120 106 240 118 T400 116 V130 H0 Z" fill="#e98aa8"/>
+      <g transform="translate(85,40)"><path d="M0 26C-9 12-6-4 6-6c9-1.6 14 6 14 6s5-7.6 14-6c12 2 15 18 6 32-5 8-13 14-20 18-7-4-15-10-20-18z" transform="scale(.62)" fill="#fff" opacity=".9"/></g>
+      <g transform="translate(300,36)"><ellipse cx="0" cy="0" rx="13" ry="16" fill="#f78fb3"/><path d="M0 16l-3 5h6z" fill="#f78fb3"/><path d="M0 21c1 7-4 9-8 9" stroke="#e06a94" stroke-width="1.6" fill="none"/></g>
+      <path d="M40 26c4 0 5-4 9-4s5 4 9 4M330 70c4 0 5-4 9-4s5 4 9 4" stroke="#fff" stroke-width="2" fill="none" stroke-linecap="round" opacity=".9"/>`,
+    kutlama: `
+      <linearGradient id="${uid}" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#ffb85c"/><stop offset=".6" stop-color="#f2724b"/><stop offset="1" stop-color="#d94f67"/></linearGradient>
+      <rect width="400" height="130" fill="url(#${uid})"/>
+      <path d="M0 8 L50 34 L100 8 L150 34 L200 8 L250 34 L300 8 L350 34 L400 8" stroke="rgba(255,255,255,.55)" stroke-width="2.5" fill="none"/>
+      <circle cx="50" cy="34" r="4.5" fill="#ffe08a"/><circle cx="150" cy="34" r="4.5" fill="#8fd8d2"/><circle cx="250" cy="34" r="4.5" fill="#f7a8c0"/><circle cx="350" cy="34" r="4.5" fill="#ffe08a"/>
+      <g transform="translate(310,74)"><ellipse cx="0" cy="0" rx="17" ry="21" fill="#ffd27a"/><path d="M0 21l-4 6h8z" fill="#ffd27a"/><path d="M0 27c2 10-6 13-11 13" stroke="#fff" stroke-width="2" fill="none" opacity=".8"/></g>
+      <g transform="translate(64,80)"><ellipse cx="0" cy="0" rx="15" ry="19" fill="#8fd8d2"/><path d="M0 19l-4 6h8z" fill="#8fd8d2"/><path d="M0 25c-2 10 6 13 11 13" stroke="#fff" stroke-width="2" fill="none" opacity=".8"/></g>
+      <rect x="140" y="58" width="7" height="14" rx="2" fill="#fff" opacity=".85" transform="rotate(24 143 65)"/>
+      <rect x="196" y="76" width="7" height="14" rx="2" fill="#ffe08a" transform="rotate(-18 199 83)"/>
+      <rect x="238" y="52" width="7" height="14" rx="2" fill="#f7a8c0" transform="rotate(40 241 59)"/>
+      <circle cx="120" cy="96" r="4" fill="#ffe08a"/><circle cx="176" cy="46" r="4" fill="#fff" opacity=".9"/><circle cx="222" cy="102" r="4" fill="#8fd8d2"/>`,
+    aliskanlik: `
+      <linearGradient id="${uid}" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#d8f3e3"/><stop offset=".6" stop-color="#a8e6c9"/><stop offset="1" stop-color="#78d0a8"/></linearGradient>
+      <rect width="400" height="130" fill="url(#${uid})"/>
+      <circle cx="330" cy="30" r="17" fill="#ffe08a"/><circle cx="330" cy="30" r="26" fill="#ffe08a" opacity=".35"/>
+      <path d="M0 104 Q90 84 190 100 T400 94 V130 H0 Z" fill="#4db884" opacity=".75"/>
+      <path d="M0 118 Q120 102 240 114 T400 112 V130 H0 Z" fill="#379a6b"/>
+      <g transform="translate(80,104)">
+        <path d="M0 0V-34" stroke="#2c7a54" stroke-width="3.4" stroke-linecap="round"/>
+        <path d="M0 -14c0-11 8-18 20-18 0 11-8 18-20 18zM0 -26c0-8-6-13-15-13 0 8 6 13 15 13z" fill="#2c7a54"/>
+      </g>
+      <g transform="translate(196,58)" stroke="#fff" stroke-width="3.4" fill="none" stroke-linecap="round" stroke-linejoin="round" opacity=".95">
+        <circle cx="0" cy="0" r="15" stroke-opacity=".7"/><path d="M-6 0l4.5 4.5L7 -4"/>
+      </g>
+      <path d="M256 34c3 0 4-3 7-3s4 3 7 3M42 50c3 0 4-3 7-3s4 3 7 3" stroke="#fff" stroke-width="2" fill="none" stroke-linecap="round" opacity=".8"/>`,
+    an: `
+      <linearGradient id="${uid}" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#e75f8e"/><stop offset="1" stop-color="#8e5fd6"/></linearGradient>
+      <rect width="400" height="130" fill="url(#${uid})"/>
+      <circle cx="70" cy="100" r="60" fill="#fff" opacity=".07"/><circle cx="360" cy="20" r="46" fill="#fff" opacity=".09"/>
+      <g transform="translate(200,62)"><path d="m0 -26 6.8 16.4 17.7 1.5-13.4 11.6 4 17.3L0 11.6l-15.1 9.2 4-17.3-13.4-11.6 17.7-1.5z" fill="#ffe08a"/></g>
+      <g transform="translate(120,88)" opacity=".9"><path d="m0 -10 2.6 6.3 6.9.6-5.2 4.5 1.6 6.7L0 4.5l-5.9 3.6 1.6-6.7-5.2-4.5 6.9-.6z" fill="#fff"/></g>
+      <g transform="translate(282,96)" opacity=".85"><path d="m0 -8 2.1 5 5.5.5-4.2 3.6 1.3 5.4L0 3.6l-4.7 2.9 1.3-5.4-4.2-3.6 5.5-.5z" fill="#fff"/></g>
+      <path d="M52 30l2.5 6 6 2.5-6 2.5-2.5 6-2.5-6-6-2.5 6-2.5zM330 78l2 4.6 4.6 2-4.6 2-2 4.6-2-4.6-4.6-2 4.6-2z" fill="#fff" opacity=".8"/>`,
+    seyahat: `
+      <linearGradient id="${uid}" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#8ecdf3"/><stop offset=".65" stop-color="#5eb6ea"/><stop offset="1" stop-color="#49a8de"/></linearGradient>
+      <rect width="400" height="130" fill="url(#${uid})"/>
+      <circle cx="64" cy="30" r="15" fill="#ffe08a"/>
+      <path d="M120 40h44a10 10 0 0 0 0-8h-30zM250 22h36a8 8 0 0 0 0-7h-25z" fill="#fff" opacity=".85"/>
+      <path d="M0 130 90 62l70 52 60-38 70 54z" fill="#3a7fae"/>
+      <path d="M90 62l26 20-26 6-24-8z" fill="#eaf6ff" opacity=".9"/>
+      <path d="M220 76l18 14-18 4-16-6z" fill="#eaf6ff" opacity=".75"/>
+      <path d="M0 130 Q200 112 400 130 Z" fill="#2e6b95"/>
+      <g transform="translate(322,52) rotate(-14)">
+        <path d="M-20 0h26l12-13h6L16 0h10a4 4 0 0 1 0 8H16l8 13h-6L6 8h-20l-6 6h-5l3-10-3-10h5z" fill="#fff"/>
+      </g>
+      <path d="M292 34c8-10 22-8 26 0M300 44c5-6 13-5 16 0" stroke="#fff" stroke-width="2" fill="none" stroke-linecap="round" opacity=".55"/>`,
+  };
+  return `<svg viewBox="0 0 400 130" preserveAspectRatio="xMidYMid slice"><defs></defs>${S[cat]||S.an}</svg>`;
+}
+
+/* ================= state ================= */
+const KEY = 'mysince.events.v1';
+let events = [];
+let filter = 'all';
+let editId = null;
+let selCat = 'an';
+
+function load(){ try{ events = JSON.parse(localStorage.getItem(KEY)) || []; }catch(e){ events = []; } }
+function persist(){ localStorage.setItem(KEY, JSON.stringify(events)); }
+const uid = () => Date.now().toString(36) + Math.random().toString(36).slice(2,7);
+
+/* ================= date math ================= */
+function diffParts(dateStr, now = new Date()){
+  const from = new Date(dateStr + 'T00:00:00');
+  const today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+  const future = from > today;
+  const a = future ? today : from, b = future ? from : today;
+  let y = b.getFullYear() - a.getFullYear();
+  let m = b.getMonth() - a.getMonth();
+  let d = b.getDate() - a.getDate();
+  if (d < 0){ m--; d += new Date(b.getFullYear(), b.getMonth(), 0).getDate(); }
+  if (m < 0){ y--; m += 12; }
+  const total = Math.round((b - a) / 864e5);
+  return { y, m, d, total, future };
+}
+const fmtDate = s => new Date(s + 'T00:00:00').toLocaleDateString('tr-TR', { day:'numeric', month:'long', year:'numeric' });
+
+/* ================= render ================= */
+const grid = document.getElementById('grid');
+const emptyEl = document.getElementById('empty');
+const chipsEl = document.getElementById('chips');
+
+function renderChips(){
+  const counts = {};
+  events.forEach(e => counts[e.cat] = (counts[e.cat]||0)+1);
+  let h = `<button class="chip ${filter==='all'?'on':''}" data-f="all" ${filter==='all'?'style="background:linear-gradient(100deg,#ff7e5f,#a06ee1)"':''}>Tümü (${events.length})</button>`;
+  for (const k in CATS){
+    if (!counts[k]) continue;
+    const on = filter === k;
+    h += `<button class="chip ${on?'on':''}" data-f="${k}" ${on?`style="background:linear-gradient(120deg,${CATS[k].c1},${CATS[k].c2})"`:''}>
+      <span class="dot" style="background:${CATS[k].dot}"></span>${CATS[k].name} (${counts[k]})</button>`;
+  }
+  chipsEl.innerHTML = h;
+  chipsEl.style.display = events.length ? 'flex' : 'none';
+  chipsEl.querySelectorAll('.chip').forEach(c => c.onclick = () => { filter = c.dataset.f; render(); });
+}
+
+function renderCards(){
+  const list = events
+    .filter(e => filter === 'all' || e.cat === filter)
+    .sort((a,b) => a.date < b.date ? -1 : 1);
+  emptyEl.classList.toggle('show', events.length === 0);
+  grid.innerHTML = list.map(e => {
+    const c = CATS[e.cat] || CATS.an;
+    const p = diffParts(e.date);
+    const label = p.future ? 'kaldı' : 'geçti';
+    return `
+    <div class="card" data-id="${e.id}">
+      <div class="banner">${scene(e.cat)}
+        <div class="badge" style="color:${c.c1}"><span class="dot" style="background:${c.dot}"></span>${c.name}</div>
+      </div>
+      <div class="cbody">
+        <div class="ctitle">${esc(e.title)}</div>
+        <div class="cdate">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><rect x="3" y="5" width="18" height="16" rx="3"/><path d="M8 3v4M16 3v4M3 10h18"/></svg>
+          ${fmtDate(e.date)}${p.future ? ' · gelecek 🌱' : ''}
+        </div>
+        <div class="counter">
+          <div class="unit" style="color:${c.c1}"><b>${p.y}</b><span>yıl</span></div>
+          <div class="unit" style="color:${c.c1}"><b>${p.m}</b><span>ay</span></div>
+          <div class="unit" style="color:${c.c1}"><b>${p.d}</b><span>gün</span></div>
+        </div>
+        <div class="ctotal">toplam <b>${p.total.toLocaleString('tr-TR')}</b> gün ${label}</div>
+        ${e.note ? `<div class="cnote">“${esc(e.note)}”</div>` : ''}
+        <div class="cfoot">
+          <button class="cbtn" data-edit="${e.id}">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 3a2.8 2.8 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5z"/></svg>Düzenle</button>
+          <button class="cbtn del" data-del="${e.id}">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M3 6h18M8 6V4a1 1 0 0 1 1-1h6a1 1 0 0 1 1 1v2M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/></svg>Sil</button>
+        </div>
+      </div>
+    </div>`;
+  }).join('');
+  grid.querySelectorAll('[data-edit]').forEach(b => b.onclick = () => openForm(b.dataset.edit));
+  grid.querySelectorAll('[data-del]').forEach(b => b.onclick = () => delEvent(b.dataset.del));
+}
+
+function render(){ renderChips(); renderCards(); }
+const esc = s => (s||'').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+
+/* ================= form ================= */
+const formOvl = document.getElementById('formOvl');
+const catsEl = document.getElementById('cats');
+
+function renderCatPicker(){
+  catsEl.innerHTML = Object.entries(CATS).map(([k,c]) => `
+    <button type="button" class="cat ${selCat===k?'on':''}" data-cat="${k}"
+      style="${selCat===k?`border-color:${c.dot};background:linear-gradient(160deg,${c.c1}12,${c.c2}20)`:''}">
+      <div class="ic" style="background:linear-gradient(135deg,${c.c1},${c.c2})">${c.icon}</div>
+      <span>${c.name}</span>
+    </button>`).join('');
+  catsEl.querySelectorAll('.cat').forEach(b => b.onclick = () => { selCat = b.dataset.cat; renderCatPicker(); });
+}
+
+function openForm(id){
+  editId = id || null;
+  const e = id ? events.find(x => x.id === id) : null;
+  document.getElementById('formTitle').textContent = e ? 'Anı Düzenle' : 'Yeni An';
+  document.getElementById('fTitle').value = e ? e.title : '';
+  document.getElementById('fDate').value = e ? e.date : new Date().toISOString().slice(0,10);
+  document.getElementById('fNote').value = e ? (e.note||'') : '';
+  selCat = e ? e.cat : 'an';
+  renderCatPicker();
+  formOvl.classList.add('show');
+}
+
+document.getElementById('saveBtn').onclick = () => {
+  const title = document.getElementById('fTitle').value.trim();
+  const date = document.getElementById('fDate').value;
+  const note = document.getElementById('fNote').value.trim();
+  if (!title){ toast('Bir başlık yaz ✍️'); return; }
+  if (!date){ toast('Tarih seçmelisin 📅'); return; }
+  if (editId){
+    const e = events.find(x => x.id === editId);
+    Object.assign(e, { title, date, note, cat: selCat });
+    toast('An güncellendi ✨');
+  } else {
+    events.push({ id: uid(), title, date, note, cat: selCat, created: new Date().toISOString() });
+    toast('An eklendi 💜');
+  }
+  persist(); render();
+  formOvl.classList.remove('show');
+};
+
+function delEvent(id){
+  const e = events.find(x => x.id === id);
+  if (!confirm(`"${e.title}" silinsin mi?`)) return;
+  events = events.filter(x => x.id !== id);
+  if (!events.some(x => x.cat === filter)) filter = 'all';
+  persist(); render(); toast('Silindi 🗑️');
+}
+
+/* ================= backup ================= */
+const backOvl = document.getElementById('backOvl');
+document.getElementById('backupBtn').onclick = () => backOvl.classList.add('show');
+
+function backupBlob(){
+  const data = { app:'MySince', version:1, exported:new Date().toISOString(), events };
+  return new Blob([JSON.stringify(data, null, 2)], { type:'application/json' });
+}
+const backupName = () => `mysince-yedek-${new Date().toISOString().slice(0,10)}.json`;
+
+document.getElementById('expShare').onclick = async () => {
+  const file = new File([backupBlob()], backupName(), { type:'application/json' });
+  if (navigator.canShare && navigator.canShare({ files:[file] })){
+    try{
+      await navigator.share({ files:[file], title:'MySince Yedeği' });
+      toast('Paylaşıldı ✅');
+    }catch(e){ /* user cancelled */ }
+  } else {
+    downloadBackup();
+    toast('Paylaşım desteklenmiyor, dosya indirildi 📥');
+  }
+};
+document.getElementById('expFile').onclick = () => { downloadBackup(); toast('Yedek indirildi 📥'); };
+
+function downloadBackup(){
+  const url = URL.createObjectURL(backupBlob());
+  const a = document.createElement('a');
+  a.href = url; a.download = backupName(); a.click();
+  setTimeout(() => URL.revokeObjectURL(url), 2000);
+}
+
+const fileInput = document.getElementById('fileInput');
+document.getElementById('impFile').onclick = () => fileInput.click();
+fileInput.onchange = async () => {
+  const f = fileInput.files[0];
+  if (!f) return;
+  try{
+    const data = JSON.parse(await f.text());
+    const list = Array.isArray(data) ? data : data.events;
+    if (!Array.isArray(list)) throw 0;
+    const clean = list.filter(e => e && e.title && e.date).map(e => ({
+      id: e.id || uid(), title: String(e.title).slice(0,60), date: e.date,
+      note: e.note ? String(e.note).slice(0,200) : '', cat: CATS[e.cat] ? e.cat : 'an',
+      created: e.created || new Date().toISOString(),
+    }));
+    const mode = events.length
+      ? (confirm(`${clean.length} an bulundu.\n\nTamam = Mevcutların ÜZERİNE ekle\nİptal = Mevcutları SİL, yedekle değiştir`) ? 'merge' : 'replace')
+      : 'replace';
+    if (mode === 'replace') events = clean;
+    else {
+      const have = new Set(events.map(e => e.id));
+      clean.forEach(e => { if (!have.has(e.id)) events.push(e); });
+    }
+    persist(); filter = 'all'; render();
+    backOvl.classList.remove('show');
+    toast(`${clean.length} an geri yüklendi ✅`);
+  }catch(e){ toast('Geçersiz yedek dosyası ❌'); }
+  fileInput.value = '';
+};
+
+/* ================= misc ui ================= */
+document.getElementById('fab').onclick = () => openForm();
+document.getElementById('emptyAdd').onclick = () => openForm();
+document.querySelectorAll('[data-close]').forEach(b => b.onclick = () => b.closest('.ovl').classList.remove('show'));
+document.querySelectorAll('.ovl').forEach(o => o.addEventListener('click', e => { if (e.target === o) o.classList.remove('show'); }));
+
+let toastT;
+function toast(msg){
+  const t = document.getElementById('toast');
+  t.textContent = msg; t.classList.add('show');
+  clearTimeout(toastT); toastT = setTimeout(() => t.classList.remove('show'), 2400);
+}
+
+/* hero line rotates with content */
+function heroLine(){
+  if (!events.length) return;
+  const past = events.filter(e => !diffParts(e.date).future);
+  if (!past.length) return;
+  const oldest = past.sort((a,b) => a.date < b.date ? -1 : 1)[0];
+  const p = diffParts(oldest.date);
+  document.getElementById('heroSub').textContent =
+    `“${oldest.title}” üzerinden ${p.y} yıl ${p.m} ay ${p.d} gün geçti.`;
+}
+
+/* midnight refresh + minute tick */
+setInterval(() => { render(); heroLine(); }, 60_000);
+
+load(); render(); heroLine();
+
+/* PWA */
+if ('serviceWorker' in navigator) navigator.serviceWorker.register('sw.js').catch(()=>{});
+</script>
+</body>
+</html>
